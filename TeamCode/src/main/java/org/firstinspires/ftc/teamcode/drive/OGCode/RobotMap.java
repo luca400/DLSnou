@@ -21,7 +21,7 @@ public class RobotMap {
 
     Servo left4Bar = null;
     Servo right4Bar = null;
-    Servo turnCLaw = null;
+    Servo turnClaw = null;
     Servo closeClaw = null;
     DcMotorEx motorColectare = null;
     DcMotorEx dreaptaLift = null;
@@ -31,7 +31,7 @@ public class RobotMap {
     {
         left4Bar = Init.get(Servo.class, "left4Bar");
         right4Bar = Init.get(Servo.class,"right4Bar");
-        turnCLaw = Init.get(Servo.class, "turnClaw");
+        turnClaw = Init.get(Servo.class, "turnClaw");
         closeClaw = Init.get(Servo.class, "closeClaw");
 
         motorColectare = Init.get(DcMotorEx.class, "motorColectare");
