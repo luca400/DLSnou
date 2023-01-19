@@ -18,11 +18,11 @@ public class Servo4BarController {
         COLLECT_DRIVE,
         INTERMEDIARY,
         PLACE_CONE,
-
+        DRIVE_POSITION,
     }
     ServoStatus CurrentStatus = INITIALIZE,PreviousStatus = INITIALIZE,WhereFromIntermediary = INITIALIZE;
     ElapsedTime time = new ElapsedTime();
-    double Collect_Drive_Position = 0.1 , Place_Cone_Position = 0.8 , Intermediary_Position =0.4;
+    double Collect_Drive_Position = 0.09 , Place_Cone_Position = 0.8 , Intermediary_Position =0.4 , Drive_Position = 0.6;
 
     void update(RobotMap Robot)
     {
@@ -86,6 +86,13 @@ public class Servo4BarController {
                         CurrentStatus = INTERMEDIARY;
                         break;
                     }
+                }
+                case DRIVE_POSITION:
+                {
+                    Robot.left4Bar.setPosition(Drive_Position);
+                    Robot.right4Bar.setPosition(Drive_Position);
+                    CurrentStatus = PLACE_CONE;
+                    break;
                 }
             }
         }

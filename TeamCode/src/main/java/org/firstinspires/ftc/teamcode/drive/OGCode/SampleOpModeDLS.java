@@ -30,6 +30,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
     public static int salut=0;
     double pozInit4Bar = 0, pozInter4Bar= 0.4, pozPlace4Bar = 0.7;
     double pozCloseClaw=0.8, pozOpenClaw=0.2;
+    double kp =0, ki=0, kd=0;
     boolean isDown = true, isClosed=false, isTurned = false, isExtended = false;
     double  PrecisionDenominator=1, PrecisionDenominator2=1.25;
 
@@ -112,13 +113,13 @@ public class SampleOpModeDLS extends  LinearOpMode {
         motorColectareController.CurrentStatus = MotorColectareController.MotorColectare.RETRACTED;
         closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
         turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
-        robotController.CurrentStatus = RobotController.RobotControllerStatus.NOTHING;
+        robotController.CurrentStatus = RobotController.RobotControllerStatus.START;
         closeClawController.update(robot);
         turnClawController.update(robot);
         servo4BarController.update(robot);
-        motorColectareController.update(robot);
+        motorColectareController.update(robot,0);
         robotController.update(servo4BarController,motorColectareController,closeClawController,turnClawController);
-        biggerController.update(robotController,closeClawController);
+        biggerController.update(robotController,closeClawController,motorColectareController);
 
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
 
@@ -175,7 +176,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
             } else {
                 fieldCentricDrive(imu, leftFront, leftBack, rightFront, rightBack);
             }
-            if (!previousGamepad2.b && currentGamepad2.b)
+            if ((!previousGamepad2.b && currentGamepad2.b)||(!previousGamepad1.b && currentGamepad1.b))
             {
                if (closeClawController.CurrentStatus == CloseClawController.closeClawStatus.CLOSED)
                {
@@ -185,7 +186,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
                    closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
                }
             }
-            if (!previousGamepad2.y && currentGamepad2.y)
+            if ((!previousGamepad2.y && currentGamepad2.y) || (!previousGamepad1.y && currentGamepad1.y) )
             {
                 if (turnClawController.CurrentStatus == TurnClawController.TurnClawStatus.COLLECT){
                     turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.PLACE;
@@ -194,7 +195,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
                     turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
                 }
             }
-            /*if (!previousGamepad1.dpad_up && currentGamepad1.dpad_up)
+            if (!previousGamepad1.a && currentGamepad1.a)
             {
                 if (motorColectareController.CurrentStatus == MotorColectareController.MotorColectare.RETRACTED)
                 {
@@ -204,8 +205,8 @@ public class SampleOpModeDLS extends  LinearOpMode {
                 {
                     motorColectareController.CurrentStatus = MotorColectareController.MotorColectare.RETRACTED;
                 }
-            }*/
-            if (!previousGamepad2.left_bumper && currentGamepad2.left_bumper)
+            }
+            if ((!previousGamepad2.left_bumper && currentGamepad2.left_bumper) || (!previousGamepad1.left_bumper && currentGamepad1.left_bumper))
             {
                 if (servo4BarController.CurrentStatus == PLACE_CONE) {
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.COLLECT_DRIVE;
@@ -215,24 +216,25 @@ public class SampleOpModeDLS extends  LinearOpMode {
                     servo4BarController.CurrentStatus = PLACE_CONE;
                 }
             }
-            if (!previousGamepad2.dpad_down && currentGamepad2.dpad_down)
+            if ((!previousGamepad2.dpad_down && currentGamepad2.dpad_down) || !previousGamepad1.dpad_down && currentGamepad1.dpad_down)
             {
                 robotController.CurrentStatus = RobotController.RobotControllerStatus.GO_COLLECT;
             }
-            if (!previousGamepad2.dpad_up && currentGamepad2.dpad_up)
+            if ((!previousGamepad2.dpad_up && currentGamepad2.dpad_up) || (!previousGamepad1.dpad_up && currentGamepad1.dpad_up))
             {
                 robotController.CurrentStatus = RobotController.RobotControllerStatus.GO_PLACE;
             }
-            if (!previousGamepad2.dpad_left && currentGamepad2.dpad_left)
+            if ((!previousGamepad2.dpad_left && currentGamepad2.dpad_left) || (!previousGamepad1.dpad_left && currentGamepad1.dpad_left))
             {
                 biggerController.CurrentStatus = BiggerController.biggerControllerStatus.COLLECT_RAPID_FIRE;
             }
-            biggerController.update(robotController,closeClawController);
+            int ColectarePosition = robot.motorColectare.getCurrentPosition();
+            biggerController.update(robotController,closeClawController,motorColectareController);
             robotController.update(servo4BarController,motorColectareController,closeClawController,turnClawController);
             closeClawController.update(robot);
             turnClawController.update(robot);
             servo4BarController.update(robot);
-            motorColectareController.update(robot);
+            motorColectareController.update(robot,ColectarePosition);
             double loop = System.nanoTime();
             telemetry.addData("hz ", 1000000000 / (loop - loopTime));
             loopTime = loop;
@@ -247,7 +249,6 @@ public class SampleOpModeDLS extends  LinearOpMode {
             telemetry.addData("TurnClawPosition",robot.turnClaw.getPosition());
             telemetry.addData("CurrentStatusTurnClawPosition",turnClawController.CurrentStatus);
             telemetry.addData("posColectare", robot.motorColectare.getCurrentPosition());
-            telemetry.addData("UndeVreaColectare", robot.motorColectare.getTargetPosition());
             telemetry.addData("timpFSM", servo4BarController.time.seconds());
             telemetry.update();
         }

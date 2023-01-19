@@ -48,7 +48,7 @@ public class RobotMap {
         stangaLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         dreaptaLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorColectare.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorColectare.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorColectare.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorColectare.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorColectare.setDirection(DcMotorSimple.Direction.REVERSE);
     }

@@ -12,26 +12,37 @@ public class MotorColectareController {
         EXTENDED,
         RETRACTED,
     }
+    public static double Kp = 0.0055;
+    public static double Ki = 0.05;
+    public static double Kd = 0.0002;
+    public static double maxSpeed = 0.9;
     MotorColectare CurrentStatus = INITIALIZED,  PreviousStatus = INITIALIZED;
-    int extendedPosition = 250 , retractedPosition = 0;
-    void update(RobotMap Robotel)
+    SimplePIDController MotorColectarePID = null;
+    int extendedPosition = 250 , retractedPosition = -65;
+    public MotorColectareController()
     {
+        MotorColectarePID = new SimplePIDController(Kp,Ki,Kd);
+        MotorColectarePID.targetValue=retractedPosition;
+        MotorColectarePID.maxOutput = maxSpeed;
+    }
+    void update(RobotMap Robotel ,int ColectarePosition)
+    {
+        double powerColectare = MotorColectarePID.update(ColectarePosition);
+        powerColectare = Math.max(-1,Math.min(powerColectare,1));
+        Robotel.motorColectare.setPower(powerColectare);
         if (PreviousStatus != CurrentStatus)
         {
             switch (CurrentStatus)
             {
                 case RETRACTED:
                 {
-                    Robotel.motorColectare.setTargetPosition(0);
-                    Robotel.motorColectare.setPower(0.6);
-                    Robotel.motorColectare.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    MotorColectarePID.targetValue = retractedPosition;
                     break;
                 }
                 case EXTENDED:
                 {
-                    Robotel.motorColectare.setTargetPosition(extendedPosition);
-                    Robotel.motorColectare.setPower(0.6);
-                    Robotel.motorColectare.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    MotorColectarePID.targetValue = extendedPosition;
+                    break;
                 }
             }
         }

@@ -16,7 +16,7 @@ public class BiggerController {
     }
     biggerControllerStatus CurrentStatus = NOTHING, PreviousStatus = NOTHING;
     ElapsedTime timerCOLLECT_RAPID_FIRE2 = new ElapsedTime() ,timerCOLLECT_RAPID_FIRE1 = new ElapsedTime();
-    void update(RobotController robotController,CloseClawController closeClawController)
+    void update(RobotController robotController,CloseClawController closeClawController,MotorColectareController motorColectareController)
     {
         if (CurrentStatus!=PreviousStatus || CurrentStatus == COLLECT_RAPID_FIRE_INTER || CurrentStatus == COLLECT_RAPID_FIRE_INTER2)
         {
@@ -25,13 +25,14 @@ public class BiggerController {
                 case COLLECT_RAPID_FIRE:
                 {
                     timerCOLLECT_RAPID_FIRE1.reset();
+
                     robotController.CurrentStatus = RobotController.RobotControllerStatus.GO_COLLECT;
                     CurrentStatus = COLLECT_RAPID_FIRE_INTER;
                     break;
                 }
                 case COLLECT_RAPID_FIRE_INTER:
                 {
-                    if (timerCOLLECT_RAPID_FIRE1.seconds()>2.5)
+                    if (timerCOLLECT_RAPID_FIRE1.seconds()>2)
                     {
                          timerCOLLECT_RAPID_FIRE2.reset();
                          closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
