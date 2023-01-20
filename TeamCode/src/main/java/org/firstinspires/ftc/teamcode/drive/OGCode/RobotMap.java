@@ -23,6 +23,7 @@ public class RobotMap {
     Servo right4Bar = null;
     Servo turnClaw = null;
     Servo closeClaw = null;
+    Servo servoLift = null;
     DcMotorEx motorColectare = null;
     DcMotorEx dreaptaLift = null;
     DcMotorEx stangaLift = null;
@@ -33,6 +34,8 @@ public class RobotMap {
         right4Bar = Init.get(Servo.class,"right4Bar");
         turnClaw = Init.get(Servo.class, "turnClaw");
         closeClaw = Init.get(Servo.class, "closeClaw");
+        servoLift = Init.get(Servo.class,"servoLift");
+
 
         motorColectare = Init.get(DcMotorEx.class, "motorColectare");
         stangaLift = Init.get(DcMotorEx.class, "stangaLift");
@@ -41,7 +44,7 @@ public class RobotMap {
 
 
         right4Bar.setDirection(Servo.Direction.REVERSE);
-        dreaptaLift.setDirection(DcMotorSimple.Direction.REVERSE);
+        stangaLift.setDirection(DcMotorSimple.Direction.REVERSE);
 
         dreaptaLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         stangaLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

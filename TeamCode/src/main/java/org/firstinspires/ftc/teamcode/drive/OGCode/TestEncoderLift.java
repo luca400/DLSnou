@@ -59,24 +59,13 @@ public class TestEncoderLift extends  LinearOpMode {
             currentGamepad2.copy(gamepad2);
 
             /// DRIVE
-            if (!previousGamepad1.triangle && previousGamepad1.triangle )
-            {
-                robot.stangaLift.setPower(0.4);
-                robot.dreaptaLift.setPower(0.4);
-            }
-            else
-            if (!previousGamepad1.a && previousGamepad1.a )
-            {
-                robot.stangaLift.setPower(-0.4);
-                robot.dreaptaLift.setPower(-0.4);
-            }
-            else
-            {
-                robot.stangaLift.setPower(0);
-                robot.dreaptaLift.setPower(0);
-            }
-            telemetry.addData("stangaLift",robot.stangaLift.getCurrentPosition());
-            telemetry.addData("dreaptaLift",robot.dreaptaLift.getCurrentPosition());
+            robot.stangaLift.setPower(gamepad1.left_stick_y);
+            robot.dreaptaLift.setPower(gamepad1.left_stick_y);
+
+            telemetry.addData("stangaLiftPosition",robot.stangaLift.getCurrentPosition());
+            telemetry.addData("dreaptaLiftPosition",robot.dreaptaLift.getCurrentPosition());
+            telemetry.addData("dreaptaLiftPower",robot.dreaptaLift.getPower());
+            telemetry.addData("stangaLiftPower",robot.stangaLift.getPower());
             telemetry.update();
         }
     }

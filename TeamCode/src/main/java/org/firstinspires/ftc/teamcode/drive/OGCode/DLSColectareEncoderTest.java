@@ -58,7 +58,6 @@ public class DLSColectareEncoderTest extends LinearOpMode {
         while (!isStopRequested() && opModeIsActive())
         {
             int ColectarePosition = robot.motorColectare.getCurrentPosition();
-            double stangaLiftPower = robot.motorColectare.getPower();
             double powerColectare = hello.update(ColectarePosition);
             powerColectare = Math.max(-1,Math.min(powerColectare,1));
             robot.motorColectare.setPower(powerColectare);
