@@ -18,7 +18,7 @@ public class RobotController {
     }
     RobotControllerStatus CurrentStatus = START, PreviousStatus = START;
     ElapsedTime timerGO_COLLECT = new ElapsedTime() , timerGO_PLACE = new ElapsedTime() ,timeCOLLECT_RAPID_FIRE = new ElapsedTime();
-    void update(Servo4BarController servo4BarController, MotorColectareController motorColectareController, CloseClawController closeClawController, TurnClawController turnClawController)
+    void update(ServoLiftController servoLiftController,Servo4BarController servo4BarController, MotorColectareController motorColectareController, CloseClawController closeClawController, TurnClawController turnClawController)
     {
         if (PreviousStatus != CurrentStatus || CurrentStatus == INTER_GO_COLLECT || CurrentStatus == INTER_GO_PLACE)
         {
@@ -41,6 +41,7 @@ public class RobotController {
                     if (timerGO_COLLECT.seconds()>0.5)
                     {
                         closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
+                        servoLiftController.CurrentStatus = ServoLiftController.ServoLiftStatus.TRANSFER;
                         CurrentStatus = START;
                     }
                     break;
@@ -61,6 +62,7 @@ public class RobotController {
                     if (timerGO_PLACE.seconds()>1.2)
                     {
                         closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
+                        servoLiftController.CurrentStatus = ServoLiftController.ServoLiftStatus.JUNCTION;
                         servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
                         CurrentStatus = START;
                     }

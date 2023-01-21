@@ -11,14 +11,15 @@ public class LiftController {
         MEDIUM,
         BASE,
     }
-    public double Kp = 0.004;
-    public double Ki = 0;
+    public double Kp = 0.02;
+    public double Ki = 0.1;
     public double Kd = 0;
-    public double maxSpeed = 0.5;
+    public double Kg = 0;
+    public double maxSpeed = 1;
     LiftStatus CurrentStatus = START, PreviousStatus = START;
     SimplePIDController LiftColectarePID = null;
     /// pe DreaptaLift am encoder
-    int basePosition = 0 , highPosition = 1500;
+    int basePosition = 0 , highPosition = 2425;
     public LiftController()
     {
         LiftColectarePID = new SimplePIDController(Kp,Ki,Kd);
@@ -27,9 +28,10 @@ public class LiftController {
     }
     void update (RobotMap Robotel, int LiftPosition)
     {
-        double powerLift = LiftColectarePID.update(LiftPosition);
+        double powerLift = LiftColectarePID.update(LiftPosition) + Kg;
         powerLift = Math.max(-1,Math.min(powerLift,1));
-        Robotel.motorColectare.setPower(powerLift);
+        Robotel.stangaLift.setPower(powerLift);
+        Robotel.dreaptaLift.setPower(powerLift);
         if (PreviousStatus != CurrentStatus)
         {
             switch (CurrentStatus)

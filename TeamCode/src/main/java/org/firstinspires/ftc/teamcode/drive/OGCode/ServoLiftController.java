@@ -15,7 +15,7 @@ public class ServoLiftController {
         JUNCTION,
     }
     ServoLiftStatus CurrentStatus = START, PreviousStatus = START;
-    double transfer_Position = 0.3 , junction_Position = 1;
+    double transfer_Position = 1 , junction_Position = 0.4;
     void update(RobotMap Robotel)
     {
         if (CurrentStatus!=PreviousStatus)

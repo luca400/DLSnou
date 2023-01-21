@@ -25,12 +25,12 @@ import java.util.List;
 @Autonomous(group = "Testers")
 public class DLSColectareEncoderTest extends LinearOpMode {
     public static double DISTANCE = 60; // in
-    public static double Kp = 0.0055;
-    public static double Ki = 0.05;
-    public static double Kd = 0.0002;
+    public static double Kp = 0;
+    public static double Ki = 0;
+    public static double Kd = 0;
     public static double Kg = 0;
-    public static double maxSpeed = 0.9;
-    public static double RetractedPosition = 0 , ExtendedPosition = 250;
+    public static double maxSpeed = 0.5;
+    public static double RetractedPosition = 0 , ExtendedPosition = 2400;
     int TargetLift = 0;
     ElapsedTime timerPID = new ElapsedTime();
 
@@ -57,11 +57,11 @@ public class DLSColectareEncoderTest extends LinearOpMode {
         hello.targetValue = RetractedPosition;
         while (!isStopRequested() && opModeIsActive())
         {
-            int ColectarePosition = robot.motorColectare.getCurrentPosition();
-            double powerColectare = hello.update(ColectarePosition);
-            powerColectare = Math.max(-1,Math.min(powerColectare,1));
-            robot.motorColectare.setPower(powerColectare);
-
+            int DreaptaLiftPosition = robot.dreaptaLift.getCurrentPosition();
+            double powerDreaptaLift = hello.update(DreaptaLiftPosition) + Kg;
+            powerDreaptaLift = Math.max(-1,Math.min(powerDreaptaLift,1));
+            robot.dreaptaLift.setPower(powerDreaptaLift);
+            robot.stangaLift.setPower(powerDreaptaLift);
             if (changePositions.seconds()>4)
             {
                 if (hello.targetValue == RetractedPosition )
@@ -75,10 +75,10 @@ public class DLSColectareEncoderTest extends LinearOpMode {
                 changePositions.reset();
             }
 
-            telemetry.addData("ColectareEncoder", ColectarePosition);
-            telemetry.addData("powerColectare", powerColectare);
+            telemetry.addData("ColectareEncoder", DreaptaLiftPosition);
+            telemetry.addData("powerColectare", powerDreaptaLift);
             telemetry.addData("TargetLift",hello.targetValue);
-            telemetry.addData("Error", hello.measuredError(ColectarePosition));
+            telemetry.addData("Error", hello.measuredError(DreaptaLiftPosition));
             if (Kp!=hello.p || Kd!=hello.d || Ki!=hello.i || maxSpeed !=hello.maxOutput )
             {
                 hello.p = Kp;
