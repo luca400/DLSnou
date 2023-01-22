@@ -4,16 +4,16 @@ import org.checkerframework.checker.units.qual.Current;
 
 public class CloseClawController {
 
-    enum closeClawStatus
+    public enum closeClawStatus
     {
         INIT,
         CLOSED,
         OPEN,
     }
-    closeClawStatus CurrentStatus = closeClawStatus.INIT,  PreviousStatus = closeClawStatus.INIT;
+    public static closeClawStatus CurrentStatus = closeClawStatus.INIT,  PreviousStatus = closeClawStatus.INIT;
     double pozOpenClaw = 0.6, pozCloseClaw = 0.8;
 
-    void update(RobotMap Robotel)
+    public void update(RobotMap Robotel)
     {
         if (PreviousStatus!= CurrentStatus)
         {

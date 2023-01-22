@@ -100,6 +100,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
     public void runOpMode() {
 
         RobotMap robot=new RobotMap(hardwareMap);
+        SigurantaLiftController sigurantaLiftController = new SigurantaLiftController();
         Servo4BarController servo4BarController = new Servo4BarController();
         MotorColectareController motorColectareController = new MotorColectareController();
         CloseClawController closeClawController = new CloseClawController();
@@ -108,6 +109,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
         BiggerController biggerController = new BiggerController();
         LiftController liftController = new LiftController();
         ServoLiftController servoLiftController = new ServoLiftController();
+        AutoController autoController = new AutoController();
 
         double x1=0,y1=0,x2=0;
         double loopTime = 0;
@@ -123,13 +125,15 @@ public class SampleOpModeDLS extends  LinearOpMode {
         robotController.CurrentStatus = RobotController.RobotControllerStatus.START;
         liftController.CurrentStatus = LiftController.LiftStatus.BASE;
         servoLiftController.CurrentStatus = ServoLiftController.ServoLiftStatus.TRANSFER;
+        sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.TRANSFER;
 
         closeClawController.update(robot);
         turnClawController.update(robot);
         servo4BarController.update(robot);
         servoLiftController.update(robot);
-        motorColectareController.update(robot,0);
-        liftController.update(robot,0);
+        sigurantaLiftController.update(robot);
+        motorColectareController.update(robot,0, 1);
+        liftController.update(robot,0,sigurantaLiftController);
         robotController.update(servoLiftController,servo4BarController,motorColectareController,closeClawController,turnClawController);
         biggerController.update(robotController,closeClawController,motorColectareController);
 
@@ -192,13 +196,13 @@ public class SampleOpModeDLS extends  LinearOpMode {
             //robot.dreaptaLift.setPower(gamepad2.right_stick_y);
             if ((!previousGamepad2.square && currentGamepad2.square)||(!previousGamepad1.square && currentGamepad1.square))
             {
-                if (servoLiftController.CurrentStatus== ServoLiftController.ServoLiftStatus.TRANSFER)
+                if (sigurantaLiftController.CurrentStatus == SigurantaLiftController.SigurantaLift.JUNCTION)
                 {
-                    servoLiftController.CurrentStatus= ServoLiftController.ServoLiftStatus.JUNCTION;
+                    sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.TRANSFER;
                 }
                 else
                 {
-                    servoLiftController.CurrentStatus= ServoLiftController.ServoLiftStatus.TRANSFER;
+                    sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
                 }
             }
             if ((!previousGamepad2.triangle && currentGamepad2.triangle)||(!previousGamepad1.triangle && currentGamepad1.triangle))
@@ -233,7 +237,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
                     motorColectareController.CurrentStatus = MotorColectareController.MotorColectare.RETRACTED;
                 }
             }
-            if ((!previousGamepad2.left_bumper && currentGamepad2.left_bumper) || (!previousGamepad1.left_bumper && currentGamepad1.left_bumper))
+            /*if ((!previousGamepad2.left_bumper && currentGamepad2.left_bumper) || (!previousGamepad1.left_bumper && currentGamepad1.left_bumper))
             {
                 if (servo4BarController.CurrentStatus == PLACE_CONE) {
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.COLLECT_DRIVE;
@@ -242,10 +246,11 @@ public class SampleOpModeDLS extends  LinearOpMode {
                 {
                     servo4BarController.CurrentStatus = PLACE_CONE;
                 }
-            }
+            }*/
             if ((!previousGamepad2.dpad_down && currentGamepad2.dpad_down) || !previousGamepad1.dpad_down && currentGamepad1.dpad_down)
             {
                 robotController.CurrentStatus = RobotController.RobotControllerStatus.GO_COLLECT;
+                servo4BarController.Collect_Position = 0.09;
             }
             if ((!previousGamepad2.dpad_up && currentGamepad2.dpad_up) || (!previousGamepad1.dpad_up && currentGamepad1.dpad_up))
             {
@@ -254,6 +259,11 @@ public class SampleOpModeDLS extends  LinearOpMode {
             if ((!previousGamepad2.dpad_left && currentGamepad2.dpad_left) || (!previousGamepad1.dpad_left && currentGamepad1.dpad_left))
             {
                 biggerController.CurrentStatus = BiggerController.biggerControllerStatus.COLLECT_RAPID_FIRE;
+                servo4BarController.Collect_Position = 0.09;
+            }
+            if ((!previousGamepad2.dpad_right && currentGamepad2.dpad_right) || (!previousGamepad1.dpad_right && currentGamepad1.dpad_right))
+            {
+                autoController.CurrentStatus = AutoController.autoControllerStatus.STACK_LEVEL;
             }
             int ColectarePosition = robot.motorColectare.getCurrentPosition();
             int LiftPosition = robot.dreaptaLift.getCurrentPosition(); /// folosesc doar encoderul de la dreaptaLift , celalalt nu exista.
@@ -263,17 +273,22 @@ public class SampleOpModeDLS extends  LinearOpMode {
             closeClawController.update(robot);
             turnClawController.update(robot);
             servo4BarController.update(robot);
+            sigurantaLiftController.update(robot);
             servoLiftController.update(robot);
-            motorColectareController.update(robot,ColectarePosition);
-            liftController.update(robot,LiftPosition);
+            motorColectareController.update(robot,ColectarePosition, 0.8);
+            liftController.update(robot,LiftPosition,sigurantaLiftController);
+            autoController.update(turnClawController, servoLiftController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
 
             double loop = System.nanoTime();
             telemetry.addData("hz ", 1000000000 / (loop - loopTime));
             loopTime = loop;
+            telemetry.addData("AutoStatus", autoController.CurrentStatus);
             telemetry.addData("RobotStatus",robotController.CurrentStatus);
             telemetry.addData("CurrentStatus",servo4BarController.CurrentStatus);
+            telemetry.addData("salut", servo4BarController.salut);
             telemetry.addData("PreviousStatus",servo4BarController.PreviousStatus);
             telemetry.addData("WhereFromIntermediary",servo4BarController.WhereFromIntermediary);
+            telemetry.addData("Timer4Bar",servo4BarController.time.seconds());
             telemetry.addData("salut",salut);
             telemetry.addData("4Barpos",robot.left4Bar.getPosition());
             telemetry.addData("CloseClawPosition",robot.closeClaw.getPosition());

@@ -6,7 +6,7 @@ import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareControll
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class MotorColectareController {
-    enum MotorColectare
+    public enum MotorColectare
     {
         INITIALIZED,
         EXTENDED,
@@ -16,19 +16,19 @@ public class MotorColectareController {
     public static double Ki = 0.05;
     public static double Kd = 0.0002;
     public static double maxSpeed = 0.9;
-    MotorColectare CurrentStatus = INITIALIZED,  PreviousStatus = INITIALIZED;
+    public static MotorColectare CurrentStatus = INITIALIZED,  PreviousStatus = INITIALIZED;
     SimplePIDController MotorColectarePID = null;
-    int extendedPosition = 250 , retractedPosition = -65;
+    int extendedPosition = 300 , retractedPosition = -65;
     public MotorColectareController()
     {
         MotorColectarePID = new SimplePIDController(Kp,Ki,Kd);
         MotorColectarePID.targetValue=retractedPosition;
         MotorColectarePID.maxOutput = maxSpeed;
     }
-    void update(RobotMap Robotel ,int ColectarePosition)
+    public void update(RobotMap Robotel, int ColectarePosition, double PowerCap)
     {
         double powerColectare = MotorColectarePID.update(ColectarePosition);
-        powerColectare = Math.max(-1,Math.min(powerColectare,1));
+        powerColectare = Math.max(-PowerCap,Math.min(powerColectare,PowerCap));
         Robotel.motorColectare.setPower(powerColectare);
         if (PreviousStatus != CurrentStatus)
         {

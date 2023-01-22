@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class RobotController {
 
-    enum RobotControllerStatus
+    public enum RobotControllerStatus
     {
         START,
         GO_COLLECT,
@@ -16,14 +16,15 @@ public class RobotController {
         GO_PLACE,
         INTER_GO_PLACE,
     }
-    RobotControllerStatus CurrentStatus = START, PreviousStatus = START;
+    public static RobotControllerStatus CurrentStatus = START, PreviousStatus = START;
     ElapsedTime timerGO_COLLECT = new ElapsedTime() , timerGO_PLACE = new ElapsedTime() ,timeCOLLECT_RAPID_FIRE = new ElapsedTime();
-    void update(ServoLiftController servoLiftController,Servo4BarController servo4BarController, MotorColectareController motorColectareController, CloseClawController closeClawController, TurnClawController turnClawController)
+    public void update(ServoLiftController servoLiftController, Servo4BarController servo4BarController, MotorColectareController motorColectareController, CloseClawController closeClawController, TurnClawController turnClawController)
     {
         if (PreviousStatus != CurrentStatus || CurrentStatus == INTER_GO_COLLECT || CurrentStatus == INTER_GO_PLACE)
         {
             switch (CurrentStatus)
             {
+
                 case GO_COLLECT:
                 {
                     timerGO_COLLECT.reset();
@@ -33,10 +34,11 @@ public class RobotController {
                 }
                 case INTER_GO_COLLECT:
                 {
-                    if (closeClawController.CurrentStatus!= CloseClawController.closeClawStatus.CLOSED && timerGO_COLLECT.seconds()>0.2)
+                    turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
+                    if (timerGO_COLLECT.seconds()>0.2)
                     {
                         turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
-                        closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
+                        closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
                     }
                     if (timerGO_COLLECT.seconds()>0.5)
                     {
@@ -59,7 +61,7 @@ public class RobotController {
                     {
                         turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.PLACE;
                     }
-                    if (timerGO_PLACE.seconds()>1.2)
+                    if (timerGO_PLACE.seconds()>1.5)
                     {
                         closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
                         servoLiftController.CurrentStatus = ServoLiftController.ServoLiftStatus.JUNCTION;

@@ -4,15 +4,15 @@ import static org.firstinspires.ftc.teamcode.drive.OGCode.TurnClawController.Tur
 import static org.firstinspires.ftc.teamcode.drive.OGCode.TurnClawController.TurnClawStatus.PLACE;
 
 public class TurnClawController {
-    enum TurnClawStatus
+    public enum TurnClawStatus
     {
         INIT,
         COLLECT,
         PLACE,
     }
-    TurnClawStatus CurrentStatus = INIT , PreviousStatus = INIT;
+    public static TurnClawStatus CurrentStatus = INIT , PreviousStatus = INIT;
     double pozTurnClaw_COLLECT=0.72, pozTurnClaw_PLACE = 0.05;
-    void update(RobotMap Robotel)
+    public void update(RobotMap Robotel)
     {
         if (PreviousStatus != CurrentStatus)
         {

@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Servo4BarController {
-    enum ServoStatus
+    public enum ServoStatus
     {
         INITIALIZE,
         COLLECT_DRIVE,
@@ -20,11 +20,12 @@ public class Servo4BarController {
         PLACE_CONE,
         DRIVE_POSITION,
     }
-    ServoStatus CurrentStatus = INITIALIZE,PreviousStatus = INITIALIZE,WhereFromIntermediary = INITIALIZE;
+    public static ServoStatus CurrentStatus = INITIALIZE,PreviousStatus = INITIALIZE,WhereFromIntermediary = COLLECT_DRIVE;
     ElapsedTime time = new ElapsedTime();
-    double Collect_Drive_Position = 0.09 , Place_Cone_Position = 0.8 , Intermediary_Position =0.4 , Drive_Position = 0.6;
-
-    void update(RobotMap Robot)
+    public static double Ground_Position=0.09, Second_Cone_Position=0.13, Third_Cone_Position=0.17, Fourth_Cone_Position = 0.21, Fifth_Cone_Position = 0.27;
+    public static double Collect_Position = Ground_Position , Place_Cone_Position = 0.8 , Intermediary_Position =0.4 , Drive_Position = 0.6;
+int salut =0;
+    public void update(RobotMap Robot)
     {
         if (PreviousStatus != CurrentStatus || CurrentStatus==INTERMEDIARY || CurrentStatus==INITIALIZE)
         {
@@ -32,25 +33,27 @@ public class Servo4BarController {
             {
                 case INITIALIZE:
                 {
-                    Robot.left4Bar.setPosition(Intermediary_Position);
-                    Robot.right4Bar.setPosition(Intermediary_Position);
+                    Robot.left4Bar.setPosition(Drive_Position);
+                    Robot.right4Bar.setPosition(Drive_Position);
                     break;
                 }
                 case INTERMEDIARY:
                 {
+                    salut = 2;
                     if (WhereFromIntermediary == COLLECT_DRIVE)
                     {
-                        if (time.seconds()> 0.5)
+                        if (time.seconds()> 0.3)
                         {
+
                             Robot.right4Bar.setPosition(Place_Cone_Position);
                             Robot.left4Bar.setPosition(Place_Cone_Position);
                             CurrentStatus = PLACE_CONE;
                         }
                     }
                     else {
-                        if (time.seconds() > 0.5) {
-                            Robot.right4Bar.setPosition(Collect_Drive_Position);
-                            Robot.left4Bar.setPosition(Collect_Drive_Position);
+                        if (time.seconds() > 0.3) {
+                            Robot.right4Bar.setPosition(Collect_Position);
+                            Robot.left4Bar.setPosition(Collect_Position);
                             CurrentStatus = COLLECT_DRIVE;
                         }
                     }
@@ -69,8 +72,8 @@ public class Servo4BarController {
                     else if (PreviousStatus == INITIALIZE)
                     {
                         time.reset();
-                        Robot.left4Bar.setPosition(Collect_Drive_Position);
-                        Robot.right4Bar.setPosition(Collect_Drive_Position);
+                        Robot.left4Bar.setPosition(Collect_Position);
+                        Robot.right4Bar.setPosition(Collect_Position);
                     }
                     break;
                 }
@@ -79,13 +82,13 @@ public class Servo4BarController {
                     time.reset();
                     if (PreviousStatus == COLLECT_DRIVE)
                     {
-
+                        salut=1;
                         Robot.left4Bar.setPosition(Intermediary_Position);
                         Robot.right4Bar.setPosition(Intermediary_Position);
                         WhereFromIntermediary = COLLECT_DRIVE;
                         CurrentStatus = INTERMEDIARY;
-                        break;
                     }
+                    break;
                 }
                 case DRIVE_POSITION:
                 {

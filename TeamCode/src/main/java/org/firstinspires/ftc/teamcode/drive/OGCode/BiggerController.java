@@ -7,7 +7,7 @@ import static org.firstinspires.ftc.teamcode.drive.OGCode.BiggerController.bigge
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class BiggerController {
-    enum biggerControllerStatus
+    public enum biggerControllerStatus
     {
         NOTHING,
         COLLECT_RAPID_FIRE,
@@ -16,7 +16,7 @@ public class BiggerController {
     }
     biggerControllerStatus CurrentStatus = NOTHING, PreviousStatus = NOTHING;
     ElapsedTime timerCOLLECT_RAPID_FIRE2 = new ElapsedTime() ,timerCOLLECT_RAPID_FIRE1 = new ElapsedTime();
-    void update(RobotController robotController,CloseClawController closeClawController,MotorColectareController motorColectareController)
+    public void update(RobotController robotController, CloseClawController closeClawController, MotorColectareController motorColectareController)
     {
         if (CurrentStatus!=PreviousStatus || CurrentStatus == COLLECT_RAPID_FIRE_INTER || CurrentStatus == COLLECT_RAPID_FIRE_INTER2)
         {
@@ -27,6 +27,7 @@ public class BiggerController {
                     timerCOLLECT_RAPID_FIRE1.reset();
 
                     robotController.CurrentStatus = RobotController.RobotControllerStatus.GO_COLLECT;
+
                     CurrentStatus = COLLECT_RAPID_FIRE_INTER;
                     break;
                 }
