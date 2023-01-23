@@ -35,11 +35,7 @@ public class RobotController {
                 case INTER_GO_COLLECT:
                 {
                     turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
-                    if (timerGO_COLLECT.seconds()>0.2)
-                    {
-                        turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
-                        closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
-                    }
+                    closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
                     if (timerGO_COLLECT.seconds()>0.5)
                     {
                         closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
@@ -57,11 +53,11 @@ public class RobotController {
                 }
                 case INTER_GO_PLACE:
                 {
-                    if (timerGO_PLACE.seconds()>0.3)
+                    if (timerGO_PLACE.seconds()>0.5)
                     {
                         turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.PLACE;
                     }
-                    if (timerGO_PLACE.seconds()>1.5)
+                    if (timerGO_PLACE.seconds()>1.2)
                     {
                         closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
                         servoLiftController.CurrentStatus = ServoLiftController.ServoLiftStatus.JUNCTION;

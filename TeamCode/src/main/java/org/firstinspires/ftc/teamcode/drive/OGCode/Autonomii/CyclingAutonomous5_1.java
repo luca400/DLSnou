@@ -24,9 +24,6 @@ import org.firstinspires.ftc.teamcode.drive.OGCode.SigurantaLiftController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.TurnClawController;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.List;
 
@@ -39,6 +36,7 @@ public class CyclingAutonomous5_1 extends LinearOpMode {
     {
         START,
         PLACE,
+        GO_DOWN,
         GO_TO_STACK,
         STOP_JOC
 
@@ -46,7 +44,7 @@ public class CyclingAutonomous5_1 extends LinearOpMode {
 
 
     public static double x_PLACE_PRELOAD = 35, y_PLACE_PRELOAD = -10, Angle_PLACE_PRELOAD=315;
-    public static double x_GO_TO_STACK_FIRST = 43, y_GO_TO_STACK_FIRST = -13 , Angle_GO_TO_STACK_FIRST = 0;
+    public static double x_GO_TO_STACK_FIRST = 37, y_GO_TO_STACK_FIRST = -13 , Angle_GO_TO_STACK_FIRST = 0;
 
     ElapsedTime asteapta = new ElapsedTime();
 
@@ -87,8 +85,8 @@ public class CyclingAutonomous5_1 extends LinearOpMode {
         servo4BarController.update(robot);
         servoLiftController.update(robot);
         sigurantaLiftController.update(robot);
-        motorColectareController.update(robot,0, 1);
-        liftController.update(robot,0,sigurantaLiftController);
+        motorColectareController.update(robot,0, 0.6);
+        liftController.update(robot,0,sigurantaLiftController,servoLiftController);
         robotController.update(servoLiftController,servo4BarController,motorColectareController,closeClawController,turnClawController);
         biggerController.update(robotController,closeClawController,motorColectareController);
 
@@ -153,12 +151,22 @@ public class CyclingAutonomous5_1 extends LinearOpMode {
             if (status == STROBOT.START)
             {
                 drive.followTrajectorySequenceAsync(PLACE_PRELOAD);
-                status = STROBOT.GO_TO_STACK;
+                status = STROBOT.GO_DOWN;
+            }
+            else
+            if (status == STROBOT.GO_DOWN)
+            {
+                if (!drive.isBusy())
+                {
+                    liftController.CurrentStatus = LiftController.LiftStatus.BASE;
+                    status = STROBOT.GO_TO_STACK;
+                    asteapta.reset();
+                }
             }
             else
             if (status == STROBOT.GO_TO_STACK)
             {
-                if (!drive.isBusy()) {
+                if (asteapta.seconds()>1) {
                     drive.followTrajectorySequenceAsync(GO_TO_STACK);
                     asteapta.reset();
                     status = STROBOT.STOP_JOC;
@@ -171,7 +179,7 @@ public class CyclingAutonomous5_1 extends LinearOpMode {
                     status = STROBOT.STOP_JOC;
                 }
             }
-            int ColectarePosition = robot.motorColectare.getCurrentPosition();
+            int ColectarePosition = robot.encoderMotorColectare.getCurrentPosition();
             int LiftPosition = robot.dreaptaLift.getCurrentPosition(); /// folosesc doar encoderul de la dreaptaLift , celalalt nu exista.
 
             biggerController.update(robotController,closeClawController,motorColectareController);
@@ -181,8 +189,8 @@ public class CyclingAutonomous5_1 extends LinearOpMode {
             servo4BarController.update(robot);
             servoLiftController.update(robot);
             sigurantaLiftController.update(robot);
-            motorColectareController.update(robot,ColectarePosition, 0.8);
-            liftController.update(robot,LiftPosition,sigurantaLiftController);
+            motorColectareController.update(robot,ColectarePosition, 0.6);
+            liftController.update(robot,LiftPosition,sigurantaLiftController,servoLiftController);
             autoController.update(turnClawController, servoLiftController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
 
             drive.update();

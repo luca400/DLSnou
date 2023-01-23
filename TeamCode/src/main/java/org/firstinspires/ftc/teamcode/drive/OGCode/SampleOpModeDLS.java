@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.exception.RobotCoreException;
 
+import org.apache.commons.math3.util.Precision;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -62,7 +63,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
         rightFront.setPower(frontRightPower);
         rightBack.setPower(backRightPower);
     }
-    public void fieldCentricDrive(BNO055IMU imu,DcMotor leftFront, DcMotor leftBack, DcMotor rightFront, DcMotor rightBack)
+    public void fieldCentricDrive(BNO055IMU imu,DcMotor leftFront, DcMotor leftBack, DcMotor rightFront, DcMotor rightBack )
     {
         double y = -gamepad1.left_stick_y; // Remember, this is reversed!
         double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
@@ -132,8 +133,8 @@ public class SampleOpModeDLS extends  LinearOpMode {
         servo4BarController.update(robot);
         servoLiftController.update(robot);
         sigurantaLiftController.update(robot);
-        motorColectareController.update(robot,0, 1);
-        liftController.update(robot,0,sigurantaLiftController);
+        motorColectareController.update(robot,0, 0.6);
+        liftController.update(robot,0,sigurantaLiftController,servoLiftController);
         robotController.update(servoLiftController,servo4BarController,motorColectareController,closeClawController,turnClawController);
         biggerController.update(robotController,closeClawController,motorColectareController);
 
@@ -205,7 +206,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
                     sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
                 }
             }
-            if ((!previousGamepad2.triangle && currentGamepad2.triangle)||(!previousGamepad1.triangle && currentGamepad1.triangle))
+            if ((!previousGamepad2.right_bumper && currentGamepad2.right_bumper)||(!previousGamepad1.right_bumper && currentGamepad1.right_bumper))
             {
                if (closeClawController.CurrentStatus == CloseClawController.closeClawStatus.CLOSED)
                {
@@ -217,7 +218,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
             }
             if (!previousGamepad1.cross && currentGamepad1.cross  || (!previousGamepad2.cross && currentGamepad2.cross) )
             {
-                if (liftController.CurrentStatus== LiftController.LiftStatus.BASE)
+                if (liftController.CurrentStatus!= LiftController.LiftStatus.HIGH)
                 {
                     liftController.CurrentStatus = LiftController.LiftStatus.HIGH;
                 }
@@ -226,7 +227,40 @@ public class SampleOpModeDLS extends  LinearOpMode {
                     liftController.CurrentStatus = LiftController.LiftStatus.BASE;
                 }
             }
-            if (!previousGamepad1.circle && currentGamepad1.circle || (!previousGamepad2.circle && currentGamepad2.circle))
+            if (!previousGamepad1.square && currentGamepad1.square  || (!previousGamepad2.square && currentGamepad2.square) )
+            {
+                if (liftController.CurrentStatus!= LiftController.LiftStatus.BASE)
+                {
+                    liftController.CurrentStatus = LiftController.LiftStatus.BASE;
+                }
+                else
+                {
+                    liftController.CurrentStatus = LiftController.LiftStatus.BASE;
+                }
+            }
+            if (!previousGamepad1.triangle && currentGamepad1.triangle  || (!previousGamepad2.triangle && currentGamepad2.triangle) )
+            {
+                if (liftController.CurrentStatus!= LiftController.LiftStatus.LOW)
+                {
+                    liftController.CurrentStatus = LiftController.LiftStatus.LOW;
+                }
+                else
+                {
+                    liftController.CurrentStatus = LiftController.LiftStatus.BASE;
+                }
+            }
+            if (!previousGamepad1.circle && currentGamepad1.circle  || (!previousGamepad2.circle && currentGamepad2.circle) )
+            {
+                if (liftController.CurrentStatus!= LiftController.LiftStatus.MID)
+                {
+                    liftController.CurrentStatus = LiftController.LiftStatus.MID;
+                }
+                else
+                {
+                    liftController.CurrentStatus = LiftController.LiftStatus.BASE;
+                }
+            }
+            if (!previousGamepad1.left_bumper && currentGamepad1.left_bumper || (!previousGamepad2.left_bumper && currentGamepad2.left_bumper))
             {
                 if (motorColectareController.CurrentStatus == MotorColectareController.MotorColectare.RETRACTED)
                 {
@@ -237,16 +271,6 @@ public class SampleOpModeDLS extends  LinearOpMode {
                     motorColectareController.CurrentStatus = MotorColectareController.MotorColectare.RETRACTED;
                 }
             }
-            /*if ((!previousGamepad2.left_bumper && currentGamepad2.left_bumper) || (!previousGamepad1.left_bumper && currentGamepad1.left_bumper))
-            {
-                if (servo4BarController.CurrentStatus == PLACE_CONE) {
-                    servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.COLLECT_DRIVE;
-                }
-                else
-                {
-                    servo4BarController.CurrentStatus = PLACE_CONE;
-                }
-            }*/
             if ((!previousGamepad2.dpad_down && currentGamepad2.dpad_down) || !previousGamepad1.dpad_down && currentGamepad1.dpad_down)
             {
                 robotController.CurrentStatus = RobotController.RobotControllerStatus.GO_COLLECT;
@@ -265,9 +289,17 @@ public class SampleOpModeDLS extends  LinearOpMode {
             {
                 autoController.CurrentStatus = AutoController.autoControllerStatus.STACK_LEVEL;
             }
-            int ColectarePosition = robot.motorColectare.getCurrentPosition();
+            int ColectarePosition = robot.encoderMotorColectare.getCurrentPosition();
             int LiftPosition = robot.dreaptaLift.getCurrentPosition(); /// folosesc doar encoderul de la dreaptaLift , celalalt nu exista.
 
+            if (servo4BarController.CurrentStatus == Servo4BarController.ServoStatus.COLLECT_DRIVE)
+            {
+                PrecisionDenominator2=2.5;
+            }
+            else
+            {
+                PrecisionDenominator2=1.25;
+            }
             biggerController.update(robotController,closeClawController,motorColectareController);
             robotController.update(servoLiftController,servo4BarController,motorColectareController,closeClawController,turnClawController);
             closeClawController.update(robot);
@@ -275,8 +307,8 @@ public class SampleOpModeDLS extends  LinearOpMode {
             servo4BarController.update(robot);
             sigurantaLiftController.update(robot);
             servoLiftController.update(robot);
-            motorColectareController.update(robot,ColectarePosition, 0.8);
-            liftController.update(robot,LiftPosition,sigurantaLiftController);
+            motorColectareController.update(robot,ColectarePosition, 0.75);
+            liftController.update(robot,LiftPosition,sigurantaLiftController,servoLiftController);
             autoController.update(turnClawController, servoLiftController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
 
             double loop = System.nanoTime();

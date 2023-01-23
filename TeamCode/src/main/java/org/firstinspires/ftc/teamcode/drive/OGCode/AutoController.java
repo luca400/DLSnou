@@ -5,6 +5,9 @@ import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoController.autoCon
 import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoController.autoControllerStatus.COLLECT_RAPID_FIRE_INTER2_AUTO;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoController.autoControllerStatus.LIFT_CONE;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoController.autoControllerStatus.NOTHING;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.CLOSE_TO_EXTENDED_FIRST_CONE;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.EXTENDED;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.EXTENDED_FIRST_CONE;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -45,14 +48,31 @@ public class AutoController {
 
                 case COLLECT_RAPID_FIRE_AUTO:
                 {
-                    if (robotController.CurrentStatus == RobotController.RobotControllerStatus.START&&timerStart.seconds()>timeStart){
-                    timerCOLLECT_RAPID_FIRE1.reset();
-                    robotController.CurrentStatus = RobotController.RobotControllerStatus.GO_COLLECT;
-                    }
-                    if (timerStart.seconds()>timeStart+0.5)
+                    if (Cone_Stack_Level+1==5)
                     {
-                        motorColectareController.CurrentStatus = MotorColectareController.MotorColectare.EXTENDED;
-                        CurrentStatus = COLLECT_RAPID_FIRE_INTER_AUTO;
+                        timerCOLLECT_RAPID_FIRE1.reset();
+                        if (motorColectareController.CurrentStatus == MotorColectareController.MotorColectare.RETRACTED)
+                        {
+                            motorColectareController.CurrentStatus  = CLOSE_TO_EXTENDED_FIRST_CONE;
+                        }
+                        if (timerStart.seconds()>2)
+                        {
+                            robotController.CurrentStatus = RobotController.RobotControllerStatus.GO_COLLECT;
+                            CurrentStatus = COLLECT_RAPID_FIRE_INTER_AUTO;
+                        }
+                    }
+                    else
+                    {
+                        if (robotController.CurrentStatus == RobotController.RobotControllerStatus.START&&timerStart.seconds()>timeStart)
+                        {
+                            timerCOLLECT_RAPID_FIRE1.reset();
+                            robotController.CurrentStatus = RobotController.RobotControllerStatus.GO_COLLECT;
+                        }
+                        if (timerStart.seconds()>timeStart+0.5)
+                        {
+                            motorColectareController.CurrentStatus = EXTENDED;
+                            CurrentStatus = COLLECT_RAPID_FIRE_INTER_AUTO;
+                        }
                     }
                     break;
                 }
@@ -73,15 +93,37 @@ public class AutoController {
                 }
                 case COLLECT_RAPID_FIRE_INTER2_AUTO:
                 {
-                    if (robotController.CurrentStatus == RobotController.RobotControllerStatus.START && timerCOLLECT_RAPID_FIRE2.seconds()>0.8)
+                    if (Cone_Stack_Level+1 !=5)
                     {
-                        robotController.CurrentStatus = RobotController.RobotControllerStatus.GO_PLACE;
+                        if (robotController.CurrentStatus == RobotController.RobotControllerStatus.START && timerCOLLECT_RAPID_FIRE2.seconds()>0.8)
+                        {
+                            robotController.CurrentStatus = RobotController.RobotControllerStatus.GO_PLACE;
+                        }
+                        if (timerCOLLECT_RAPID_FIRE2.seconds()>1.2)
+                        {
+                            motorColectareController.CurrentStatus = MotorColectareController.MotorColectare.RETRACTED;
+                            timerLIFT.reset();
+                            CurrentStatus = LIFT_CONE;
+                        }
                     }
-                    if (timerCOLLECT_RAPID_FIRE2.seconds()>1.2)
+                    else
                     {
-                        motorColectareController.CurrentStatus = MotorColectareController.MotorColectare.RETRACTED;
-                        timerLIFT.reset();
-                        CurrentStatus = LIFT_CONE;
+                        if (robotController.CurrentStatus == RobotController.RobotControllerStatus.START && timerCOLLECT_RAPID_FIRE2.seconds()>0.8)
+                        {
+                            robotController.CurrentStatus = RobotController.RobotControllerStatus.GO_PLACE;
+                        }
+                        if (motorColectareController.CurrentStatus == CLOSE_TO_EXTENDED_FIRST_CONE && timerCOLLECT_RAPID_FIRE2.seconds()>1.2)
+                        {
+                            motorColectareController.MotorColectarePID.maxOutput=0.55;
+                            motorColectareController.CurrentStatus = EXTENDED_FIRST_CONE;
+                        }
+                        if (timerCOLLECT_RAPID_FIRE2.seconds()>1.5)
+                        {
+                            motorColectareController.MotorColectarePID.maxOutput=0.6;
+                            motorColectareController.CurrentStatus = MotorColectareController.MotorColectare.RETRACTED;
+                            timerLIFT.reset();
+                            CurrentStatus = LIFT_CONE;
+                        }
                     }
                     break;
                 }
@@ -90,6 +132,7 @@ public class AutoController {
                     if (timerLIFT.seconds()>1.5)
                     {
                         liftController.CurrentStatus = LiftController.LiftStatus.HIGH;
+
                         CurrentStatus = NOTHING;
                     }
                     break;

@@ -11,7 +11,7 @@ public class CloseClawController {
         OPEN,
     }
     public static closeClawStatus CurrentStatus = closeClawStatus.INIT,  PreviousStatus = closeClawStatus.INIT;
-    double pozOpenClaw = 0.6, pozCloseClaw = 0.8;
+    double pozOpenClaw = 0.6, pozCloseClaw = 1;
 
     public void update(RobotMap Robotel)
     {

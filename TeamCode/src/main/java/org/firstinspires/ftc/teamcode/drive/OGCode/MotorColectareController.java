@@ -11,14 +11,16 @@ public class MotorColectareController {
         INITIALIZED,
         EXTENDED,
         RETRACTED,
+        CLOSE_TO_EXTENDED_FIRST_CONE,
+        EXTENDED_FIRST_CONE
     }
-    public static double Kp = 0.0055;
-    public static double Ki = 0.05;
-    public static double Kd = 0.0002;
-    public static double maxSpeed = 0.9;
+    public static double Kp = 0.0012;
+    public static double Ki = 0.005;
+    public static double Kd = 0;
+    public static double maxSpeed = 0.75;
     public static MotorColectare CurrentStatus = INITIALIZED,  PreviousStatus = INITIALIZED;
     SimplePIDController MotorColectarePID = null;
-    int extendedPosition = 300 , retractedPosition = -65;
+    public static int extendedPosition = 2020 , retractedPosition = -75,closetoExtended = 1650,extendedFirstCone = 2000;
     public MotorColectareController()
     {
         MotorColectarePID = new SimplePIDController(Kp,Ki,Kd);
@@ -37,6 +39,16 @@ public class MotorColectareController {
                 case RETRACTED:
                 {
                     MotorColectarePID.targetValue = retractedPosition;
+                    break;
+                }
+                case CLOSE_TO_EXTENDED_FIRST_CONE:
+                {
+                    MotorColectarePID.targetValue = closetoExtended;
+                    break;
+                }
+                case EXTENDED_FIRST_CONE:
+                {
+                    MotorColectarePID.targetValue = extendedFirstCone;
                     break;
                 }
                 case EXTENDED:

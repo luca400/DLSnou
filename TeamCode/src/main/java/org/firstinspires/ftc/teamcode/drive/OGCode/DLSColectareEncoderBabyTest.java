@@ -17,12 +17,11 @@ import java.util.List;
 @Autonomous(group = "Testers")
 public class DLSColectareEncoderBabyTest extends LinearOpMode {
     public static double DISTANCE = 60; // in
-    public static double Kp = 0;
-    public static double Ki = 0;
-    public static double Kd = 0;
-    public static double Kg = 0;
-    public static double maxSpeed = 1;
-    public static double RetractedPosition = 0 , ExtendedPosition = 0;
+    public static double Kp = 0.0015;
+    public static double Ki = 0.02;
+    public static double Kd = 0.00003;
+    public static double maxSpeed = 0.75;
+    public static double RetractedPosition = -75 , ExtendedPosition = 2020;
     int TargetLift = 0;
     ElapsedTime timerPID = new ElapsedTime();
 
@@ -49,8 +48,8 @@ public class DLSColectareEncoderBabyTest extends LinearOpMode {
         hello.targetValue = RetractedPosition;
         while (!isStopRequested() && opModeIsActive())
         {
-            int ColectarePosition = robot.motorColectare.getCurrentPosition();
-            double powerColectare = hello.update(ColectarePosition) + Kg;
+            int ColectarePosition = robot.encoderMotorColectare.getCurrentPosition();
+            double powerColectare = hello.update(ColectarePosition);
             powerColectare = Math.max(-1,Math.min(powerColectare,1));
             robot.motorColectare.setPower(powerColectare);
             if (changePositions.seconds()>4)
