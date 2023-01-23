@@ -16,6 +16,7 @@ public class RobotController {
         GO_PLACE,
         INTER_GO_PLACE,
     }
+    public double timerTransfer = 1.2;
     public static RobotControllerStatus CurrentStatus = START, PreviousStatus = START;
     ElapsedTime timerGO_COLLECT = new ElapsedTime() , timerGO_PLACE = new ElapsedTime() ,timeCOLLECT_RAPID_FIRE = new ElapsedTime();
     public void update(ServoLiftController servoLiftController, Servo4BarController servo4BarController, MotorColectareController motorColectareController, CloseClawController closeClawController, TurnClawController turnClawController)
@@ -57,7 +58,7 @@ public class RobotController {
                     {
                         turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.PLACE;
                     }
-                    if (timerGO_PLACE.seconds()>1.2)
+                    if (timerGO_PLACE.seconds()>timerTransfer)
                     {
                         closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
                         servoLiftController.CurrentStatus = ServoLiftController.ServoLiftStatus.JUNCTION;

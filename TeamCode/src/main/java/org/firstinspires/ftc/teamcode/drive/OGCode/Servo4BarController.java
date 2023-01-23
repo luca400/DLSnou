@@ -19,10 +19,11 @@ public class Servo4BarController {
         INTERMEDIARY,
         PLACE_CONE,
         DRIVE_POSITION,
+        STACK_POSITION
     }
     public static ServoStatus CurrentStatus = INITIALIZE,PreviousStatus = INITIALIZE,WhereFromIntermediary = COLLECT_DRIVE;
     ElapsedTime time = new ElapsedTime();
-    public static double Ground_Position=0.09, Second_Cone_Position=0.13, Third_Cone_Position=0.17, Fourth_Cone_Position = 0.21, Fifth_Cone_Position = 0.265;
+    public static double Ground_Position=0.09, Second_Cone_Position=0.13, Third_Cone_Position=0.17, Fourth_Cone_Position = 0.21, Fifth_Cone_Position = 0.26;
     public static double Collect_Position = Ground_Position , Place_Cone_Position = 0.8 , Intermediary_Position =0.4 , Drive_Position = 0.6;
 int salut =0;
     public void update(RobotMap Robot)
@@ -95,6 +96,11 @@ int salut =0;
                     Robot.left4Bar.setPosition(Drive_Position);
                     Robot.right4Bar.setPosition(Drive_Position);
                     CurrentStatus = PLACE_CONE;
+                    break;
+                }
+                case STACK_POSITION:
+                {
+                    CurrentStatus = COLLECT_DRIVE;
                     break;
                 }
             }

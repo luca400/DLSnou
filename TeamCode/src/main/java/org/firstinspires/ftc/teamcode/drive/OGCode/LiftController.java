@@ -44,7 +44,7 @@ public class LiftController {
                 {
                     sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
                     LiftColectarePID.targetValue = highPosition;
-                    if (LiftColectarePID.targetValue-LiftPosition < 450)
+                    if (LiftColectarePID.targetValue-LiftPosition < 1200)
                     {
                         servoLiftController.CurrentStatus = ServoLiftController.ServoLiftStatus.JUNCTION;
                     }
@@ -54,7 +54,7 @@ public class LiftController {
                 {
                     sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
                     LiftColectarePID.targetValue = midPosition;
-                    if (LiftColectarePID.targetValue-LiftPosition < 450)
+                    if (LiftColectarePID.targetValue-LiftPosition < 750)
                     {
                         servoLiftController.CurrentStatus = ServoLiftController.ServoLiftStatus.JUNCTION;
                     }
@@ -64,7 +64,7 @@ public class LiftController {
                 {
                     sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
                     LiftColectarePID.targetValue = lowPosition;
-                    if (LiftColectarePID.targetValue-LiftPosition < 450)
+                    if (LiftColectarePID.targetValue-LiftPosition < 300)
                     {
                         servoLiftController.CurrentStatus = ServoLiftController.ServoLiftStatus.JUNCTION;
                     }

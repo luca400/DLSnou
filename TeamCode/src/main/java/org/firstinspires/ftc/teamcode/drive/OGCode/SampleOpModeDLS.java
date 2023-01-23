@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.drive.OGCode;
 
 
 import static org.firstinspires.ftc.teamcode.drive.OGCode.Servo4BarController.ServoStatus.PLACE_CONE;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.Servo4BarController.ServoStatus.STACK_POSITION;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
@@ -128,10 +129,11 @@ public class SampleOpModeDLS extends  LinearOpMode {
         servoLiftController.CurrentStatus = ServoLiftController.ServoLiftStatus.TRANSFER;
         sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.TRANSFER;
 
+        robotController.timerTransfer = 1.2;
         closeClawController.update(robot);
         turnClawController.update(robot);
         servo4BarController.update(robot);
-        servoLiftController.update(robot);
+        servoLiftController.update(robot,sigurantaLiftController);
         sigurantaLiftController.update(robot);
         motorColectareController.update(robot,0, 0.6);
         liftController.update(robot,0,sigurantaLiftController,servoLiftController);
@@ -195,17 +197,6 @@ public class SampleOpModeDLS extends  LinearOpMode {
             }
             //robot.stangaLift.setPower(gamepad2.right_stick_y);
             //robot.dreaptaLift.setPower(gamepad2.right_stick_y);
-            if ((!previousGamepad2.square && currentGamepad2.square)||(!previousGamepad1.square && currentGamepad1.square))
-            {
-                if (sigurantaLiftController.CurrentStatus == SigurantaLiftController.SigurantaLift.JUNCTION)
-                {
-                    sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.TRANSFER;
-                }
-                else
-                {
-                    sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
-                }
-            }
             if ((!previousGamepad2.right_bumper && currentGamepad2.right_bumper)||(!previousGamepad1.right_bumper && currentGamepad1.right_bumper))
             {
                if (closeClawController.CurrentStatus == CloseClawController.closeClawStatus.CLOSED)
@@ -216,7 +207,31 @@ public class SampleOpModeDLS extends  LinearOpMode {
                    closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
                }
             }
-            if (!previousGamepad1.cross && currentGamepad1.cross  || (!previousGamepad2.cross && currentGamepad2.cross) )
+            if (!previousGamepad1.square && currentGamepad1.square)
+            {
+                robot.left4Bar.setPosition(Servo4BarController.Fifth_Cone_Position);
+                robot.right4Bar.setPosition(Servo4BarController.Fifth_Cone_Position);
+                Servo4BarController.CurrentStatus = STACK_POSITION;
+            }
+            if (!previousGamepad1.triangle && currentGamepad1.triangle)
+            {
+                robot.left4Bar.setPosition(Servo4BarController.Fourth_Cone_Position);
+                robot.right4Bar.setPosition(Servo4BarController.Fourth_Cone_Position);
+                Servo4BarController.CurrentStatus = STACK_POSITION;
+            }
+            if (!previousGamepad1.circle && currentGamepad1.circle)
+            {
+                robot.left4Bar.setPosition(Servo4BarController.Third_Cone_Position);
+                robot.right4Bar.setPosition(Servo4BarController.Third_Cone_Position);
+                Servo4BarController.CurrentStatus = STACK_POSITION;
+            }
+            if (!previousGamepad1.cross && currentGamepad1.cross)
+            {
+                robot.left4Bar.setPosition(Servo4BarController.Second_Cone_Position);
+                robot.right4Bar.setPosition(Servo4BarController.Second_Cone_Position);
+                Servo4BarController.CurrentStatus = STACK_POSITION;
+            }
+            if (!previousGamepad2.cross && currentGamepad2.cross)
             {
                 if (liftController.CurrentStatus!= LiftController.LiftStatus.HIGH)
                 {
@@ -227,7 +242,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
                     liftController.CurrentStatus = LiftController.LiftStatus.BASE;
                 }
             }
-            if (!previousGamepad1.square && currentGamepad1.square  || (!previousGamepad2.square && currentGamepad2.square) )
+            if (!previousGamepad2.square && currentGamepad2.square  )
             {
                 if (liftController.CurrentStatus!= LiftController.LiftStatus.BASE)
                 {
@@ -238,7 +253,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
                     liftController.CurrentStatus = LiftController.LiftStatus.BASE;
                 }
             }
-            if (!previousGamepad1.triangle && currentGamepad1.triangle  || (!previousGamepad2.triangle && currentGamepad2.triangle) )
+            if ( (!previousGamepad2.triangle && currentGamepad2.triangle) )
             {
                 if (liftController.CurrentStatus!= LiftController.LiftStatus.LOW)
                 {
@@ -249,7 +264,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
                     liftController.CurrentStatus = LiftController.LiftStatus.BASE;
                 }
             }
-            if (!previousGamepad1.circle && currentGamepad1.circle  || (!previousGamepad2.circle && currentGamepad2.circle) )
+            if ( (!previousGamepad2.circle && currentGamepad2.circle) )
             {
                 if (liftController.CurrentStatus!= LiftController.LiftStatus.MID)
                 {
@@ -306,10 +321,10 @@ public class SampleOpModeDLS extends  LinearOpMode {
             turnClawController.update(robot);
             servo4BarController.update(robot);
             sigurantaLiftController.update(robot);
-            servoLiftController.update(robot);
+            servoLiftController.update(robot,sigurantaLiftController);
             motorColectareController.update(robot,ColectarePosition, 0.75);
             liftController.update(robot,LiftPosition,sigurantaLiftController,servoLiftController);
-            autoController.update(turnClawController, servoLiftController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
+            autoController.update(robot,turnClawController, servoLiftController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
 
             double loop = System.nanoTime();
             telemetry.addData("hz ", 1000000000 / (loop - loopTime));
