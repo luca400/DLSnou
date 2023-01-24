@@ -33,7 +33,7 @@ import java.util.List;
 @Config
 @Autonomous(group = "drive")
 
-public class DreaptaCyclingAutonomous5_1 extends LinearOpMode {
+public class StangaCyclingAutonomous5_1 extends LinearOpMode {
     enum STROBOT
     {
         START,
@@ -51,9 +51,9 @@ public class DreaptaCyclingAutonomous5_1 extends LinearOpMode {
     }
 
 
-    public static double x_PLACE_PRELOAD = 35, y_PLACE_PRELOAD = -10, Angle_PLACE_PRELOAD=317.5;
-    public static double x_GO_TO_STACK_FIRST = 54, y_GO_TO_STACK_FIRST = -13 , Angle_GO_TO_STACK_FIRST = 0;
-    public static double x_CYCLING_POSITION = 37.65, y_CYCLING_POSITION = -13 , Angle_CYCLING_POSITION = 2.5;
+    public static double x_PLACE_PRELOAD = -33, y_PLACE_PRELOAD = -10, Angle_PLACE_PRELOAD=225;
+    public static double x_GO_TO_STACK_FIRST = -54, y_GO_TO_STACK_FIRST = -15 , Angle_GO_TO_STACK_FIRST = 182.5;
+    public static double x_CYCLING_POSITION = -37.65, y_CYCLING_POSITION = -15 , Angle_CYCLING_POSITION = 182.5;
     ElapsedTime asteapta = new ElapsedTime();
 
 
@@ -98,7 +98,7 @@ public class DreaptaCyclingAutonomous5_1 extends LinearOpMode {
         robotController.update(servoLiftController,servo4BarController,motorColectareController,closeClawController,turnClawController);
         biggerController.update(robotController,closeClawController,motorColectareController);
         int nr=0;
-        Pose2d startPose = new Pose2d(35, -63, Math.toRadians(270));
+        Pose2d startPose = new Pose2d(-35, -63, Math.toRadians(270));
         drive.setPoseEstimate(startPose);
         STROBOT status = STROBOT.START;
         TrajectorySequence PLACE_PRELOAD = drive.trajectorySequenceBuilder(startPose)
@@ -117,7 +117,7 @@ public class DreaptaCyclingAutonomous5_1 extends LinearOpMode {
                 })
                 .build();
         TrajectorySequence PLACE_STACK = drive.trajectorySequenceBuilder(GO_TO_STACK.end())
-                .lineToLinearHeading(new Pose2d(x_PLACE_PRELOAD,y_PLACE_PRELOAD,Math.toRadians(Angle_PLACE_PRELOAD)))
+                .lineToLinearHeading(new Pose2d(x_PLACE_PRELOAD-1,y_PLACE_PRELOAD+2,Math.toRadians(Angle_PLACE_PRELOAD)))
                 .addTemporalMarker(0,()->{
                     liftController.CurrentStatus = LiftController.LiftStatus.HIGH;
                 })
@@ -126,19 +126,19 @@ public class DreaptaCyclingAutonomous5_1 extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(x_CYCLING_POSITION,y_CYCLING_POSITION,Math.toRadians(Angle_CYCLING_POSITION)))
                 .build();
         TrajectorySequence TURN_TO_PLACE = drive.trajectorySequenceBuilder(CYCLING_POSITION.end())
-                .turn(Math.toRadians(-40))
-                .build();
-        TrajectorySequence TURN_TO_CYCLING_POSITION = drive.trajectorySequenceBuilder(TURN_TO_PLACE.end())
                 .turn(Math.toRadians(40))
                 .build();
+        TrajectorySequence TURN_TO_CYCLING_POSITION = drive.trajectorySequenceBuilder(TURN_TO_PLACE.end())
+                .turn(Math.toRadians(-40))
+                .build();
         TrajectorySequence PARK_3 = drive.trajectorySequenceBuilder(CYCLING_POSITION.end())
-                .lineToLinearHeading(new Pose2d(x_CYCLING_POSITION+26,y_CYCLING_POSITION-4,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(x_CYCLING_POSITION+25,y_CYCLING_POSITION-4,Math.toRadians(90)))
                 .build();
         TrajectorySequence PARK_2 = drive.trajectorySequenceBuilder(CYCLING_POSITION.end())
-                .lineTo(new Vector2d(x_CYCLING_POSITION-4,y_CYCLING_POSITION-10))
+                .lineTo(new Vector2d(x_CYCLING_POSITION+2,y_CYCLING_POSITION-10))
                 .build();
         TrajectorySequence PARK_1 = drive.trajectorySequenceBuilder(CYCLING_POSITION.end())
-                .lineToLinearHeading(new Pose2d(x_CYCLING_POSITION-25,y_CYCLING_POSITION-4,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(x_CYCLING_POSITION-22,y_CYCLING_POSITION-4,Math.toRadians(90)))
                 .build();
         int cameraMonitorViewId = hardwareMap.appContext
                 .getResources().getIdentifier("cameraMonitorViewId",
@@ -298,7 +298,7 @@ public class DreaptaCyclingAutonomous5_1 extends LinearOpMode {
 
             drive.update();
             telemetry.addData("Pozitie: ", drive.getPoseEstimate());
-           // telemetry.addData("caz:", Case);
+            // telemetry.addData("caz:", Case);
             telemetry.addData("Status",status);
             telemetry.update();
         }

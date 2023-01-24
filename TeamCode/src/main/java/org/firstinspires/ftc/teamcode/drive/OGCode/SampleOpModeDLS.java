@@ -133,8 +133,8 @@ public class SampleOpModeDLS extends  LinearOpMode {
         closeClawController.update(robot);
         turnClawController.update(robot);
         servo4BarController.update(robot);
-        servoLiftController.update(robot,sigurantaLiftController);
         sigurantaLiftController.update(robot);
+        servoLiftController.update(robot,sigurantaLiftController);
         motorColectareController.update(robot,0, 0.6);
         liftController.update(robot,0,sigurantaLiftController,servoLiftController);
         robotController.update(servoLiftController,servo4BarController,motorColectareController,closeClawController,turnClawController);
@@ -295,25 +295,30 @@ public class SampleOpModeDLS extends  LinearOpMode {
             {
                 robotController.CurrentStatus = RobotController.RobotControllerStatus.GO_PLACE;
             }
-            if ((!previousGamepad2.dpad_left && currentGamepad2.dpad_left) || (!previousGamepad1.dpad_left && currentGamepad1.dpad_left))
-            {
-                biggerController.CurrentStatus = BiggerController.biggerControllerStatus.COLLECT_RAPID_FIRE;
-                servo4BarController.Collect_Position = 0.09;
-            }
             if ((!previousGamepad2.dpad_right && currentGamepad2.dpad_right) || (!previousGamepad1.dpad_right && currentGamepad1.dpad_right))
             {
-                autoController.CurrentStatus = AutoController.autoControllerStatus.STACK_LEVEL;
+                robot.left4Bar.setPosition(servo4BarController.groundJunctionPosition);
+                robot.right4Bar.setPosition(servo4BarController.groundJunctionPosition);
+                servo4BarController.CurrentStatus = STACK_POSITION;
             }
             int ColectarePosition = robot.encoderMotorColectare.getCurrentPosition();
             int LiftPosition = robot.dreaptaLift.getCurrentPosition(); /// folosesc doar encoderul de la dreaptaLift , celalalt nu exista.
 
             if (servo4BarController.CurrentStatus == Servo4BarController.ServoStatus.COLLECT_DRIVE)
             {
-                PrecisionDenominator2=2.5;
+                PrecisionDenominator2=2.75;
+                PrecisionDenominator = 1;
+            }
+            else
+            if (liftController.CurrentStatus != LiftController.LiftStatus.BASE)
+            {
+                PrecisionDenominator2=2.75;
+                PrecisionDenominator = 1.5;
             }
             else
             {
-                PrecisionDenominator2=1.25;
+                PrecisionDenominator = 1;
+                PrecisionDenominator2 = 1.25;
             }
             biggerController.update(robotController,closeClawController,motorColectareController);
             robotController.update(servoLiftController,servo4BarController,motorColectareController,closeClawController,turnClawController);
