@@ -19,12 +19,14 @@ public class Servo4BarController {
         INTERMEDIARY,
         PLACE_CONE,
         DRIVE_POSITION,
-        STACK_POSITION
+        STACK_POSITION,
+        FALLEN_CONES
     }
     public static ServoStatus CurrentStatus = INITIALIZE,PreviousStatus = INITIALIZE,WhereFromIntermediary = COLLECT_DRIVE;
     ElapsedTime time = new ElapsedTime();
-    public static double Ground_Position=0.09, Second_Cone_Position=0.13, Third_Cone_Position=0.17, Fourth_Cone_Position = 0.21, Fifth_Cone_Position = 0.26 , groundJunctionPosition  = 0.13;
-    public static double Collect_Position = Ground_Position , Place_Cone_Position = 0.8 , Intermediary_Position =0.4 , Drive_Position = 0.6;
+    public static double Ground_Position=0.095, Second_Cone_Position=0.13, Third_Cone_Position=0.17, Fourth_Cone_Position = 0.22, Fifth_Cone_Position = 0.24 , groundJunctionPosition  = 0.13;
+    public static double Collect_Position = 0.105 , Place_Cone_Position = 0.815 , Intermediary_Position =0.2 , Drive_Position = 0.6;
+    public static double Fallen_Cones = 0;
 int salut =0;
     public void update(RobotMap Robot)
     {
@@ -43,7 +45,7 @@ int salut =0;
                     salut = 2;
                     if (WhereFromIntermediary == COLLECT_DRIVE)
                     {
-                        if (time.seconds()> 0.3)
+                        if (time.seconds()> 0.1)
                         {
 
                             Robot.right4Bar.setPosition(Place_Cone_Position);
@@ -52,7 +54,7 @@ int salut =0;
                         }
                     }
                     else {
-                        if (time.seconds() > 0.3) {
+                        if (time.seconds() > 0.1) {
                             Robot.right4Bar.setPosition(Collect_Position);
                             Robot.left4Bar.setPosition(Collect_Position);
                             CurrentStatus = COLLECT_DRIVE;
@@ -96,6 +98,13 @@ int salut =0;
                     Robot.left4Bar.setPosition(Drive_Position);
                     Robot.right4Bar.setPosition(Drive_Position);
                     CurrentStatus = PLACE_CONE;
+                    break;
+                }
+                case FALLEN_CONES:
+                {
+                    Robot.left4Bar.setPosition(Fallen_Cones);
+                    Robot.right4Bar.setPosition(Fallen_Cones);
+                    CurrentStatus = COLLECT_DRIVE;
                     break;
                 }
                 case STACK_POSITION:

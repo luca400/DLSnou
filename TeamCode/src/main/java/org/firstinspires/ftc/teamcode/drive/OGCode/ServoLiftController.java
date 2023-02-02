@@ -15,7 +15,7 @@ public class ServoLiftController {
         JUNCTION,
     }
     public static ServoLiftStatus CurrentStatus = START, PreviousStatus = START;
-    double transfer_Position = 0.92 , junction_Position = 0.35;
+    double transfer_Position = 0.90 , junction_Position = 0.35;
     public void update(RobotMap Robotel, SigurantaLiftController sigurantaLiftController)
     {
         if (CurrentStatus!=PreviousStatus)

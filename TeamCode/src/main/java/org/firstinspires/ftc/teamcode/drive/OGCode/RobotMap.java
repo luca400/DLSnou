@@ -28,6 +28,7 @@ public class RobotMap {
     Servo closeClaw = null;
     Servo servoLift = null;
     Servo sigurantaLift = null;
+    Servo angle4Bar = null;
     public DcMotorEx motorColectare = null;
     public DcMotorEx dreaptaLift = null;
     DcMotorEx stangaLift = null;
@@ -41,6 +42,7 @@ public class RobotMap {
         closeClaw = Init.get(Servo.class, "closeClaw");
         servoLift = Init.get(Servo.class,"servoLift");
         sigurantaLift = Init.get(Servo.class,"sigurantaLift");
+        angle4Bar = Init.get(Servo.class,"angle4Bar");
 
         motorColectare = Init.get(DcMotorEx.class, "motorColectare");
         stangaLift = Init.get(DcMotorEx.class, "stangaLift");

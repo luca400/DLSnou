@@ -33,7 +33,7 @@ public class MotorColectareController {
     ElapsedTime timer2020 = new ElapsedTime();
     MotionProfile profile2020 = MotionProfileGenerator.generateSimpleMotionProfile(
             new MotionState(0, 0, 0),
-            new MotionState(2020, 0, 0),
+            new MotionState(2220, 0, 0),
             vMax,
             AccMax,
             JerkMax
