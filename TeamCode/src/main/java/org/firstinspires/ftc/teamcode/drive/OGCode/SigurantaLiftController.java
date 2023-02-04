@@ -11,11 +11,9 @@ public class SigurantaLiftController {
         JUNCTION,
     }
     public static SigurantaLift CurrentStatus = START, PreviousStatus = START;
-    double transfer_Position = 1 , junction_Position = 0.55;
+    double transfer_Position = 0 , junction_Position = 0.8;
     public void update(RobotMap Robotel)
     {
-        if (CurrentStatus!=PreviousStatus)
-        {
             switch (CurrentStatus)
             {
                 case TRANSFER:
@@ -29,7 +27,5 @@ public class SigurantaLiftController {
                     break;
                 }
             }
-        }
-        PreviousStatus = CurrentStatus;
     }
 }

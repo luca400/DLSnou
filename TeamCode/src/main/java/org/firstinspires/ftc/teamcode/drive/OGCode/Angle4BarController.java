@@ -11,10 +11,11 @@ public class Angle4BarController {
         COLLECT_CONES,
         RAISED,
         PLACE,
-        LIL_FRONT
+        LIL_FRONT,
+        LIL_RAISED
     }
     public static angle4BarStatus CurrentStatus = angle4BarStatus.INIT,  PreviousStatus = angle4BarStatus.INIT;
-    double pozLilFront=0.45 , pozVertical = 0.47, pozCollectCones = 0.9 , pozRaised = 0.32 ,pozPlace = 0.49;
+    double pozLilFront=0.45 , pozVertical = 0.47, pozCollectCones = 0.9 , pozRaised = 0.32 ,pozPlace = 0.575 , pozLilRaised = 0.34;
 
     public void update(RobotMap Robotel)
     {
@@ -43,6 +44,11 @@ public class Angle4BarController {
                 case PLACE:
                 {
                     Robotel.angle4Bar.setPosition(pozPlace);
+                    break;
+                }
+                case LIL_RAISED:
+                {
+                    Robotel.angle4Bar.setPosition(pozLilRaised);
                     break;
                 }
             }

@@ -20,7 +20,6 @@ import org.firstinspires.ftc.teamcode.drive.OGCode.PipeLineDetector;
 import org.firstinspires.ftc.teamcode.drive.OGCode.RobotController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.RobotMap;
 import org.firstinspires.ftc.teamcode.drive.OGCode.Servo4BarController;
-import org.firstinspires.ftc.teamcode.drive.OGCode.ServoLiftController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.SigurantaLiftController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.TurnClawController;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -50,7 +49,7 @@ public class DreaptaHCyclingAutonomous5_1 extends LinearOpMode {
         PRELOAD,
         GET_DOWN
     }
-    public static double x_CYCLING_POSITION = 35, y_CYCLING_POSITION = -6, Angle_CYCLING_POSITION = 345;
+    public static double x_CYCLING_POSITION = 35, y_CYCLING_POSITION = -6, Angle_CYCLING_POSITION = 342;
     public static double x_PARK1 = 10, y_PARK1 = -17, Angle_PARK1 = 90;
     public static double x_PARK2 = 35, y_PARK2 = -17, Angle_PARK2 = 90;
     public static double x_PARK3 = 55, y_PARK3 = -17, Angle_PARK3 = 90;
@@ -76,7 +75,6 @@ public class DreaptaHCyclingAutonomous5_1 extends LinearOpMode {
         RobotController robotController = new RobotController();
         BiggerController biggerController = new BiggerController();
         LiftController liftController = new LiftController();
-        ServoLiftController servoLiftController = new ServoLiftController();
         AutoController5_1 autoController51 = new AutoController5_1();
         SigurantaLiftController sigurantaLiftController = new SigurantaLiftController();
         Angle4BarController angle4BarController = new Angle4BarController();
@@ -86,8 +84,7 @@ public class DreaptaHCyclingAutonomous5_1 extends LinearOpMode {
         turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
         robotController.CurrentStatus = RobotController.RobotControllerStatus.START;
         liftController.CurrentStatus = LiftController.LiftStatus.BASE;
-        servoLiftController.CurrentStatus = ServoLiftController.ServoLiftStatus.TRANSFER;
-        sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.TRANSFER;
+        sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
         angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
 
 
@@ -101,12 +98,12 @@ public class DreaptaHCyclingAutonomous5_1 extends LinearOpMode {
         closeClawController.update(robot);
         turnClawController.update(robot);
         servo4BarController.update(robot);
-        servoLiftController.update(robot,sigurantaLiftController);
-        sigurantaLiftController.update(robot);
         motorColectareController.update(robot,0, 0.6);
-        liftController.update(robot,0,sigurantaLiftController,servoLiftController);
-        robotController.update(angle4BarController, servoLiftController,servo4BarController,motorColectareController,closeClawController,turnClawController);
+        liftController.update(robot,0,sigurantaLiftController);
+        robotController.update(sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
         biggerController.update(robotController,closeClawController,motorColectareController);
+        sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
+        sigurantaLiftController.update(robot);
         int nr=0;
         Pose2d startPose = new Pose2d(35, -63, Math.toRadians(270));
         drive.setPoseEstimate(startPose);
@@ -256,16 +253,15 @@ public class DreaptaHCyclingAutonomous5_1 extends LinearOpMode {
                 }
             }
             biggerController.update(robotController,closeClawController,motorColectareController);
-            robotController.update(angle4BarController,servoLiftController,servo4BarController,motorColectareController,closeClawController,turnClawController);
+            robotController.update(sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
             closeClawController.update(robot);
             angle4BarController.update(robot);
             turnClawController.update(robot);
             servo4BarController.update(robot);
-            servoLiftController.update(robot,sigurantaLiftController);
             sigurantaLiftController.update(robot);
             motorColectareController.update(robot,ColectarePosition, 0.6);
-            liftController.update(robot,LiftPosition,sigurantaLiftController,servoLiftController);
-            autoController51.update(robot,angle4BarController, turnClawController, servoLiftController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
+            liftController.update(robot,LiftPosition,sigurantaLiftController);
+            autoController51.update(robot,angle4BarController, turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
 
             drive.update();
             telemetry.addData("Pozitie: ", drive.getPoseEstimate());

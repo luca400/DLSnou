@@ -17,8 +17,8 @@ import java.util.List;
 @Autonomous(group = "Testers")
 public class DLSLiftEncoderTest extends LinearOpMode {
     public static double DISTANCE = 60; // in
-    public static double Kp = 0.008;
-    public static double Ki = 0.5;
+    public static double Kp = 0.009;
+    public static double Ki = 0.02;
     public static double Kd = 0;
     public static double Kg = 0;
     public static double maxSpeed = 1;

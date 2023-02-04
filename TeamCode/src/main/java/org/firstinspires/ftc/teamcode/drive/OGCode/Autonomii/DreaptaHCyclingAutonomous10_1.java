@@ -21,7 +21,6 @@ import org.firstinspires.ftc.teamcode.drive.OGCode.PipeLineDetector;
 import org.firstinspires.ftc.teamcode.drive.OGCode.RobotController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.RobotMap;
 import org.firstinspires.ftc.teamcode.drive.OGCode.Servo4BarController;
-import org.firstinspires.ftc.teamcode.drive.OGCode.ServoLiftController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.SigurantaLiftController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.TurnClawController;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -57,8 +56,8 @@ public class DreaptaHCyclingAutonomous10_1 extends LinearOpMode {
         STOP_JOC,
     }
     public static double x_CYCLING_POSITION = 35, y_CYCLING_POSITION = -7, Angle_CYCLING_POSITION = 345;
-    public static double x_PARK1 = -55, y_PARK1 = -15, Angle_PARK1 = 270;
-    public static double x_PARK2 = -35, y_PARK2 = -15, Angle_PARK2 = 270;
+    public static double x_PARK1 = -55, y_PARK1 = -20, Angle_PARK1 = 270;
+    public static double x_PARK2 = -35, y_PARK2 = -20, Angle_PARK2 = 270;
     public static double x_PARK3 = -15, y_PARK3 = -15, Angle_PARK3 = 270;
     ElapsedTime asteapta = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime();
 
@@ -82,7 +81,6 @@ public class DreaptaHCyclingAutonomous10_1 extends LinearOpMode {
         RobotController robotController = new RobotController();
         BiggerController biggerController = new BiggerController();
         LiftController liftController = new LiftController();
-        ServoLiftController servoLiftController = new ServoLiftController();
         AutoController10_1 autoController101 = new AutoController10_1();
         SigurantaLiftController sigurantaLiftController = new SigurantaLiftController();
         Angle4BarController angle4BarController = new Angle4BarController();
@@ -92,8 +90,7 @@ public class DreaptaHCyclingAutonomous10_1 extends LinearOpMode {
         turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
         robotController.CurrentStatus = RobotController.RobotControllerStatus.START;
         liftController.CurrentStatus = LiftController.LiftStatus.BASE;
-        servoLiftController.CurrentStatus = ServoLiftController.ServoLiftStatus.TRANSFER;
-        sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.TRANSFER;
+        sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
         angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
 
         autoController101.Cone_Stack_Level  =5;
@@ -107,11 +104,10 @@ public class DreaptaHCyclingAutonomous10_1 extends LinearOpMode {
         closeClawController.update(robot);
         turnClawController.update(robot);
         servo4BarController.update(robot);
-        servoLiftController.update(robot,sigurantaLiftController);
         sigurantaLiftController.update(robot);
         motorColectareController.update(robot,0, 0.6);
-        liftController.update(robot,0,sigurantaLiftController,servoLiftController);
-        robotController.update(angle4BarController, servoLiftController,servo4BarController,motorColectareController,closeClawController,turnClawController);
+        liftController.update(robot,0,sigurantaLiftController);
+        robotController.update(sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
         biggerController.update(robotController,closeClawController,motorColectareController);
         int nr=0;
         Pose2d startPose = new Pose2d(35, -63, Math.toRadians(270));
@@ -121,9 +117,9 @@ public class DreaptaHCyclingAutonomous10_1 extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(x_CYCLING_POSITION,y_CYCLING_POSITION,Math.toRadians(Angle_CYCLING_POSITION)))
                 .build();
         TrajectorySequence GO_TO_NEXT_POSITION = drive.trajectorySequenceBuilder(PLACE_PRELOAD.end())
-                .splineToSplineHeading(new Pose2d(10,-8,Math.toRadians(270)),Math.toRadians(180))
-                .lineTo(new Vector2d(-20,-8))
-                .splineToSplineHeading(new Pose2d(-36,-9,Math.toRadians(192)),Math.toRadians(345))
+                .splineToSplineHeading(new Pose2d(10,-16,Math.toRadians(180)),Math.toRadians(180))
+                .lineTo(new Vector2d(-25,-16))
+                .lineToLinearHeading(new Pose2d(-31,-11,Math.toRadians(192)))
                 .build();
         TrajectorySequence PARK1 = drive.trajectorySequenceBuilder(GO_TO_NEXT_POSITION.end())
                 .lineToLinearHeading(new Pose2d(x_PARK1,y_PARK1,Math.toRadians(Angle_PARK1)))
@@ -324,16 +320,15 @@ public class DreaptaHCyclingAutonomous10_1 extends LinearOpMode {
                 }
             }
             biggerController.update(robotController,closeClawController,motorColectareController);
-            robotController.update(angle4BarController,servoLiftController,servo4BarController,motorColectareController,closeClawController,turnClawController);
+            robotController.update(sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
             closeClawController.update(robot);
             angle4BarController.update(robot);
             turnClawController.update(robot);
             servo4BarController.update(robot);
-            servoLiftController.update(robot,sigurantaLiftController);
             sigurantaLiftController.update(robot);
             motorColectareController.update(robot,ColectarePosition, 0.6);
-            liftController.update(robot,LiftPosition,sigurantaLiftController,servoLiftController);
-            autoController101.update(robot,angle4BarController, turnClawController, servoLiftController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
+            liftController.update(robot,LiftPosition,sigurantaLiftController);
+            autoController101.update(robot,angle4BarController, turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
 
             drive.update();
             telemetry.addData("Pozitie: ", drive.getPoseEstimate());

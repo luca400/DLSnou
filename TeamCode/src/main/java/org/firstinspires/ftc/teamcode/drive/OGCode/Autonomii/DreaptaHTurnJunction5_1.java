@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.OGCode.Angle4BarController;
-import org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController5_1;
 import org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoTurnJunction5_1;
 import org.firstinspires.ftc.teamcode.drive.OGCode.BiggerController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.CloseClawController;
@@ -21,7 +20,6 @@ import org.firstinspires.ftc.teamcode.drive.OGCode.PipeLineDetector;
 import org.firstinspires.ftc.teamcode.drive.OGCode.RobotController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.RobotMap;
 import org.firstinspires.ftc.teamcode.drive.OGCode.Servo4BarController;
-import org.firstinspires.ftc.teamcode.drive.OGCode.ServoLiftController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.SigurantaLiftController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.TurnClawController;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -48,7 +46,7 @@ public class DreaptaHTurnJunction5_1 extends LinearOpMode {
         TURN_TO_PLACE,
         START_CYCLE,
     }
-    public static double x_CYCLING_POSITION = 35, y_CYCLING_POSITION = -15, Angle_CYCLING_POSITION = 315;
+    public static double x_CYCLING_POSITION = 34.5, y_CYCLING_POSITION = -14, Angle_CYCLING_POSITION = 323;
     public static double x_PARK1 = 10, y_PARK1 = -17, Angle_PARK1 = 90;
     public static double x_PARK2 = 35, y_PARK2 = -17, Angle_PARK2 = 90;
     public static double x_PARK3 = 55, y_PARK3 = -17, Angle_PARK3 = 90;
@@ -74,7 +72,6 @@ public class DreaptaHTurnJunction5_1 extends LinearOpMode {
         RobotController robotController = new RobotController();
         BiggerController biggerController = new BiggerController();
         LiftController liftController = new LiftController();
-        ServoLiftController servoLiftController = new ServoLiftController();
         AutoTurnJunction5_1 autoControllerTurn51 = new AutoTurnJunction5_1();
         SigurantaLiftController sigurantaLiftController = new SigurantaLiftController();
         Angle4BarController angle4BarController = new Angle4BarController();
@@ -84,8 +81,7 @@ public class DreaptaHTurnJunction5_1 extends LinearOpMode {
         turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
         robotController.CurrentStatus = RobotController.RobotControllerStatus.START;
         liftController.CurrentStatus = LiftController.LiftStatus.BASE;
-        servoLiftController.CurrentStatus = ServoLiftController.ServoLiftStatus.TRANSFER;
-        sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.TRANSFER;
+        sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
         angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
 
 
@@ -99,12 +95,13 @@ public class DreaptaHTurnJunction5_1 extends LinearOpMode {
         closeClawController.update(robot);
         turnClawController.update(robot);
         servo4BarController.update(robot);
-        servoLiftController.update(robot,sigurantaLiftController);
         sigurantaLiftController.update(robot);
         motorColectareController.update(robot,0, 0.6);
-        liftController.update(robot,0,sigurantaLiftController,servoLiftController);
-        robotController.update(angle4BarController, servoLiftController,servo4BarController,motorColectareController,closeClawController,turnClawController);
+        liftController.update(robot,0,sigurantaLiftController);
+        robotController.update(sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
         biggerController.update(robotController,closeClawController,motorColectareController);
+        sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
+        sigurantaLiftController.update(robot);
         int nr=0;
         ElapsedTime timeStart = new ElapsedTime() , timeTurnPlace = new ElapsedTime();
         Pose2d startPose = new Pose2d(35, -63, Math.toRadians(270));
@@ -114,10 +111,10 @@ public class DreaptaHTurnJunction5_1 extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(x_CYCLING_POSITION,y_CYCLING_POSITION,Math.toRadians(Angle_CYCLING_POSITION)))
                 .build();
         TrajectorySequence TURN_TO_COLLECT = drive.trajectorySequenceBuilder(PLACE_PRELOAD.end())
-                .turn(Math.toRadians(40))
+                .turn(Math.toRadians(35))
                 .build();
         TrajectorySequence TURN_TO_PLACE = drive.trajectorySequenceBuilder(TURN_TO_COLLECT.end())
-                .turn(Math.toRadians(-40))
+                .turn(Math.toRadians(-35))
                 .build();
         TrajectorySequence PARK1 = drive.trajectorySequenceBuilder(TURN_TO_PLACE.end())
                 .lineToLinearHeading(new Pose2d(x_PARK1,y_PARK1,Math.toRadians(Angle_PARK1)))
@@ -263,16 +260,15 @@ public class DreaptaHTurnJunction5_1 extends LinearOpMode {
                 }
             }
             biggerController.update(robotController,closeClawController,motorColectareController);
-            robotController.update(angle4BarController,servoLiftController,servo4BarController,motorColectareController,closeClawController,turnClawController);
+            robotController.update(sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
             closeClawController.update(robot);
             angle4BarController.update(robot);
             turnClawController.update(robot);
             servo4BarController.update(robot);
-            servoLiftController.update(robot,sigurantaLiftController);
             sigurantaLiftController.update(robot);
             motorColectareController.update(robot,ColectarePosition, 0.6);
-            liftController.update(robot,LiftPosition,sigurantaLiftController,servoLiftController);
-            autoControllerTurn51.update(robot,angle4BarController, turnClawController, servoLiftController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
+            liftController.update(robot,LiftPosition,sigurantaLiftController);
+            autoControllerTurn51.update(robot,angle4BarController, turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
 
             drive.update();
             telemetry.addData("Pozitie: ", drive.getPoseEstimate());

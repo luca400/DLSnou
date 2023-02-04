@@ -24,7 +24,7 @@ public class RobotController {
     public double timerTransfer = 1.2;
     public static RobotControllerStatus CurrentStatus = START, PreviousStatus = START;
     ElapsedTime timerGO_COLLECT = new ElapsedTime() , timerGO_PLACE = new ElapsedTime() ,timeCOLLECT_RAPID_FIRE = new ElapsedTime();
-    public void update(Angle4BarController angle4BarController, ServoLiftController servoLiftController, Servo4BarController servo4BarController, MotorColectareController motorColectareController, CloseClawController closeClawController, TurnClawController turnClawController)
+    public void update(SigurantaLiftController sigurantaLiftController, Angle4BarController angle4BarController, Servo4BarController servo4BarController, MotorColectareController motorColectareController, CloseClawController closeClawController, TurnClawController turnClawController)
     {
         if (PreviousStatus != CurrentStatus || CurrentStatus == INTER_GO_COLLECT || CurrentStatus == INTER_GO_PLACE || CurrentStatus == INTER_GO_PLACE_FIRST_CONE_AUTO)
         {
@@ -45,7 +45,7 @@ public class RobotController {
                     if (timerGO_COLLECT.seconds()>0.5)
                     {
                         closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN_COLLECT;
-                        servoLiftController.CurrentStatus = ServoLiftController.ServoLiftStatus.TRANSFER;
+                        sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.TRANSFER;
                         CurrentStatus = START;
                     }
                     break;
@@ -64,10 +64,13 @@ public class RobotController {
                         angle4BarController.CurrentStatus= Angle4BarController.angle4BarStatus.PLACE;
                         turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.PLACE;
                     }
-                    if (timerGO_PLACE.seconds()>timerTransfer)
+                    if (sigurantaLiftController.CurrentStatus!= SigurantaLiftController.SigurantaLift.JUNCTION && timerGO_PLACE.seconds()>timerTransfer)
+                    {
+                        sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
+                    }
+                    if (timerGO_PLACE.seconds()>timerTransfer+0.35)
                     {
                         closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
-                        servoLiftController.CurrentStatus = ServoLiftController.ServoLiftStatus.JUNCTION;
                         angle4BarController.CurrentStatus= Angle4BarController.angle4BarStatus.VERTICAL;
                         servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
                         CurrentStatus = START;
@@ -78,7 +81,14 @@ public class RobotController {
                 {
                     timerGO_PLACE.reset();
                     servo4BarController.CurrentStatus=Servo4BarController.ServoStatus.PLACE_CONE;
-                    angle4BarController.CurrentStatus= Angle4BarController.angle4BarStatus.RAISED;
+                    if (AutoController5_1.Cone_Stack_Level == 4)
+                    {
+                        angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.LIL_RAISED;
+                    }
+                    else
+                    {
+                        angle4BarController.CurrentStatus= Angle4BarController.angle4BarStatus.RAISED;
+                    }
                     CurrentStatus = INTER_GO_PLACE_FIRST_CONE_AUTO;
                     break;
                 }
@@ -96,11 +106,14 @@ public class RobotController {
                         }
                         turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.PLACE;
                     }
-                    if (timerGO_PLACE.seconds()>timerTransfer)
+                    if (sigurantaLiftController.CurrentStatus!= SigurantaLiftController.SigurantaLift.JUNCTION && timerGO_PLACE.seconds()>timerTransfer)
+                    {
+                        sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
+                    }
+                    if (timerGO_PLACE.seconds()>timerTransfer+0.35)
                     {
                         closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
                         angle4BarController.CurrentStatus= Angle4BarController.angle4BarStatus.VERTICAL;
-                        //servoLiftController.CurrentStatus = ServoLiftController.ServoLiftStatus.JUNCTION;
                         servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
                         CurrentStatus = START;
                     }

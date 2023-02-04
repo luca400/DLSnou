@@ -19,7 +19,6 @@ import org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.RobotController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.RobotMap;
 import org.firstinspires.ftc.teamcode.drive.OGCode.Servo4BarController;
-import org.firstinspires.ftc.teamcode.drive.OGCode.ServoLiftController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.TurnClawController;
 
 public class AutoController5_1 {
@@ -44,7 +43,7 @@ public class AutoController5_1 {
     boolean moreThanOneStack = false;
     int ok=0;
     double timerInter = 2,timeStart=0;
-    public void update(RobotMap Robotel, Angle4BarController angle4BarController, TurnClawController turnClawController, ServoLiftController servoLiftController, LiftController liftController, Servo4BarController servo4BarController, RobotController robotController, CloseClawController closeClawController, MotorColectareController motorColectareController)
+    public void update(RobotMap Robotel, Angle4BarController angle4BarController, TurnClawController turnClawController, LiftController liftController, Servo4BarController servo4BarController, RobotController robotController, CloseClawController closeClawController, MotorColectareController motorColectareController)
     {
             switch (CurrentStatus)
             {
@@ -56,7 +55,6 @@ public class AutoController5_1 {
                     turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
                     robotController.CurrentStatus = RobotController.RobotControllerStatus.START;
                     liftController.CurrentStatus = LiftController.LiftStatus.BASE;
-                    servoLiftController.CurrentStatus = ServoLiftController.ServoLiftStatus.TRANSFER;
                     angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
                     CurrentStatus = NOTHING;
                     break;
@@ -75,7 +73,7 @@ public class AutoController5_1 {
                 }
                 case CLOSE_THE_CLAW:
                 {
-                    if (timerFourBar.seconds()>0.5)
+                    if (timerFourBar.seconds()>1)
                     {
                         closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
                         timerClaw.reset();
@@ -100,7 +98,7 @@ public class AutoController5_1 {
                 }
                 case PLACE_CONE:
                 {
-                    if (timerPlace_Cone.seconds()>1)
+                    if (timerPlace_Cone.seconds()>1.5)
                     {
                         timerLift.reset();
                         liftController.CurrentStatus = AutoLiftStatus;
@@ -133,7 +131,6 @@ public class AutoController5_1 {
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
                     liftController.CurrentStatus = LiftController.LiftStatus.BASE;
                     turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
-                    servoLiftController.CurrentStatus = ServoLiftController.ServoLiftStatus.TRANSFER;
                     angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
                     robotController.timerTransfer = 1.1;
                     if (Cone_Stack_Level==5)

@@ -50,9 +50,9 @@ public class MeepMeepTesting {
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(StartPositionRight)
                                 .lineToLinearHeading(new Pose2d(35,-6,Math.toRadians(345)))
-                                .splineToSplineHeading(new Pose2d(10,-13,Math.toRadians(270)),Math.toRadians(180))
-                                .lineTo(new Vector2d(-20,-13))
-                                .splineToSplineHeading(new Pose2d(-35,-6,Math.toRadians(195)),Math.toRadians(345))
+                                .splineToSplineHeading(new Pose2d(10,-13,Math.toRadians(180)),Math.toRadians(180))
+                                .lineTo(new Vector2d(-25,-16))
+                                .lineToLinearHeading(new Pose2d(-31,-11,Math.toRadians(192)))
                                 .build()
                 );
         RoadRunnerBotEntity Autonomia5 = new DefaultBotBuilder(meepMeep)
