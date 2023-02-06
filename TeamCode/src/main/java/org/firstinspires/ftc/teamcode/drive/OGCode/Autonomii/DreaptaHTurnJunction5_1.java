@@ -46,10 +46,11 @@ public class DreaptaHTurnJunction5_1 extends LinearOpMode {
         TURN_TO_PLACE,
         START_CYCLE,
     }
-    public static double x_CYCLING_POSITION = 34.5, y_CYCLING_POSITION = -14, Angle_CYCLING_POSITION = 323;
+    public static double x_CYCLING_POSITION = 34.5, y_CYCLING_POSITION = -14, Angle_CYCLING_POSITION = 315;
     public static double x_PARK1 = 10, y_PARK1 = -17, Angle_PARK1 = 90;
     public static double x_PARK2 = 35, y_PARK2 = -17, Angle_PARK2 = 90;
     public static double x_PARK3 = 55, y_PARK3 = -17, Angle_PARK3 = 90;
+    public static double Angle_TURN_COLLECT = 40 ,Angle_TURN_TO_PLACE = -40;
     ElapsedTime asteapta = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime();
 
 
@@ -111,10 +112,10 @@ public class DreaptaHTurnJunction5_1 extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(x_CYCLING_POSITION,y_CYCLING_POSITION,Math.toRadians(Angle_CYCLING_POSITION)))
                 .build();
         TrajectorySequence TURN_TO_COLLECT = drive.trajectorySequenceBuilder(PLACE_PRELOAD.end())
-                .turn(Math.toRadians(35))
+                .turn(Math.toRadians(Angle_TURN_COLLECT))
                 .build();
         TrajectorySequence TURN_TO_PLACE = drive.trajectorySequenceBuilder(TURN_TO_COLLECT.end())
-                .turn(Math.toRadians(-35))
+                .turn(Math.toRadians(Angle_TURN_TO_PLACE))
                 .build();
         TrajectorySequence PARK1 = drive.trajectorySequenceBuilder(TURN_TO_PLACE.end())
                 .lineToLinearHeading(new Pose2d(x_PARK1,y_PARK1,Math.toRadians(Angle_PARK1)))

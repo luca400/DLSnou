@@ -19,7 +19,7 @@ public class LiftController {
     public static LiftStatus CurrentStatus = START, PreviousStatus = START;
     SimplePIDController LiftColectarePID = null;
     /// pe DreaptaLift am encoder
-    int basePosition = 0 , lowPosition = 255, midPosition = 593,  highPosition = 965, CurrentPosition = 0;
+    int basePosition = 0 , lowPosition = 255, midPosition = 590,  highPosition = 975, CurrentPosition = 0;
     public LiftController()
     {
         LiftColectarePID = new SimplePIDController(Kp,Ki,Kd);

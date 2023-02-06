@@ -242,6 +242,12 @@ public class SampleOpModeDLS extends  LinearOpMode {
                 {
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
                 }
+                if ((!previousGamepad2.dpad_down && currentGamepad2.dpad_down))
+                {
+                    servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.LOW_POSITION;
+                    angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus
+                            .PLACE_LOW;
+                }
             }
             else
             {

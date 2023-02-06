@@ -107,6 +107,8 @@ public class DreaptaDef5_1 extends LinearOpMode {
         liftController.update(robot,0,sigurantaLiftController);
         robotController.update(sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
         biggerController.update(robotController,closeClawController,motorColectareController);
+        sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
+        sigurantaLiftController.update(robot);
         int nr=0;
         Pose2d startPose = new Pose2d(35, -63, Math.toRadians(270));
         Pose2d cyclingPosition = new Pose2d(x_CYCLING_POSITION,y_CYCLING_POSITION,Math.toRadians(Angle_CYCLING_POSITION));
@@ -246,7 +248,7 @@ public class DreaptaDef5_1 extends LinearOpMode {
                     if (autoController51.CurrentStatus == AutoController5_1.autoControllerStatus.NOTHING)
                     {
                         autoController51.CurrentStatus = AutoController5_1.autoControllerStatus.STACK_LEVEL;
-                        status = STROBOT.FOURTH_CYCLE;
+                        status = STROBOT.RETRACT;
                     }
                     break;
                 }

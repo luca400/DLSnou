@@ -135,7 +135,14 @@ public class AutoController5_1 {
                     robotController.timerTransfer = 1.1;
                     if (Cone_Stack_Level==5)
                     {
-                        servo4BarController.Collect_Position = servo4BarController.Fifth_Cone_Position;
+                        if (AutoLiftStatus == LiftController.LiftStatus.MID)
+                        {
+                            servo4BarController.Collect_Position = servo4BarController.Fifth_Cone_Position_MID;
+                        }
+                        else
+                        {
+                            servo4BarController.Collect_Position = servo4BarController.Fifth_Cone_Position;
+                        }
                         Cone_Stack_Level =4;
                     }
                     else if (Cone_Stack_Level==4)

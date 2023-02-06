@@ -104,6 +104,8 @@ public class DreaptaMCyclingAutonomous5_1 extends LinearOpMode {
         liftController.update(robot,0,sigurantaLiftController);
         robotController.update(sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
         biggerController.update(robotController,closeClawController,motorColectareController);
+        sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
+        sigurantaLiftController.update(robot);
         int nr=0;
         Pose2d startPose = new Pose2d(35, -63, Math.toRadians(270));
         drive.setPoseEstimate(startPose);

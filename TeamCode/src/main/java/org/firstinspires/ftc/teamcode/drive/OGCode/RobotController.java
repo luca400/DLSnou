@@ -35,6 +35,7 @@ public class RobotController {
                 {
                     timerGO_COLLECT.reset();
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.COLLECT_DRIVE;
+                    angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
                     CurrentStatus = INTER_GO_COLLECT;
                     break;
                 }
@@ -81,14 +82,7 @@ public class RobotController {
                 {
                     timerGO_PLACE.reset();
                     servo4BarController.CurrentStatus=Servo4BarController.ServoStatus.PLACE_CONE;
-                    if (AutoController5_1.Cone_Stack_Level == 4)
-                    {
-                        angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.LIL_RAISED;
-                    }
-                    else
-                    {
-                        angle4BarController.CurrentStatus= Angle4BarController.angle4BarStatus.RAISED;
-                    }
+                    angle4BarController.CurrentStatus= Angle4BarController.angle4BarStatus.RAISED;
                     CurrentStatus = INTER_GO_PLACE_FIRST_CONE_AUTO;
                     break;
                 }
@@ -96,14 +90,8 @@ public class RobotController {
                 {
                     if (timerGO_PLACE.seconds()>0.5)
                     {
-                        if (AutoController5_1.Cone_Stack_Level == 4)
-                        {
-                            angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
-                        }
-                        else
-                        {
-                            angle4BarController.CurrentStatus= Angle4BarController.angle4BarStatus.PLACE;
-                        }
+
+                        angle4BarController.CurrentStatus= Angle4BarController.angle4BarStatus.PLACE;
                         turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.PLACE;
                     }
                     if (sigurantaLiftController.CurrentStatus!= SigurantaLiftController.SigurantaLift.JUNCTION && timerGO_PLACE.seconds()>timerTransfer)
