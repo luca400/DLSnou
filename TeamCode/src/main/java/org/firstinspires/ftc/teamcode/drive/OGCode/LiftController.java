@@ -11,6 +11,7 @@ public class LiftController {
         MID,
         BASE,
     }
+    public double CurrentSpeed=0;
     public double Kp = 0.009;
     public double Ki = 0.02;
     public double Kd = 0;
@@ -19,18 +20,23 @@ public class LiftController {
     public static LiftStatus CurrentStatus = START, PreviousStatus = START;
     SimplePIDController LiftColectarePID = null;
     /// pe DreaptaLift am encoder
-    int basePosition = 0 , lowPosition = 255, midPosition = 590,  highPosition = 975, CurrentPosition = 0;
+    int basePosition = 0;
+    int lowPosition = 255;
+    int midPosition = 590;
+    int highPosition = 975;
+    public int CurrentPosition = 0;
     public LiftController()
     {
         LiftColectarePID = new SimplePIDController(Kp,Ki,Kd);
         LiftColectarePID.targetValue=basePosition;
         LiftColectarePID.maxOutput = maxSpeed;
     }
-    public void update(RobotMap Robotel, int LiftPosition, SigurantaLiftController sigurantaLiftController)
+    public void update(RobotMap Robotel, int LiftPosition, SigurantaLiftController sigurantaLiftController, double CurrentVoltage)
     {
         CurrentPosition = LiftPosition;
         double powerLift = LiftColectarePID.update(LiftPosition) + Kg;
-        powerLift = Math.max(-1,Math.min(powerLift,1));
+        powerLift = Math.max(-1,Math.min(powerLift* 14 / CurrentVoltage,1));
+        CurrentSpeed=powerLift;
         Robotel.stangaLift.setPower(powerLift);
         Robotel.dreaptaLift.setPower(powerLift);
         if (CurrentStatus != PreviousStatus)

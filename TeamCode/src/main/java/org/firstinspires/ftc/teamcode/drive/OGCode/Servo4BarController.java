@@ -1,16 +1,18 @@
 package org.firstinspires.ftc.teamcode.drive.OGCode;
 
 import static org.firstinspires.ftc.teamcode.drive.OGCode.Servo4BarController.ServoStatus.COLLECT_DRIVE;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.Servo4BarController.ServoStatus.DRIVE_POSITION;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.Servo4BarController.ServoStatus.INITIALIZE;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.Servo4BarController.ServoStatus.INTERMEDIARY;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.Servo4BarController.ServoStatus.PLACE_CONE;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
+@Config
 public class Servo4BarController {
     public enum ServoStatus
     {
@@ -25,11 +27,11 @@ public class Servo4BarController {
     }
     public static ServoStatus CurrentStatus = INITIALIZE,PreviousStatus = INITIALIZE,WhereFromIntermediary = COLLECT_DRIVE;
     ElapsedTime time = new ElapsedTime();
-    public static double Ground_Position=0.115, Second_Cone_Position=0.16, Third_Cone_Position=0.20, Fourth_Cone_Position = 0.25, Fifth_Cone_Position = 0.3 , Fifth_Cone_Position_MID = 0.28, groundJunctionPosition  = 0.13;
-    public static double Collect_Position = 0.09 , Place_Cone_Position = 0.895 , Intermediary_Position =0.2 , Drive_Position = 0.6;
-    public static double Collect_Drive = 0.105 , Low_Position = 0.55;
-    public static double Fallen_Cones = 0;
-int salut =0;
+    public static double Ground_Position=0.90, Second_Cone_Position=0.86, Third_Cone_Position=0.82, Fourth_Cone_Position = 0.8, Fifth_Cone_Position = 0.775 , Fifth_Cone_Position_MID = 0.70, groundJunctionPosition  = 0.92;
+    public static double Collect_Position = 0.85 , Place_Cone_Position = 0.24, Intermediary_Position =0.5 , Drive_Position = 0.5;
+    public static double Collect_Drive = 0.90 , Low_Position = 0.6;
+    public static double Fallen_Cones = 0.85;
+    int salut =0;
     public void update(RobotMap Robot)
     {
         if (PreviousStatus != CurrentStatus || CurrentStatus==INTERMEDIARY || CurrentStatus==INITIALIZE)

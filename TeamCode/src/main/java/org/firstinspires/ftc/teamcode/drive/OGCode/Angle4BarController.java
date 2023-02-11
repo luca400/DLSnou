@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.drive.OGCode;
 
-import org.checkerframework.checker.units.qual.Current;
+import com.acmerobotics.dashboard.config.Config;
 
+import org.checkerframework.checker.units.qual.Current;
+@Config
 public class Angle4BarController {
 
     public enum angle4BarStatus
@@ -13,10 +15,11 @@ public class Angle4BarController {
         PLACE,
         LIL_FRONT,
         LIL_RAISED,
-        PLACE_LOW
+        PLACE_LOW,
+        LIL_PLACE
     }
     public static angle4BarStatus CurrentStatus = angle4BarStatus.INIT,  PreviousStatus = angle4BarStatus.INIT;
-    double pozLilFront=0.45 , pozVertical = 0.47, pozCollectCones = 0.9 , pozRaised = 0.32 ,pozPlace = 0.575 , pozLilRaised = 0.34 , pozPlaceLow = 0.25;
+    public static double pozLilFront=0.45 , pozVertical = 0.47, pozCollectCones = 0.9 , pozRaised = 0.32 ,pozPlace = 0.54 , pozLilRaised = 0.34 , pozPlaceLow = 0.2,pozLilPlace = 0.5;
 
     public void update(RobotMap Robotel)
     {
@@ -30,6 +33,11 @@ public class Angle4BarController {
                 case LIL_FRONT:
                 {
                     Robotel.angle4Bar.setPosition(pozLilFront);
+                    break;
+                }
+                case LIL_PLACE:
+                {
+                    Robotel.angle4Bar.setPosition(pozLilPlace);
                     break;
                 }
                 case COLLECT_CONES:

@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -91,9 +92,11 @@ public class DreaptaDef5_1 extends LinearOpMode {
         robotController.CurrentStatus = RobotController.RobotControllerStatus.START;
         liftController.CurrentStatus = LiftController.LiftStatus.BASE;
         sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.TRANSFER;
-        angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
+        Angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
 
-
+        double currentVoltage;
+        VoltageSensor batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
+        currentVoltage = batteryVoltageSensor.getVoltage();
 
         autoController51.Cone_Stack_Level  =5;
         autoController51.AutoLiftStatus = LiftController.LiftStatus.MID;
@@ -104,8 +107,8 @@ public class DreaptaDef5_1 extends LinearOpMode {
         servo4BarController.update(robot);
         sigurantaLiftController.update(robot);
         motorColectareController.update(robot,0, 0.6);
-        liftController.update(robot,0,sigurantaLiftController);
-        robotController.update(sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
+        liftController.update(robot,0,sigurantaLiftController,currentVoltage);
+        robotController.update(robot,sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
         biggerController.update(robotController,closeClawController,motorColectareController);
         sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
         sigurantaLiftController.update(robot);
@@ -303,15 +306,15 @@ public class DreaptaDef5_1 extends LinearOpMode {
                 }
             }
             biggerController.update(robotController,closeClawController,motorColectareController);
-            robotController.update(sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
+            robotController.update(robot,sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
             closeClawController.update(robot);
             angle4BarController.update(robot);
             turnClawController.update(robot);
             servo4BarController.update(robot);
             sigurantaLiftController.update(robot);
             motorColectareController.update(robot,ColectarePosition, 0.6);
-            liftController.update(robot,LiftPosition,sigurantaLiftController);
-            autoController51.update(robot,angle4BarController, turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
+            liftController.update(robot,LiftPosition,sigurantaLiftController,currentVoltage);
+            autoController51.update(sigurantaLiftController,robot,angle4BarController, turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
 
             drive.update();
             telemetry.addData("Pozitie: ", drive.getPoseEstimate());

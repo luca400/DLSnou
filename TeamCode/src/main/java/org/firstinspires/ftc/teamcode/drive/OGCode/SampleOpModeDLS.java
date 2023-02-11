@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController5_1;
@@ -19,7 +20,7 @@ import java.util.List;
 @TeleOp(name="SampleOpModeDLS", group="Linear Opmode")
 
 public class SampleOpModeDLS extends  LinearOpMode {
-    private ElapsedTime runtime = new ElapsedTime();
+    private ElapsedTime runtime = new ElapsedTime() , timeGetVoltage = new ElapsedTime();
     public static int salut=0;
     double pozInit4Bar = 0, pozInter4Bar= 0.4, pozPlace4Bar = 0.7;
     double pozCloseClaw=0.8, pozOpenClaw=0.2;
@@ -107,7 +108,11 @@ public class SampleOpModeDLS extends  LinearOpMode {
         BiggerController biggerController = new BiggerController();
         LiftController liftController = new LiftController();
         AutoController5_1 autoController51 = new AutoController5_1();
+        AllCycleController allCycleController = new AllCycleController();
 
+        double currentVoltage;
+        VoltageSensor batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
+        currentVoltage = batteryVoltageSensor.getVoltage();
         double x1=0,y1=0,x2=0;
         double loopTime = 0;
         boolean motorColectareExtension = false;
@@ -125,20 +130,25 @@ public class SampleOpModeDLS extends  LinearOpMode {
         sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.TRANSFER;
         autoController51.CurrentStatus = NOTHING;
         autoController51.PreviousStatus = NOTHING;
-        robotController.timerTransfer = 1.2;
+        allCycleController.CurrentStatus = AllCycleController.AllCycleControllerStatus.NOTHING;
+
+        robotController.timerTransfer = 0.35;
+
         closeClawController.update(robot);
         turnClawController.update(robot);
         angle4BarController.update(robot);
         servo4BarController.update(robot);
         sigurantaLiftController.update(robot);
         motorColectareController.update(robot,0, 0.6);
-        liftController.update(robot,0,sigurantaLiftController);
-        robotController.update(sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
+        liftController.update(robot,0,sigurantaLiftController,currentVoltage);
+        robotController.update(robot,sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
         biggerController.update(robotController,closeClawController,motorColectareController);
 
+        autoController51.Cone_Stack_Level  =5;
+        autoController51.AutoLiftStatus = LiftController.LiftStatus.HIGH;
+        autoController51.LimitLift = 0.85;
+
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
-
-
 
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
@@ -181,7 +191,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
         boolean StrafesOn = false;
         String typeOfDrive = "RobotCentric";
         while (opModeIsActive()) {
-
+            double hello = imu.getAngularVelocity().xRotationRate;
                 previousGamepad1.copy(currentGamepad1);
                 previousGamepad2.copy(currentGamepad2);
 
@@ -200,8 +210,14 @@ public class SampleOpModeDLS extends  LinearOpMode {
             } else {
                 fieldCentricDrive(imu, leftFront, leftBack, rightFront, rightBack);
             }
-            //robot.stangaLift.setPower(gamepad2.right_stick_y);
-            //robot.dreaptaLift.setPower(gamepad2.right_stick_y);
+
+            if (timeGetVoltage.seconds()>5)
+            {
+                timeGetVoltage.reset();
+                currentVoltage = batteryVoltageSensor.getVoltage();
+            }
+
+
             if ((!previousGamepad2.right_bumper && currentGamepad2.right_bumper)||(!previousGamepad1.right_bumper && currentGamepad1.right_bumper))
             {
                if (closeClawController.CurrentStatus == CloseClawController.closeClawStatus.CLOSED)
@@ -248,6 +264,11 @@ public class SampleOpModeDLS extends  LinearOpMode {
                     angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus
                             .PLACE_LOW;
                 }
+                if ((!previousGamepad2.dpad_left && currentGamepad2.dpad_left))
+                {
+                    AutoController5_1.CurrentStatus = AutoController5_1.autoControllerStatus.STACK_LEVEL;
+                }
+
             }
             else
             {
@@ -265,6 +286,10 @@ public class SampleOpModeDLS extends  LinearOpMode {
                     robot.left4Bar.setPosition(servo4BarController.groundJunctionPosition);
                     robot.right4Bar.setPosition(servo4BarController.groundJunctionPosition);
                     servo4BarController.CurrentStatus = STACK_POSITION;
+                }
+                if ((!previousGamepad2.dpad_left && currentGamepad2.dpad_left))
+                {
+                    robotController.CurrentStatus = RobotController.RobotControllerStatus.GO_PLACE_STACK;
                 }
             }
             if (!previousGamepad2.cross && currentGamepad2.cross)
@@ -361,19 +386,21 @@ public class SampleOpModeDLS extends  LinearOpMode {
                 PrecisionDenominator = 2;
             }
             biggerController.update(robotController,closeClawController,motorColectareController);
-            robotController.update(sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
+            robotController.update(robot,sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
             closeClawController.update(robot);
             turnClawController.update(robot);
             servo4BarController.update(robot);
             sigurantaLiftController.update(robot);
             motorColectareController.update(robot,ColectarePosition, 0.75);
-            liftController.update(robot,LiftPosition,sigurantaLiftController);
-            autoController51.update(robot,angle4BarController,turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
+            liftController.update(robot,LiftPosition,sigurantaLiftController,currentVoltage);
+            autoController51.update(sigurantaLiftController,robot,angle4BarController,turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
+            allCycleController.update(robot, sigurantaLiftController, angle4BarController,turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
             angle4BarController.update(robot);
 
             double loop = System.nanoTime();
             telemetry.addData("hz ", 1000000000 / (loop - loopTime));
             loopTime = loop;
+            telemetry.addData("XRotationRate",hello);
             telemetry.addData("AutoStatus", autoController51.CurrentStatus);
             telemetry.addData("RobotStatus",robotController.CurrentStatus);
             telemetry.addData("CurrentStatus",servo4BarController.CurrentStatus);

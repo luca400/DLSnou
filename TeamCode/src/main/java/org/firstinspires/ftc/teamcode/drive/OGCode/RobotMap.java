@@ -22,8 +22,8 @@ import org.firstinspires.ftc.teamcode.util.Encoder;
 
 public class RobotMap {
 
-    Servo left4Bar = null;
-    Servo right4Bar = null;
+    public Servo left4Bar = null;
+    public Servo right4Bar = null;
     Servo turnClaw = null;
     Servo closeClaw = null;
     Servo servoLift = null;

@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -49,7 +50,7 @@ public class DreaptaHCyclingAutonomous5_1 extends LinearOpMode {
         PRELOAD,
         GET_DOWN
     }
-    public static double x_CYCLING_POSITION = 35, y_CYCLING_POSITION = -6, Angle_CYCLING_POSITION = 342;
+    public static double x_CYCLING_POSITION = 37, y_CYCLING_POSITION = -7.5, Angle_CYCLING_POSITION = 345;
     public static double x_PARK1 = 10, y_PARK1 = -17, Angle_PARK1 = 90;
     public static double x_PARK2 = 35, y_PARK2 = -17, Angle_PARK2 = 90;
     public static double x_PARK3 = 55, y_PARK3 = -17, Angle_PARK3 = 90;
@@ -62,7 +63,9 @@ public class DreaptaHCyclingAutonomous5_1 extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         RobotMap robot = new RobotMap(hardwareMap);
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
-
+        double currentVoltage;
+        VoltageSensor batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
+        currentVoltage = batteryVoltageSensor.getVoltage();
 
 
         for (LynxModule hub : allHubs) {
@@ -92,15 +95,15 @@ public class DreaptaHCyclingAutonomous5_1 extends LinearOpMode {
         autoController51.Cone_Stack_Level  =5;
         autoController51.AutoLiftStatus = LiftController.LiftStatus.HIGH;
         autoController51.LimitLift = 0.85;
-
+        autoController51.timerAAtinsCon=1.2;
 
         angle4BarController.update(robot);
         closeClawController.update(robot);
         turnClawController.update(robot);
         servo4BarController.update(robot);
         motorColectareController.update(robot,0, 0.6);
-        liftController.update(robot,0,sigurantaLiftController);
-        robotController.update(sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
+        liftController.update(robot,0,sigurantaLiftController,currentVoltage);
+        robotController.update(robot,sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
         biggerController.update(robotController,closeClawController,motorColectareController);
         sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
         sigurantaLiftController.update(robot);
@@ -168,7 +171,6 @@ public class DreaptaHCyclingAutonomous5_1 extends LinearOpMode {
                     if (!drive.isBusy())
                     {
                         liftController.CurrentStatus = LiftController.LiftStatus.HIGH;
-                        motorColectareController.CurrentStatus = MotorColectareController.MotorColectare.EXTENDED;
                         timerLift.reset();
                         status = STROBOT.FIRST_CYCLE;
                     }
@@ -186,6 +188,14 @@ public class DreaptaHCyclingAutonomous5_1 extends LinearOpMode {
                 }
                 case SECOND_CYCLE:
                 {
+                    /*if (autoController51.CurrentStatus == AutoController5_1.autoControllerStatus.GET_LIFT_DOWN)
+                    {
+                        autoController51.timerAAtinsCon=0.4;
+                        servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.COLLECT_DRIVE;
+                        turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
+                        closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
+                        motorColectareController.CurrentStatus = MotorColectareController.MotorColectare.EXTENDED;
+                    }*/
                     if (autoController51.CurrentStatus == AutoController5_1.autoControllerStatus.NOTHING)
                     {
                         autoController51.CurrentStatus = AutoController5_1.autoControllerStatus.STACK_LEVEL;
@@ -197,6 +207,7 @@ public class DreaptaHCyclingAutonomous5_1 extends LinearOpMode {
                 {
                     if (autoController51.CurrentStatus == AutoController5_1.autoControllerStatus.NOTHING)
                     {
+                        autoController51.timerAAtinsCon=1.2;
                         autoController51.CurrentStatus = AutoController5_1.autoControllerStatus.STACK_LEVEL;
                         status = STROBOT.FOURTH_CYCLE;
                     }
@@ -253,18 +264,19 @@ public class DreaptaHCyclingAutonomous5_1 extends LinearOpMode {
                 }
             }
             biggerController.update(robotController,closeClawController,motorColectareController);
-            robotController.update(sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
+            robotController.update(robot,sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
             closeClawController.update(robot);
             angle4BarController.update(robot);
             turnClawController.update(robot);
             servo4BarController.update(robot);
             sigurantaLiftController.update(robot);
-            motorColectareController.update(robot,ColectarePosition, 0.6);
-            liftController.update(robot,LiftPosition,sigurantaLiftController);
-            autoController51.update(robot,angle4BarController, turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
+            motorColectareController.update(robot,ColectarePosition, 1);
+            liftController.update(robot,LiftPosition,sigurantaLiftController,currentVoltage);
+            autoController51.update(sigurantaLiftController,robot,angle4BarController, turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
 
             drive.update();
             telemetry.addData("Pozitie: ", drive.getPoseEstimate());
+            telemetry.addData("SpeedLift", liftController.CurrentSpeed);
            // telemetry.addData("caz:", Case);
             telemetry.addData("Status",status);
             telemetry.update();
