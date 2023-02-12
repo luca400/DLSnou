@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode.drive.OGCode;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.TurnClawController.TurnClawStatus.INIT;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.TurnClawController.TurnClawStatus.PLACE;
 
+import com.acmerobotics.dashboard.config.Config;
+
+@Config
 public class TurnClawController {
     public enum TurnClawStatus
     {
@@ -11,7 +14,7 @@ public class TurnClawController {
         PLACE,
     }
     public static TurnClawStatus CurrentStatus = INIT , PreviousStatus = INIT;
-    double pozTurnClaw_COLLECT=0.70, pozTurnClaw_PLACE = 0.05;
+    public static double pozTurnClaw_COLLECT=0.70, pozTurnClaw_PLACE = 0.03;
     public void update(RobotMap Robotel)
     {
         if (PreviousStatus != CurrentStatus)

@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.RobotController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.RobotMap;
 import org.firstinspires.ftc.teamcode.drive.OGCode.Servo4BarController;
+import org.firstinspires.ftc.teamcode.drive.OGCode.SigurantaLiftController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.TurnClawController;
 
 public class AutoSouthHighJunction5_1 {
@@ -41,7 +42,7 @@ public class AutoSouthHighJunction5_1 {
     boolean moreThanOneStack = false;
     int ok=0;
     double timerInter = 2,timeStart=0;
-    public void update(RobotMap Robotel, Angle4BarController angle4BarController, TurnClawController turnClawController, LiftController liftController, Servo4BarController servo4BarController, RobotController robotController, CloseClawController closeClawController, MotorColectareController motorColectareController)
+    public void update(SigurantaLiftController sigurantaLiftController, RobotMap Robotel, Angle4BarController angle4BarController, TurnClawController turnClawController, LiftController liftController, Servo4BarController servo4BarController, RobotController robotController, CloseClawController closeClawController, MotorColectareController motorColectareController)
     {
         switch (CurrentStatus)
         {
@@ -84,22 +85,42 @@ public class AutoSouthHighJunction5_1 {
                 if (ok == 0 && timerClaw.seconds()>0.35)
                 {
                     ok=1;
-                    robotController.CurrentStatus = RobotController.RobotControllerStatus.GO_PLACE_FIRST_CONE_AUTO;
+                    servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
+                    angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.RAISED;
                 }
-                if (timerClaw.seconds()>0.65)
+                if (timerClaw.seconds()>0.55)
                 {
+                    turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.PLACE;
+                    if (Cone_Stack_Level == 4)
+                    {
+                        angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.LIL_PLACE;
+                    }
+                    else
+                    {
+                        angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.PLACE;
+                    }
                     motorColectareController.CurrentStatus = RETRACTED;
                     timerPlace_Cone.reset();
+                    ok=0;
                     CurrentStatus = PLACE_CONE;
                 }
                 break;
             }
             case PLACE_CONE:
             {
-                if (timerPlace_Cone.seconds()>1.4)
+                if (ok == 0 && timerPlace_Cone.seconds()>0.75)
                 {
-                    timerLift.reset();
-                    //liftController.CurrentStatus = AutoLiftStatus;
+                    Robotel.left4Bar.setPosition(servo4BarController.Place_Cone_Position);
+                    Robotel.right4Bar.setPosition(servo4BarController.Place_Cone_Position);
+
+                    ok = 1;
+                }
+                if (timerPlace_Cone.seconds()>0.95)
+                {
+                    sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
+                }
+                if (timerPlace_Cone.seconds()>1.3)
+                {
                     closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
                     angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;

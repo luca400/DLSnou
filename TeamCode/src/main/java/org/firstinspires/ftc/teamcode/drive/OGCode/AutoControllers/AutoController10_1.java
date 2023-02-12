@@ -61,12 +61,12 @@ public class AutoController10_1 {
             }
             case FOURBAR_DOWN:
             {
-                    servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.COLLECT_DRIVE;
-                    turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
-                    if (Cone_Stack_Level ==4 || Cone_Stack_Level ==3)
-                    {
-                        angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.LIL_FRONT;
-                    }
+                servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.COLLECT_DRIVE;
+                turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
+                if (Cone_Stack_Level ==4 || Cone_Stack_Level ==3)
+                {
+                    angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.LIL_FRONT;
+                }
                     timerFourBar.reset();
                     CurrentStatus = CLOSE_THE_CLAW;
                 break;

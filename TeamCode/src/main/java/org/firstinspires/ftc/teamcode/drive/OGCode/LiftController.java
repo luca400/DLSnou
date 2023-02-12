@@ -23,7 +23,7 @@ public class LiftController {
     int basePosition = 0;
     int lowPosition = 255;
     int midPosition = 590;
-    int highPosition = 975;
+    int highPosition = 980;
     public int CurrentPosition = 0;
     public LiftController()
     {

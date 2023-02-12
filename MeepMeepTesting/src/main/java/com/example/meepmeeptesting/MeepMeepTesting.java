@@ -63,9 +63,10 @@ public class MeepMeepTesting {
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(StartPositionRight)
                                 .lineToLinearHeading(new Pose2d(35,-23,Math.toRadians(20)))
+                                .lineTo(new  Vector2d(35, -21))
                                 .splineToSplineHeading(new Pose2d(10,-10,Math.toRadians(180)),Math.toRadians(180))
                                 .lineTo(new Vector2d(-20,-10))
-                                .splineToSplineHeading(new Pose2d(-35,-23,Math.toRadians(160)),Math.toRadians(20))
+                                .splineToSplineHeading(new Pose2d(-35,-23,Math.toRadians(160)),Math.toRadians(270))
                                 .build()
                 );
         RoadRunnerBotEntity Autonomia7 = new DefaultBotBuilder(meepMeep)
@@ -73,7 +74,7 @@ public class MeepMeepTesting {
                 .setConstraints(60, 50, 5.69, 5.69, 7)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(StartPositionLeft)
-                                .lineToLinearHeading(new Pose2d(-34.5,-14,Math.toRadians(217)))
+                                .lineToLinearHeading(new Pose2d(-34.5,-23,Math.toRadians(320)))
                                 .build()
                 );
         RoadRunnerBotEntity LeftAutonomySouthHigh5_1 = new DefaultBotBuilder(meepMeep)
@@ -129,7 +130,7 @@ public class MeepMeepTesting {
         meepMeep.setBackground(MeepMeep.Background.FIELD_POWERPLAY_OFFICIAL)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
-                .addEntity(Autonomia3)
+                .addEntity(Autonomia5)
                 .start();
     }
 }

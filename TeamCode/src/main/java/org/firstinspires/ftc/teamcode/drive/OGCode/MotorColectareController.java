@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive.OGCode;
 
 import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.EXTENDED;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.EXTENDED_2050;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.EXTENDED_600;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.INITIALIZED;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.RETRACTED;
@@ -19,7 +20,8 @@ public class MotorColectareController {
         RETRACTED,
         CLOSE_TO_EXTENDED_FIRST_CONE,
         EXTENDED_FIRST_CONE,
-        EXTENDED_600
+        EXTENDED_600,
+        EXTENDED_2050,
     }
     public static double Kp = 0.0012;
     public static double Ki = 0.0015;
@@ -31,9 +33,17 @@ public class MotorColectareController {
     public static int extendedPosition = 2020 , retractedPosition = -75;
     ElapsedTime timer600 = new ElapsedTime();
     ElapsedTime timer2020 = new ElapsedTime();
+    ElapsedTime timer2050 = new ElapsedTime();
     MotionProfile profile2020 = MotionProfileGenerator.generateSimpleMotionProfile(
             new MotionState(0, 0, 0),
             new MotionState(2220, 0, 0),
+            vMax,
+            AccMax,
+            JerkMax
+    );
+    MotionProfile profile2050 = MotionProfileGenerator.generateSimpleMotionProfile(
+            new MotionState(0, 0, 0),
+            new MotionState(2000, 0, 0),
             vMax,
             AccMax,
             JerkMax
@@ -57,7 +67,7 @@ public class MotorColectareController {
         double powerColectare = MotorColectarePID.update(ColectarePosition);
         powerColectare = Math.max(-PowerCap,Math.min(powerColectare,PowerCap));
         Robotel.motorColectare.setPower(powerColectare);
-        if (PreviousStatus != CurrentStatus || CurrentStatus == EXTENDED_600 || CurrentStatus == EXTENDED)
+        if (PreviousStatus != CurrentStatus || CurrentStatus == EXTENDED_600 || CurrentStatus == EXTENDED || CurrentStatus == EXTENDED_2050)
         {
             switch (CurrentStatus)
             {
@@ -85,6 +95,16 @@ public class MotorColectareController {
                     }
                     MotorColectarePID.maxOutput = 1;
                     MotorColectarePID.targetValue = profile2020.get(timer2020.seconds()).getX();
+                    break;
+                }
+                case EXTENDED_2050:
+                {
+                    if (PreviousStatus != CurrentStatus)
+                    {
+                        timer2050.reset();
+                    }
+                    MotorColectarePID.maxOutput = 1;
+                    MotorColectarePID.targetValue = profile2050.get(timer2050.seconds()).getX();
                     break;
                 }
             }

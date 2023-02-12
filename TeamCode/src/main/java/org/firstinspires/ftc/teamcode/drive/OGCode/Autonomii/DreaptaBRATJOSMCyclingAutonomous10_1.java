@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive.timeOutBab
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -13,7 +14,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.OGCode.Angle4BarController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.AprilTagDetectionPipeline;
-import org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController5_1;
+import org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController10_1;
+import org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController10_1_BRATJOS_MID;
 import org.firstinspires.ftc.teamcode.drive.OGCode.BiggerController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.CloseClawController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.LiftController;
@@ -34,11 +36,20 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/*
+public static double x_CYCLING_POSITION = 33, y_CYCLING_POSITION = -3, Angle_CYCLING_POSITION = 345;
+    public static double x_SSH = 10 ,y_SSH = -10 , Angle_SSH = 180, Tanget_Angle_SSH = 180;
+    public static double x_LINETO = -29 , y_LINETO = -10;
+    public static double x_LLH = -33 , y_LLH = -3, Angle_LLH = 192;
+.lineToLinearHeading(new Pose2d(x_CYCLING_POSITION,y_CYCLING_POSITION,Math.toRadians(Angle_CYCLING_POSITION)))
+                .splineToSplineHeading(new Pose2d(x_SSH,y_SSH,Math.toRadians(Angle_SSH)),Math.toRadians(Tanget_Angle_SSH))
+                .lineTo(new Vector2d(x_LINETO,y_LINETO))
+                .lineToLinearHeading(new Pose2d(x_LLH,y_LLH,Math.toRadians(Angle_LLH)))
+ */
 @Config
 @Autonomous(group = "drive")
 
-public class DreaptaMCyclingAutonomous5_1 extends LinearOpMode {
+public class DreaptaBRATJOSMCyclingAutonomous10_1 extends LinearOpMode {
     enum STROBOT
     {
         START,
@@ -47,17 +58,22 @@ public class DreaptaMCyclingAutonomous5_1 extends LinearOpMode {
         THIRD_CYCLE,
         FOURTH_CYCLE,
         FIFTH_CYCLE,
-        RETRACT,
+        GO_TO_NEXT_POSITION,
+        PLACE_FIFTH_CONE,
+        SIXTH_CYCLE,
+        SEVENTH_CYCLE,
+        EIGTH_CYCLE,
+        NINTH_CYCLE,
+        TENTH_CYCLE,
+        PRELOAD,
         PARK,
         STOP_JOC,
-        PRELOAD,
-        GET_DOWN
     }
     public static double x_CYCLING_POSITION = 38.3, y_CYCLING_POSITION = -23, Angle_CYCLING_POSITION = 13.5;
     public static double x_INTER = 35.5, y_INTER = -35 , Angle_PARK_INTER = 270;
-    public static double x_PARK1 = 10, y_PARK1 = -35, Angle_PARK1 = 270;
-    public static double x_PARK2 = 36.5, y_PARK2 = -35, Angle_PARK2 = 270;
-    public static double x_PARK3 = 57, y_PARK3 = -35, Angle_PARK3 = 270;
+    public static double x_PARK1 = -57, y_PARK1 = -35, Angle_PARK1 = 270;
+    public static double x_PARK2 = -36.5, y_PARK2 = -35, Angle_PARK2 = 270;
+    public static double x_PARK3 = -10, y_PARK3 = -35, Angle_PARK3 = 270;
     ElapsedTime asteapta = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime();
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -77,9 +93,9 @@ public class DreaptaMCyclingAutonomous5_1 extends LinearOpMode {
     double tagsize = 0.166;
 
     // Tag ID 1,2,3 from the 36h11 family
-    int LEFT = 1;
-    int MIDDLE = 2;
-    int RIGHT = 3;
+    int LEFT = 0;
+    int MIDDLE = 1;
+    int RIGHT = 2;
 
     AprilTagDetection tagOfInterest = null;
 
@@ -89,10 +105,10 @@ public class DreaptaMCyclingAutonomous5_1 extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         RobotMap robot = new RobotMap(hardwareMap);
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
-
         double currentVoltage;
         VoltageSensor batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
         currentVoltage = batteryVoltageSensor.getVoltage();
+
 
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
@@ -104,7 +120,7 @@ public class DreaptaMCyclingAutonomous5_1 extends LinearOpMode {
         RobotController robotController = new RobotController();
         BiggerController biggerController = new BiggerController();
         LiftController liftController = new LiftController();
-        AutoController5_1 autoController51 = new AutoController5_1();
+        AutoController10_1_BRATJOS_MID autoController101 = new AutoController10_1_BRATJOS_MID();
         SigurantaLiftController sigurantaLiftController = new SigurantaLiftController();
         Angle4BarController angle4BarController = new Angle4BarController();
         servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.INITIALIZE;
@@ -116,11 +132,11 @@ public class DreaptaMCyclingAutonomous5_1 extends LinearOpMode {
         sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
         angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
 
+        autoController101.Cone_Stack_Level  =5;
+        autoController101.AutoLiftState = LiftController.LiftStatus.MID;
+        autoController101.LimitLift = 0.85;
+        autoController101.stackNumber = 0;
 
-
-        autoController51.Cone_Stack_Level  =5;
-        autoController51.AutoLiftStatus = LiftController.LiftStatus.MID;
-        autoController51.LimitLift = 0.75;
 
 
         angle4BarController.update(robot);
@@ -128,12 +144,10 @@ public class DreaptaMCyclingAutonomous5_1 extends LinearOpMode {
         turnClawController.update(robot);
         servo4BarController.update(robot);
         sigurantaLiftController.update(robot);
-        motorColectareController.update(robot,0, 1);
+        motorColectareController.update(robot,0, 0.6);
         liftController.update(robot,0,sigurantaLiftController,currentVoltage);
         robotController.update(robot,sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
         biggerController.update(robotController,closeClawController,motorColectareController);
-        sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
-        sigurantaLiftController.update(robot);
         int nr=0;
         Pose2d startPose = new Pose2d(35, -63, Math.toRadians(270));
         drive.setPoseEstimate(startPose);
@@ -141,16 +155,19 @@ public class DreaptaMCyclingAutonomous5_1 extends LinearOpMode {
         TrajectorySequence PLACE_PRELOAD = drive.trajectorySequenceBuilder(startPose)
                 .lineToLinearHeading(new Pose2d(x_CYCLING_POSITION,y_CYCLING_POSITION,Math.toRadians(Angle_CYCLING_POSITION)))
                 .build();
-        TrajectorySequence PARK1 = drive.trajectorySequenceBuilder(PLACE_PRELOAD.end())
-                .lineToLinearHeading(new Pose2d(x_INTER,y_INTER,Math.toRadians(Angle_PARK_INTER)))
+        TrajectorySequence GO_TO_NEXT_POSITION = drive.trajectorySequenceBuilder(PLACE_PRELOAD.end())
+                .lineTo(new  Vector2d(35, -21))
+                .splineToSplineHeading(new Pose2d(10,-10,Math.toRadians(180)),Math.toRadians(180))
+                .lineTo(new Vector2d(-20,-10))
+                .splineToSplineHeading(new Pose2d(-32,-21,Math.toRadians(160)),Math.toRadians(270))
+                .build();
+        TrajectorySequence PARK1 = drive.trajectorySequenceBuilder(GO_TO_NEXT_POSITION.end())
                 .lineToLinearHeading(new Pose2d(x_PARK1,y_PARK1,Math.toRadians(Angle_PARK1)))
                 .build();
-        TrajectorySequence PARK2 = drive.trajectorySequenceBuilder(PLACE_PRELOAD.end())
-                .lineToLinearHeading(new Pose2d(x_INTER,y_INTER,Math.toRadians(Angle_PARK_INTER)))
+        TrajectorySequence PARK2 = drive.trajectorySequenceBuilder(GO_TO_NEXT_POSITION.end())
                 .lineToLinearHeading(new Pose2d(x_PARK2,y_PARK2,Math.toRadians(Angle_PARK2)))
                 .build();
-        TrajectorySequence PARK3 = drive.trajectorySequenceBuilder(PLACE_PRELOAD.end())
-                .lineToLinearHeading(new Pose2d(x_INTER,y_INTER,Math.toRadians(Angle_PARK_INTER)))
+        TrajectorySequence PARK3 = drive.trajectorySequenceBuilder(GO_TO_NEXT_POSITION.end())
                 .lineToLinearHeading(new Pose2d(x_PARK3,y_PARK3,Math.toRadians(Angle_PARK3)))
                 .build();
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -282,91 +299,150 @@ public class DreaptaMCyclingAutonomous5_1 extends LinearOpMode {
                     if (!drive.isBusy())
                     {
                         liftController.CurrentStatus = LiftController.LiftStatus.MID;
+                        servo4BarController.Collect_Position = Servo4BarController.Fifth_Cone_Position_MID;
+                        servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.COLLECT_DRIVE;
+                        closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
+                        turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
+                        angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
+                        motorColectareController.CurrentStatus = MotorColectareController.MotorColectare.EXTENDED;
                         timerLift.reset();
-                        status = STROBOT.FIRST_CYCLE;
+                        status =  STROBOT.FIRST_CYCLE;
                     }
                     break;
                 }
                 case FIRST_CYCLE:
                 {
-                    if (timerLift.seconds()>0.75)
+                    if (timerLift.seconds()>autoController101.LimitLift)
                     {
                         liftController.CurrentStatus = LiftController.LiftStatus.BASE;
-                        autoController51.CurrentStatus = AutoController5_1.autoControllerStatus.STACK_LEVEL;
-                        status = STROBOT.SECOND_CYCLE;
+                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_MID.autoControllerStatus.STACK_LEVEL;
+                        status =  STROBOT.SECOND_CYCLE;
                     }
                     break;
                 }
                 case SECOND_CYCLE:
                 {
-                    if (autoController51.CurrentStatus == AutoController5_1.autoControllerStatus.NOTHING)
+                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_MID.autoControllerStatus.NOTHING)
                     {
-                        autoController51.CurrentStatus = AutoController5_1.autoControllerStatus.STACK_LEVEL;
+                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_MID.autoControllerStatus.STACK_LEVEL;
                         status = STROBOT.THIRD_CYCLE;
                     }
                     break;
                 }
                 case THIRD_CYCLE:
                 {
-                    if (autoController51.CurrentStatus == AutoController5_1.autoControllerStatus.NOTHING)
+                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_MID.autoControllerStatus.NOTHING)
                     {
-                        autoController51.CurrentStatus = AutoController5_1.autoControllerStatus.STACK_LEVEL;
+                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_MID.autoControllerStatus.STACK_LEVEL;
                         status = STROBOT.FOURTH_CYCLE;
                     }
                     break;
                 }
                 case FOURTH_CYCLE:
                 {
-                    if (autoController51.CurrentStatus == AutoController5_1.autoControllerStatus.NOTHING)
+                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_MID.autoControllerStatus.NOTHING)
                     {
-                        autoController51.CurrentStatus = AutoController5_1.autoControllerStatus.STACK_LEVEL;
+                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_MID.autoControllerStatus.STACK_LEVEL;
                         status = STROBOT.FIFTH_CYCLE;
                     }
                     break;
                 }
                 case FIFTH_CYCLE:
                 {
-                    if (autoController51.CurrentStatus == AutoController5_1.autoControllerStatus.NOTHING)
+                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_MID.autoControllerStatus.NOTHING)
                     {
-                        autoController51.CurrentStatus = AutoController5_1.autoControllerStatus.STACK_LEVEL;
-                        status = STROBOT.RETRACT;
+                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_MID.autoControllerStatus.STACK_LEVEL;
+                        status = STROBOT.GO_TO_NEXT_POSITION;
                     }
                     break;
                 }
-                case RETRACT:
+                case GO_TO_NEXT_POSITION:
                 {
-                    if (autoController51.CurrentStatus == AutoController5_1.autoControllerStatus.NOTHING)
+                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_MID.autoControllerStatus.NOTHING)
                     {
-                        motorColectareController.CurrentStatus = MotorColectareController.MotorColectare.RETRACTED;
-                        timerRetract.reset();
+                        drive.followTrajectorySequenceAsync(GO_TO_NEXT_POSITION);
+                        status = STROBOT.PLACE_FIFTH_CONE;
+                    }
+                    break;
+                }
+                case PLACE_FIFTH_CONE:
+                {
+                    if (!drive.isBusy())
+                    {
+                        liftController.CurrentStatus = LiftController.LiftStatus.MID;
+                        servo4BarController.Collect_Position = Servo4BarController.Fifth_Cone_Position_MID;
+                        servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.COLLECT_DRIVE;
+                        motorColectareController.CurrentStatus=  MotorColectareController.MotorColectare.EXTENDED;
+
+                        timerLift.reset();
+                        status = STROBOT.SIXTH_CYCLE;
+                    }
+                    break;
+                }
+                case SIXTH_CYCLE:
+                {
+                    if (timerLift.seconds()>0.75)
+                    {
+                        liftController.CurrentStatus = LiftController.LiftStatus.BASE;
+                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_MID.autoControllerStatus.STACK_LEVEL;
                         status = STROBOT.PARK;
                     }
                     break;
                 }
                 case PARK:
                 {
-                    if (timerRetract.seconds()>0.3)
+                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_MID.autoControllerStatus.NOTHING)
                     {
-                        if (tagOfInterest == null)
+                        motorColectareController.CurrentStatus = MotorColectareController.MotorColectare.RETRACTED;
+                        if (tagOfInterest.id == LEFT)
+                        {
+                            drive.followTrajectorySequenceAsync(PARK1);
+                        }
+                        else
+                        if (tagOfInterest.id==RIGHT)
                         {
                             drive.followTrajectorySequenceAsync(PARK2);
                         }
                         else
                         {
-                            if (tagOfInterest.id  == LEFT)
-                            {
-                                drive.followTrajectorySequenceAsync(PARK1);
-                            }
-                            else
-                            if (tagOfInterest.id == MIDDLE)
-                            {
-                                drive.followTrajectorySequenceAsync(PARK2);
-                            }
-                            else
-                            {
-                                drive.followTrajectorySequenceAsync(PARK3);
-                            }
+                            drive.followTrajectorySequenceAsync(PARK3);
                         }
+                        status = STROBOT.STOP_JOC;
+                    }
+                    break;
+                }
+                case SEVENTH_CYCLE:
+                {
+                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_MID.autoControllerStatus.NOTHING)
+                    {
+                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_MID.autoControllerStatus.STACK_LEVEL;
+                        status = STROBOT.PARK;
+                    }
+                    break;
+                }
+                case EIGTH_CYCLE:
+                {
+                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_MID.autoControllerStatus.NOTHING)
+                    {
+                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_MID.autoControllerStatus.STACK_LEVEL;
+                        status = STROBOT.NINTH_CYCLE;
+                    }
+                    break;
+                }
+                case NINTH_CYCLE:
+                {
+                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_MID.autoControllerStatus.NOTHING)
+                    {
+                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_MID.autoControllerStatus.STACK_LEVEL;
+                        status = STROBOT.TENTH_CYCLE;
+                    }
+                    break;
+                }
+                case TENTH_CYCLE:
+                {
+                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_MID.autoControllerStatus.NOTHING)
+                    {
+                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_MID.autoControllerStatus.STACK_LEVEL;
                         status = STROBOT.STOP_JOC;
                     }
                     break;
@@ -381,7 +457,7 @@ public class DreaptaMCyclingAutonomous5_1 extends LinearOpMode {
             sigurantaLiftController.update(robot);
             motorColectareController.update(robot,ColectarePosition, 1);
             liftController.update(robot,LiftPosition,sigurantaLiftController,currentVoltage);
-            autoController51.update(sigurantaLiftController,robot,angle4BarController, turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
+            autoController101.update(sigurantaLiftController,robot,angle4BarController, turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
 
             drive.update();
             telemetry.addData("Pozitie: ", drive.getPoseEstimate());

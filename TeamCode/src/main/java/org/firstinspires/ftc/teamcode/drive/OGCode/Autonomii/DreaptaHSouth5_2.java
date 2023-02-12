@@ -38,7 +38,7 @@ import java.util.List;
 @Config
 @Autonomous(group = "drive")
 
-public class StangaHSouth5_1 extends LinearOpMode {
+public class DreaptaHSouth5_2 extends LinearOpMode {
     enum STROBOT
     {
         START,
@@ -51,19 +51,19 @@ public class StangaHSouth5_1 extends LinearOpMode {
         GO_TO_SCORING_POSITION,
         GO_TO_COLLECTING_POSITION,
     }
-    public static double x_CYCLING_POSITION = -35, y_CYCLING_POSITION = -14, Angle_CYCLING_POSITION = 225;
-    public static double x_COLLECT_POSITION = -32.5, y_COLLECT_POSITION = -12.5, Angle_COLLECT_POSITION = 180;
-    public static double x_PLACE_SOUTH_HIGH = -10, y_PLACE_SOUTH_HIGH = -12, Angle_PLACE_SOUTH_HIGH = 135;
-    public static double x_PARK1 = -55, y_PARK1 = -17, Angle_PARK1 = 90;
-    public static double x_PARK2 = -35, y_PARK2 = -17, Angle_PARK2 = 90;
-    public static double x_PARK3 = -10, y_PARK3 = -17, Angle_PARK3 = 90;
-    public static double Angle_TURN_COLLECT = -42.5;
+    public static double x_CYCLING_POSITION = 35, y_CYCLING_POSITION = -14, Angle_CYCLING_POSITION = 315;
+    public static double x_COLLECT_POSITION = 34.5, y_COLLECT_POSITION = -11.5, Angle_COLLECT_POSITION = 0;
+    public static double x_PLACE_SOUTH_HIGH = 9, y_PLACE_SOUTH_HIGH = -12, Angle_PLACE_SOUTH_HIGH = 47.5;
+    public static double x_PARK1 = 10, y_PARK1 = -17, Angle_PARK1 = 90;
+    public static double x_PARK2 = 35, y_PARK2 = -17, Angle_PARK2 = 90;
+    public static double x_PARK3 = 55, y_PARK3 = -17, Angle_PARK3 = 90;
+    public static double Angle_TURN_COLLECT = 40;
     ElapsedTime asteapta = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime() , timeCollect = new ElapsedTime();
 
 
     @Override
     public void runOpMode() throws InterruptedException {
-        timeOutBaby = 1;
+        timeOutBaby = 0.5;
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         RobotMap robot = new RobotMap(hardwareMap);
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
@@ -114,7 +114,7 @@ public class StangaHSouth5_1 extends LinearOpMode {
         sigurantaLiftController.update(robot);
         int nr=0;
         ElapsedTime timeStart = new ElapsedTime() , timeTurnPlace = new ElapsedTime();
-        Pose2d startPose = new Pose2d(-35, -63, Math.toRadians(270));
+        Pose2d startPose = new Pose2d(35, -63, Math.toRadians(270));
         Pose2d PLACE_SOUTH_HIGH = new Pose2d(x_PLACE_SOUTH_HIGH,y_PLACE_SOUTH_HIGH,Math.toRadians(Angle_PLACE_SOUTH_HIGH));
         Pose2d COLLECT_POSITION = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION));
         drive.setPoseEstimate(startPose);
@@ -183,10 +183,10 @@ public class StangaHSouth5_1 extends LinearOpMode {
                 }
                 case GET_LIFT_UP: {
                     if (!drive.isBusy()) {
-                            liftController.CurrentStatus = LiftController.LiftStatus.HIGH;
-                            timerLift.reset();
-                            status = STROBOT.GET_LIFT_DOWN;
-                        }
+                        liftController.CurrentStatus = LiftController.LiftStatus.HIGH;
+                        timerLift.reset();
+                        status = STROBOT.GET_LIFT_DOWN;
+                    }
                     break;
                 }
                 case GET_LIFT_DOWN: {
@@ -236,7 +236,7 @@ public class StangaHSouth5_1 extends LinearOpMode {
                         }
                         else
                         {
-                            if (timeCollect.seconds()>1.5)
+                            if (timeCollect.seconds()>0.5)
                             {
                                 nr++;
                                 autoControllerTurn51.CurrentStatus = AutoSouthHighJunction5_1.autoControllerSouthHigh.STACK_LEVEL;

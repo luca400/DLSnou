@@ -94,10 +94,10 @@ public class RobotController {
                         angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.PLACE;
                         turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.PLACE;
                     }
-                    if (servo4BarController.CurrentStatus != Servo4BarController.ServoStatus.PLACE_CONE && timerGO_PLACE.seconds()>0.45)
+                    if (timerGO_PLACE.seconds()>0.45)
                     {
-
-                        servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.PLACE_CONE;
+                        Robot.left4Bar.setPosition(Servo4BarController.Place_Cone_Position);
+                        Robot.right4Bar.setPosition(Servo4BarController.Place_Cone_Position);
                     }
                     if (timerGO_PLACE.seconds()>0.65)
                     {

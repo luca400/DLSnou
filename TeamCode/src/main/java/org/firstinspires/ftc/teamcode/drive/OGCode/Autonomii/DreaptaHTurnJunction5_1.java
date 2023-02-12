@@ -47,7 +47,7 @@ public class DreaptaHTurnJunction5_1 extends LinearOpMode {
         TURN_TO_PLACE,
         START_CYCLE,
     }
-    public static double x_CYCLING_POSITION = 34.5, y_CYCLING_POSITION = -14, Angle_CYCLING_POSITION = 315;
+    public static double x_CYCLING_POSITION = 35.5, y_CYCLING_POSITION = -14, Angle_CYCLING_POSITION = 315;
     public static double x_PARK1 = 10, y_PARK1 = -17, Angle_PARK1 = 90;
     public static double x_PARK2 = 35, y_PARK2 = -17, Angle_PARK2 = 90;
     public static double x_PARK3 = 55, y_PARK3 = -17, Angle_PARK3 = 90;
@@ -270,9 +270,9 @@ public class DreaptaHTurnJunction5_1 extends LinearOpMode {
             turnClawController.update(robot);
             servo4BarController.update(robot);
             sigurantaLiftController.update(robot);
-            motorColectareController.update(robot,ColectarePosition, 0.6);
+            motorColectareController.update(robot,ColectarePosition, 1);
             liftController.update(robot,LiftPosition,sigurantaLiftController,currentVoltage);
-            autoControllerTurn51.update(robot,angle4BarController, turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
+            autoControllerTurn51.update(sigurantaLiftController,robot,angle4BarController, turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
 
             drive.update();
             telemetry.addData("Pozitie: ", drive.getPoseEstimate());

@@ -27,9 +27,9 @@ public class Servo4BarController {
     }
     public static ServoStatus CurrentStatus = INITIALIZE,PreviousStatus = INITIALIZE,WhereFromIntermediary = COLLECT_DRIVE;
     ElapsedTime time = new ElapsedTime();
-    public static double Ground_Position=0.90, Second_Cone_Position=0.86, Third_Cone_Position=0.82, Fourth_Cone_Position = 0.8, Fifth_Cone_Position = 0.775 , Fifth_Cone_Position_MID = 0.70, groundJunctionPosition  = 0.92;
+    public static double Ground_Position=0.90, Second_Cone_Position=0.86, Third_Cone_Position=0.83, Fourth_Cone_Position = 0.8, Fifth_Cone_Position = 0.755 , Fifth_Cone_Position_MID = 0.765, groundJunctionPosition  = 0.92;
     public static double Collect_Position = 0.85 , Place_Cone_Position = 0.24, Intermediary_Position =0.5 , Drive_Position = 0.5;
-    public static double Collect_Drive = 0.90 , Low_Position = 0.6;
+    public static double Collect_Drive = 0.915 , Low_Position = 0.6;
     public static double Fallen_Cones = 0.85;
     int salut =0;
     public void update(RobotMap Robot)
