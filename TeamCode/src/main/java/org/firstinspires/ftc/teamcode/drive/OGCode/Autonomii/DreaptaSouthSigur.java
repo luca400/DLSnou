@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode.drive.OGCode.Autonomii;
 
+
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction5_1.autoControllerSouthHigh.PLACE_CONE;
 import static org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive.timeOutBaby;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -14,6 +15,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.OGCode.Angle4BarController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.AprilTagDetectionPipeline;
+import org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction5_1;
 import org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoTurnJunction5_1;
 import org.firstinspires.ftc.teamcode.drive.OGCode.BiggerController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.CloseClawController;
@@ -39,7 +41,7 @@ import java.util.List;
 @Config
 @Autonomous(group = "drive")
 
-public class DreaptaHTurnJunction5_1 extends LinearOpMode {
+public class DreaptaSouthSigur extends LinearOpMode {
     enum STROBOT
     {
         START,
@@ -47,16 +49,19 @@ public class DreaptaHTurnJunction5_1 extends LinearOpMode {
         PARK,
         STOP_JOC,
         GET_LIFT_UP,
-        GO_CYCLE,
-        TURN_TO_PLACE,
-        START_CYCLE,
+        TURN_TO_COLLECT,
+        COLLECT,
+        GO_TO_SCORING_POSITION,
+        GO_TO_COLLECTING_POSITION,
     }
-    public static double x_CYCLING_POSITION = 35.5, y_CYCLING_POSITION = -12 , Angle_CYCLING_POSITION = 315;
-    public static double x_PARK1 = 10, y_PARK1 = -17, Angle_PARK1 = 90;
-    public static double x_PARK2 = 35, y_PARK2 = -17, Angle_PARK2 = 90;
-    public static double x_PARK3 = 55, y_PARK3 = -17, Angle_PARK3 = 90;
-    public static double Angle_TURN_COLLECT = 90 ,Angle_TURN_TO_PLACE = -90;
-    ElapsedTime asteapta = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime();
+    public static double x_CYCLING_POSITION = 36, y_CYCLING_POSITION = -12.5, Angle_CYCLING_POSITION = 315;
+    public static double x_COLLECT_POSITION = 26, y_COLLECT_POSITION = -12, Angle_COLLECT_POSITION = 0;
+    public static double x_PLACE_SOUTH_HIGH = 10, y_PLACE_SOUTH_HIGH = -12, Angle_PLACE_SOUTH_HIGH = 47.5;
+    public static double x_PARK1 = 8, y_PARK1 = -8, Angle_PARK1 = 90;
+    public static double x_PARK2 = 35, y_PARK2 = -8, Angle_PARK2 = 90;
+    public static double x_PARK3 = 55, y_PARK3 = -8, Angle_PARK3 = 90;
+    public static double Angle_TURN_COLLECT = 40;
+    ElapsedTime asteapta = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime() , timeCollect = new ElapsedTime();
 
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -82,16 +87,17 @@ public class DreaptaHTurnJunction5_1 extends LinearOpMode {
 
     AprilTagDetection tagOfInterest = null;
 
+
     @Override
     public void runOpMode() throws InterruptedException {
-        timeOutBaby = 0.25;
+        timeOutBaby = 0.5;
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         RobotMap robot = new RobotMap(hardwareMap);
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
+
         double currentVoltage;
         VoltageSensor batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
         currentVoltage = batteryVoltageSensor.getVoltage();
-
 
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
@@ -103,7 +109,7 @@ public class DreaptaHTurnJunction5_1 extends LinearOpMode {
         RobotController robotController = new RobotController();
         BiggerController biggerController = new BiggerController();
         LiftController liftController = new LiftController();
-        AutoTurnJunction5_1 autoControllerTurn51 = new AutoTurnJunction5_1();
+        AutoSouthHighJunction5_1 autoControllerTurn51 = new AutoSouthHighJunction5_1();
         SigurantaLiftController sigurantaLiftController = new SigurantaLiftController();
         Angle4BarController angle4BarController = new Angle4BarController();
         servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.INITIALIZE;
@@ -119,15 +125,16 @@ public class DreaptaHTurnJunction5_1 extends LinearOpMode {
 
         autoControllerTurn51.Cone_Stack_Level  =5;
         autoControllerTurn51.AutoLiftStatus = LiftController.LiftStatus.HIGH;
-        autoControllerTurn51.LimitLift = 0.85;
-
+        autoControllerTurn51.LimitLift = 0.6;
+        motorColectareController.NrConAuto = 5;
+        robot.turnClaw.setPosition(TurnClawController.pozTurnClaw_COLLECT);
 
         angle4BarController.update(robot);
         closeClawController.update(robot);
         turnClawController.update(robot);
         servo4BarController.update(robot);
         sigurantaLiftController.update(robot);
-        motorColectareController.update(robot,0, 0.6 , currentVoltage);
+        motorColectareController.update(robot,0, 0.6,currentVoltage);
         liftController.update(robot,0,sigurantaLiftController,currentVoltage);
         robotController.update(robot,sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
         biggerController.update(robotController,closeClawController,motorColectareController);
@@ -136,25 +143,29 @@ public class DreaptaHTurnJunction5_1 extends LinearOpMode {
         int nr=0;
         ElapsedTime timeStart = new ElapsedTime() , timeTurnPlace = new ElapsedTime();
         Pose2d startPose = new Pose2d(35, -63, Math.toRadians(270));
+        Pose2d PLACE_SOUTH_HIGH = new Pose2d(x_PLACE_SOUTH_HIGH,y_PLACE_SOUTH_HIGH,Math.toRadians(Angle_PLACE_SOUTH_HIGH));
+        Pose2d COLLECT_POSITION = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION));
         drive.setPoseEstimate(startPose);
         STROBOT status = STROBOT.START;
         TrajectorySequence PLACE_PRELOAD = drive.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(x_CYCLING_POSITION,y_CYCLING_POSITION))
-                .lineTo(new Vector2d(x_CYCLING_POSITION-5,y_CYCLING_POSITION))
+                .lineToLinearHeading(new Pose2d(x_CYCLING_POSITION,y_CYCLING_POSITION,Math.toRadians(Angle_CYCLING_POSITION)))
                 .build();
         TrajectorySequence TURN_TO_COLLECT = drive.trajectorySequenceBuilder(PLACE_PRELOAD.end())
                 .turn(Math.toRadians(Angle_TURN_COLLECT))
                 .build();
-        TrajectorySequence TURN_TO_PLACE = drive.trajectorySequenceBuilder(TURN_TO_COLLECT.end())
-                .turn(Math.toRadians(Angle_TURN_TO_PLACE))
+        TrajectorySequence GO_TO_PLACE_POSITION = drive.trajectorySequenceBuilder(COLLECT_POSITION)
+                .lineToLinearHeading(PLACE_SOUTH_HIGH)
                 .build();
-        TrajectorySequence PARK1 = drive.trajectorySequenceBuilder(TURN_TO_PLACE.end())
+        TrajectorySequence GO_TO_COLLECTING_POSITION = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH)
+                .lineToLinearHeading(COLLECT_POSITION)
+                .build();
+        TrajectorySequence PARK1 = drive.trajectorySequenceBuilder(GO_TO_PLACE_POSITION.end())
                 .lineToLinearHeading(new Pose2d(x_PARK1,y_PARK1,Math.toRadians(Angle_PARK1)))
                 .build();
-        TrajectorySequence PARK2 = drive.trajectorySequenceBuilder(TURN_TO_PLACE.end())
+        TrajectorySequence PARK2 = drive.trajectorySequenceBuilder(GO_TO_PLACE_POSITION.end())
                 .lineToLinearHeading(new Pose2d(x_PARK2,y_PARK2,Math.toRadians(Angle_PARK2)))
                 .build();
-        TrajectorySequence PARK3 = drive.trajectorySequenceBuilder(TURN_TO_PLACE.end())
+        TrajectorySequence PARK3 = drive.trajectorySequenceBuilder(GO_TO_PLACE_POSITION.end())
                 .lineToLinearHeading(new Pose2d(x_PARK3,y_PARK3,Math.toRadians(Angle_PARK3)))
                 .build();
         int cameraMonitorViewId = hardwareMap.appContext
@@ -192,86 +203,107 @@ public class DreaptaHTurnJunction5_1 extends LinearOpMode {
         {
             int ColectarePosition = robot.motorColectareStanga.getCurrentPosition();
             int LiftPosition = robot.dreaptaLift.getCurrentPosition(); /// folosesc doar encoderul de la dreaptaLift , celalalt nu exista
-            switch (status)
-            {
-                case START:
-                {
+            switch (status) {
+                case START: {
                     drive.followTrajectorySequenceAsync(PLACE_PRELOAD);
                     status = STROBOT.GET_LIFT_UP;
                     break;
                 }
-                case GET_LIFT_UP:
-                {
+                case GET_LIFT_UP: {
+                    if (!drive.isBusy()) {
+                        liftController.CurrentStatus = LiftController.LiftStatus.HIGH_SOUTH;
+                        timerLift.reset();
+                        status = STROBOT.GET_LIFT_DOWN;
+                    }
+                    break;
+                }
+                case GET_LIFT_DOWN: {
                     if (nr==0)
                     {
-                        if (!drive.isBusy())
-                        {
-                            liftController.CurrentStatus = LiftController.LiftStatus.HIGH;
+                        if (timerLift.seconds() > 0.85) {
                             timerLift.reset();
-                            status = STROBOT.GET_LIFT_DOWN;
+                            liftController.CurrentStatus = LiftController.LiftStatus.BASE;
+                            status = STROBOT.TURN_TO_COLLECT;
                         }
                     }
                     else
                     {
-                        if (timeTurnPlace.seconds()>0.2)
-                        {
-                            liftController.CurrentStatus = LiftController.LiftStatus.HIGH;
+                        if (timerLift.seconds() > 0.85) {
                             timerLift.reset();
-                            status = STROBOT.GET_LIFT_DOWN;
+                            liftController.CurrentStatus = LiftController.LiftStatus.BASE;
+                            status = STROBOT.GO_TO_COLLECTING_POSITION;
                         }
                     }
                     break;
                 }
-                case GET_LIFT_DOWN:
+                case TURN_TO_COLLECT:
                 {
-                    if (timerLift.seconds()>0.85)
+                    if (timerLift.seconds() > 0.45)
                     {
-                        timerLift.reset();
-                        liftController.CurrentStatus = LiftController.LiftStatus.BASE;
-                        status = STROBOT.GO_CYCLE;
+                        timeTurnPlace.reset();
+                        drive.followTrajectorySequenceAsync(TURN_TO_COLLECT);
+                        status = STROBOT.COLLECT;
                     }
                     break;
                 }
-                case GO_CYCLE:
+                case COLLECT:
                 {
-                    if (timerLift.seconds()>0.45)
+                    if (nr==5)
                     {
-                        drive.followTrajectorySequenceAsync(TURN_TO_COLLECT);
-                        nr++;
-                        if (nr==6)
+                        status = STROBOT.PARK;
+                    }
+                    else
+                    {
+                        if (nr==0) {
+                            if (timeTurnPlace.seconds()>0.6)
+                            {
+                                nr++;
+                                autoControllerTurn51.CurrentStatus = AutoSouthHighJunction5_1.autoControllerSouthHigh.STACK_LEVEL;
+                                status = STROBOT.GO_TO_SCORING_POSITION;
+                            }
+                        }
+                        else
+                        {
+                            if (timeCollect.seconds()>1)
+                            {
+                                motorColectareController.NrConAuto = motorColectareController.NrConAuto-1;
+                                nr++;
+                                autoControllerTurn51.CurrentStatus = AutoSouthHighJunction5_1.autoControllerSouthHigh.STACK_LEVEL;
+                                status = STROBOT.GO_TO_SCORING_POSITION;
+                            }
+                        }
+                    }
+                    break;
+                }
+                case GO_TO_SCORING_POSITION:
+                {
+                    if (autoControllerTurn51.CurrentStatus == PLACE_CONE)
+                    {
+                        drive.followTrajectorySequenceAsync(GO_TO_PLACE_POSITION);
+                        status = STROBOT.GET_LIFT_UP;
+                    }
+                    break;
+                }
+                case GO_TO_COLLECTING_POSITION:
+                {
+                    if (timerLift.seconds()>0.1)
+                    {
+                        if (nr==5)
                         {
                             status = STROBOT.PARK;
                         }
                         else
                         {
-                            timeStart.reset();
-                            status = STROBOT.START_CYCLE;
+                            drive.followTrajectorySequenceAsync(GO_TO_COLLECTING_POSITION);
+                            timeCollect.reset();
+                            status = STROBOT.COLLECT;
                         }
-                    }
-                    break;
-                }
-                case START_CYCLE:
-                {
-                    if (timeStart.seconds()>0.35)
-                    {
-                        autoControllerTurn51.CurrentStatus = AutoTurnJunction5_1.autoControllerTurnStatus.STACK_LEVEL;
-                        status = STROBOT.TURN_TO_PLACE;
-                    }
-                    break;
-                }
-                case TURN_TO_PLACE:
-                {
-                    if (autoControllerTurn51.CurrentStatus == AutoTurnJunction5_1.autoControllerTurnStatus.NOTHING)
-                    {
-                        drive.followTrajectorySequenceAsync(TURN_TO_PLACE);
-                        timeTurnPlace.reset();
-                        status = STROBOT.GET_LIFT_UP;
                     }
                     break;
                 }
                 case PARK:
                 {
-                    if (timerRetract.seconds()>0.3)
+                    if (!drive.isBusy())
                     {
                         if (Case == PipeLineDetector.Status.VERDE1)
                         {

@@ -2,7 +2,10 @@ package org.firstinspires.ftc.teamcode.drive.OGCode;
 
 
 import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController5_1.autoControllerStatus.NOTHING;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.HALF_WAY;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.THREE_WAY;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.Servo4BarController.ServoStatus.STACK_POSITION;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.TurnClawController.pozTurnClaw_COLLECT;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
@@ -13,6 +16,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController5_1;
 
 import java.util.List;
@@ -28,7 +32,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
     boolean isDown = true, isClosed=false, isTurned = false, isExtended = false;
     double  PrecisionDenominator=1, PrecisionDenominator2=1.25;
 
-    public void robotCentricDrive(DcMotor leftFront,DcMotor leftBack,DcMotor rightFront,DcMotor rightBack, double  lim, boolean StrafesOn)
+    public void robotCentricDrive(DcMotor leftFront,DcMotor leftBack,DcMotor rightFront,DcMotor rightBack, double  lim, boolean StrafesOn , double LeftTrigger,  double RightTrigger)
     {
         double y = gamepad1.right_stick_y; // Remember, this is reversed!
         double x = gamepad1.right_stick_x*1.1;
@@ -36,7 +40,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
         {
             x=0;
         }
-        double rx = gamepad1.left_stick_x*1;
+        double rx = gamepad1.left_stick_x*1 - LeftTrigger + RightTrigger;
 
         rx/=PrecisionDenominator2;
         x/=PrecisionDenominator;
@@ -60,11 +64,11 @@ public class SampleOpModeDLS extends  LinearOpMode {
         rightFront.setPower(frontRightPower);
         rightBack.setPower(backRightPower);
     }
-    public void fieldCentricDrive(BNO055IMU imu,DcMotor leftFront, DcMotor leftBack, DcMotor rightFront, DcMotor rightBack )
+    public void fieldCentricDrive(BNO055IMU imu,DcMotor leftFront, DcMotor leftBack, DcMotor rightFront, DcMotor rightBack , double LeftTrigger , double RightTrigger)
     {
         double y = -gamepad1.left_stick_y; // Remember, this is reversed!
         double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
-        double rx = gamepad1.right_stick_x;
+        double rx = gamepad1.right_stick_x - LeftTrigger + RightTrigger;
 
         // Read inverse IMU heading, as the IMU heading is CW positive
         double botHeading = -imu.getAngularOrientation().firstAngle;
@@ -135,11 +139,12 @@ public class SampleOpModeDLS extends  LinearOpMode {
         robotController.timerTransfer = 0.35;
 
         closeClawController.update(robot);
+        robot.turnClaw.setPosition(pozTurnClaw_COLLECT);
         turnClawController.update(robot);
         angle4BarController.update(robot);
         servo4BarController.update(robot);
         sigurantaLiftController.update(robot);
-        motorColectareController.update(robot,0, 0.6);
+        motorColectareController.update(robot,0, 0.6, currentVoltage);
         liftController.update(robot,0,sigurantaLiftController,currentVoltage);
         robotController.update(robot,sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
         biggerController.update(robotController,closeClawController,motorColectareController);
@@ -191,6 +196,8 @@ public class SampleOpModeDLS extends  LinearOpMode {
         boolean StrafesOn = false;
         String typeOfDrive = "RobotCentric";
         while (opModeIsActive()) {
+            double DistanceSenzorClaw = robot.senzorClaw.getDistance(DistanceUnit.MM);
+            double current4BarPosition = robot.left4Bar.getPosition();
             double hello = imu.getAngularVelocity().xRotationRate;
                 previousGamepad1.copy(currentGamepad1);
                 previousGamepad2.copy(currentGamepad2);
@@ -206,9 +213,9 @@ public class SampleOpModeDLS extends  LinearOpMode {
                 }
             /// DRIVE
             if (typeOfDrive == "RobotCentric") {
-                robotCentricDrive(leftFront, leftBack, rightFront, rightBack, lim,StrafesOn);
+                robotCentricDrive(leftFront, leftBack, rightFront, rightBack, lim,StrafesOn , 0,0);
             } else {
-                fieldCentricDrive(imu, leftFront, leftBack, rightFront, rightBack);
+                fieldCentricDrive(imu, leftFront, leftBack, rightFront, rightBack , 0, 0);
             }
 
             if (timeGetVoltage.seconds()>5)
@@ -217,8 +224,16 @@ public class SampleOpModeDLS extends  LinearOpMode {
                 currentVoltage = batteryVoltageSensor.getVoltage();
             }
 
+            if ((!previousGamepad1.dpad_right && currentGamepad1.dpad_right))
+            {
+                motorColectareController.CurrentStatus = HALF_WAY;
 
-            if ((!previousGamepad2.right_bumper && currentGamepad2.right_bumper)||(!previousGamepad1.right_bumper && currentGamepad1.right_bumper))
+            }
+            if ((!previousGamepad1.dpad_left && currentGamepad1.dpad_left))
+            {
+                motorColectareController.CurrentStatus = THREE_WAY;
+            }
+            if ((!previousGamepad2.right_bumper && currentGamepad2.right_bumper))
             {
                if (closeClawController.CurrentStatus == CloseClawController.closeClawStatus.CLOSED)
                {
@@ -227,30 +242,6 @@ public class SampleOpModeDLS extends  LinearOpMode {
                else{
                    closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
                }
-            }
-            if (!previousGamepad1.square && currentGamepad1.square)
-            {
-                robot.left4Bar.setPosition(Servo4BarController.Fifth_Cone_Position);
-                robot.right4Bar.setPosition(Servo4BarController.Fifth_Cone_Position);
-                Servo4BarController.CurrentStatus = STACK_POSITION;
-            }
-            if (!previousGamepad1.triangle && currentGamepad1.triangle)
-            {
-                robot.left4Bar.setPosition(Servo4BarController.Fourth_Cone_Position);
-                robot.right4Bar.setPosition(Servo4BarController.Fourth_Cone_Position);
-                Servo4BarController.CurrentStatus = STACK_POSITION;
-            }
-            if (!previousGamepad1.circle && currentGamepad1.circle)
-            {
-                robot.left4Bar.setPosition(Servo4BarController.Third_Cone_Position);
-                robot.right4Bar.setPosition(Servo4BarController.Third_Cone_Position);
-                Servo4BarController.CurrentStatus = STACK_POSITION;
-            }
-            if (!previousGamepad1.cross && currentGamepad1.cross)
-            {
-                robot.left4Bar.setPosition(Servo4BarController.Second_Cone_Position);
-                robot.right4Bar.setPosition(Servo4BarController.Second_Cone_Position);
-                Servo4BarController.CurrentStatus = STACK_POSITION;
             }
             if (currentGamepad2.left_trigger>0)
             {
@@ -266,9 +257,43 @@ public class SampleOpModeDLS extends  LinearOpMode {
                 }
                 if ((!previousGamepad2.dpad_left && currentGamepad2.dpad_left))
                 {
-                    AutoController5_1.CurrentStatus = AutoController5_1.autoControllerStatus.STACK_LEVEL;
+                    robot.left4Bar.setPosition(servo4BarController.Fallen_Cones);
+                    robot.right4Bar.setPosition(servo4BarController.Fallen_Cones);
+                    angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.COLLECT_CONES;
+                    servo4BarController.CurrentStatus = STACK_POSITION;
                 }
-
+                if (!previousGamepad2.square && currentGamepad2.square)
+                {
+                    robot.left4Bar.setPosition(Servo4BarController.Fifth_Cone_Position);
+                    robot.right4Bar.setPosition(Servo4BarController.Fifth_Cone_Position);
+                    turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
+                    angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
+                    Servo4BarController.CurrentStatus = STACK_POSITION;
+                }
+                if (!previousGamepad2.triangle && currentGamepad2.triangle)
+                {
+                    robot.left4Bar.setPosition(Servo4BarController.Fourth_Cone_Position);
+                    robot.right4Bar.setPosition(Servo4BarController.Fourth_Cone_Position);
+                    turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
+                    angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
+                    Servo4BarController.CurrentStatus = STACK_POSITION;
+                }
+                if (!previousGamepad2.circle && currentGamepad2.circle)
+                {
+                    robot.left4Bar.setPosition(Servo4BarController.Third_Cone_Position);
+                    robot.right4Bar.setPosition(Servo4BarController.Third_Cone_Position);
+                    turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
+                    angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
+                    Servo4BarController.CurrentStatus = STACK_POSITION;
+                }
+                if (!previousGamepad2.cross && currentGamepad2.cross)
+                {
+                    robot.left4Bar.setPosition(Servo4BarController.Second_Cone_Position);
+                    robot.right4Bar.setPosition(Servo4BarController.Second_Cone_Position);
+                    turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
+                    angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
+                    Servo4BarController.CurrentStatus = STACK_POSITION;
+                }
             }
             else
             {
@@ -285,62 +310,107 @@ public class SampleOpModeDLS extends  LinearOpMode {
                 {
                     robot.left4Bar.setPosition(servo4BarController.groundJunctionPosition);
                     robot.right4Bar.setPosition(servo4BarController.groundJunctionPosition);
+                    angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
                     servo4BarController.CurrentStatus = STACK_POSITION;
                 }
                 if ((!previousGamepad2.dpad_left && currentGamepad2.dpad_left))
                 {
                     robotController.CurrentStatus = RobotController.RobotControllerStatus.GO_PLACE_STACK;
                 }
+                if (!previousGamepad2.cross && currentGamepad2.cross)
+                {
+                    if (liftController.CurrentStatus!= LiftController.LiftStatus.HIGH_DRIVE)
+                    {
+                        liftController.CurrentStatus = LiftController.LiftStatus.HIGH_DRIVE;
+                    }
+                    else
+                    {
+                        liftController.CurrentStatus = LiftController.LiftStatus.BASE;
+                    }
+                }
+                if (!previousGamepad2.square && currentGamepad2.square  )
+                {
+                    if (liftController.CurrentStatus!= LiftController.LiftStatus.BASE)
+                    {
+                        liftController.CurrentStatus = LiftController.LiftStatus.BASE;
+                    }
+                    else
+                    {
+                        liftController.CurrentStatus = LiftController.LiftStatus.BASE;
+                    }
+                }
+                if ( (!previousGamepad2.triangle && currentGamepad2.triangle) )
+                {
+                    if (liftController.CurrentStatus!= LiftController.LiftStatus.LOW)
+                    {
+                        liftController.CurrentStatus = LiftController.LiftStatus.LOW;
+                    }
+                    else
+                    {
+                        liftController.CurrentStatus = LiftController.LiftStatus.BASE;
+                    }
+                }
+                if ( (!previousGamepad2.circle && currentGamepad2.circle) )
+                {
+                    if (liftController.CurrentStatus!= LiftController.LiftStatus.MID)
+                    {
+                        liftController.CurrentStatus = LiftController.LiftStatus.MID;
+                    }
+                    else
+                    {
+                        liftController.CurrentStatus = LiftController.LiftStatus.BASE;
+                    }
+                }
             }
-            if (!previousGamepad2.cross && currentGamepad2.cross)
+            if (!previousGamepad1.left_bumper && currentGamepad1.left_bumper)
             {
-                if (liftController.CurrentStatus!= LiftController.LiftStatus.HIGH)
-                {
-                    liftController.CurrentStatus = LiftController.LiftStatus.HIGH;
-                }
-                else
-                {
-                    liftController.CurrentStatus = LiftController.LiftStatus.BASE;
-                }
+                robot.left4Bar.setPosition(current4BarPosition-0.05);
+                robot.right4Bar.setPosition(current4BarPosition-0.05);
+                Servo4BarController.CurrentStatus = STACK_POSITION;
             }
-            if (!previousGamepad2.square && currentGamepad2.square  )
+            if (!previousGamepad1.right_bumper && currentGamepad1.right_bumper)
             {
-                if (liftController.CurrentStatus!= LiftController.LiftStatus.BASE)
-                {
-                    liftController.CurrentStatus = LiftController.LiftStatus.BASE;
-                }
-                else
-                {
-                    liftController.CurrentStatus = LiftController.LiftStatus.BASE;
-                }
+                robot.left4Bar.setPosition(current4BarPosition+0.05);
+                robot.right4Bar.setPosition(current4BarPosition+0.05);
+                Servo4BarController.CurrentStatus = STACK_POSITION;
             }
-            if ( (!previousGamepad2.triangle && currentGamepad2.triangle) )
+            if (!previousGamepad1.square && currentGamepad1.square)
             {
-                if (liftController.CurrentStatus!= LiftController.LiftStatus.LOW)
-                {
-                    liftController.CurrentStatus = LiftController.LiftStatus.LOW;
-                }
-                else
-                {
-                    liftController.CurrentStatus = LiftController.LiftStatus.BASE;
-                }
+                robot.left4Bar.setPosition(Servo4BarController.Fifth_Cone_Position);
+                robot.right4Bar.setPosition(Servo4BarController.Fifth_Cone_Position);
+                turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
+                angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
+                Servo4BarController.CurrentStatus = STACK_POSITION;
             }
-            if ( (!previousGamepad2.circle && currentGamepad2.circle) )
+            if (!previousGamepad1.triangle && currentGamepad1.triangle)
             {
-                if (liftController.CurrentStatus!= LiftController.LiftStatus.MID)
-                {
-                    liftController.CurrentStatus = LiftController.LiftStatus.MID;
-                }
-                else
-                {
-                    liftController.CurrentStatus = LiftController.LiftStatus.BASE;
-                }
+                robot.left4Bar.setPosition(Servo4BarController.Fourth_Cone_Position);
+                robot.right4Bar.setPosition(Servo4BarController.Fourth_Cone_Position);
+                turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
+                angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
+                Servo4BarController.CurrentStatus = STACK_POSITION;
+            }
+            if (!previousGamepad1.circle && currentGamepad1.circle)
+            {
+                robot.left4Bar.setPosition(Servo4BarController.Third_Cone_Position);
+                robot.right4Bar.setPosition(Servo4BarController.Third_Cone_Position);
+                turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
+                angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
+                Servo4BarController.CurrentStatus = STACK_POSITION;
+            }
+            if (!previousGamepad1.cross && currentGamepad1.cross)
+            {
+                robot.left4Bar.setPosition(Servo4BarController.Second_Cone_Position);
+                robot.right4Bar.setPosition(Servo4BarController.Second_Cone_Position);
+                turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
+                angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
+                Servo4BarController.CurrentStatus = STACK_POSITION;
             }
             if ((!previousGamepad2.left_bumper && currentGamepad2.left_bumper))
             {
                 if (motorColectareController.CurrentStatus == MotorColectareController.MotorColectare.RETRACTED)
                 {
-                    motorColectareController.CurrentStatus = MotorColectareController.MotorColectare.EXTENDED;
+                    motorColectareController.CurrentStatus = MotorColectareController.MotorColectare.EXTENDED_1050;
                 }
                 else
                 {
@@ -362,9 +432,14 @@ public class SampleOpModeDLS extends  LinearOpMode {
                 }
             }
 
-            int ColectarePosition = robot.encoderMotorColectare.getCurrentPosition();
+            int ColectarePosition = robot.motorColectareStanga.getCurrentPosition();
             int LiftPosition = robot.dreaptaLift.getCurrentPosition(); /// folosesc doar encoderul de la dreaptaLift , celalalt nu exista.
 
+            if (gamepad1.left_trigger >0)
+            {
+                PrecisionDenominator = 2;
+                PrecisionDenominator2 = 2.75;
+            }
             if (servo4BarController.CurrentStatus == Servo4BarController.ServoStatus.COLLECT_DRIVE)
             {
                 PrecisionDenominator2=2.75;
@@ -381,9 +456,12 @@ public class SampleOpModeDLS extends  LinearOpMode {
                 PrecisionDenominator = 1;
                 PrecisionDenominator2 = 1.5;
             }
-            if (gamepad1.left_trigger > 0)
+            if (servo4BarController.CurrentStatus == Servo4BarController.ServoStatus.COLLECT_DRIVE)
             {
-                PrecisionDenominator = 2;
+                if (DistanceSenzorClaw<40)
+                {
+                    closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
+                }
             }
             biggerController.update(robotController,closeClawController,motorColectareController);
             robotController.update(robot,sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
@@ -391,7 +469,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
             turnClawController.update(robot);
             servo4BarController.update(robot);
             sigurantaLiftController.update(robot);
-            motorColectareController.update(robot,ColectarePosition, 0.75);
+            motorColectareController.update(robot,ColectarePosition, 1, currentVoltage);
             liftController.update(robot,LiftPosition,sigurantaLiftController,currentVoltage);
             autoController51.update(sigurantaLiftController,robot,angle4BarController,turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
             allCycleController.update(robot, sigurantaLiftController, angle4BarController,turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);

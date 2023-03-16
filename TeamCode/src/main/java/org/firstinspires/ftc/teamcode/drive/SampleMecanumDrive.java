@@ -55,14 +55,13 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(3, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(5, 0, 0);
-
-    public static double LATERAL_MULTIPLIER = 1.411;
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(6, 0, 0);
+    public static double LATERAL_MULTIPLIER = 1.3888346727898966704936854190586;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
-    public static double timeOutBaby = 0.5;
+    public static double timeOutBaby = 1.5;
     private TrajectorySequenceRunner trajectorySequenceRunner;
 
     private static final TrajectoryVelocityConstraint VEL_CONSTRAINT = getVelocityConstraint(MAX_VEL, MAX_ANG_VEL, TRACK_WIDTH);

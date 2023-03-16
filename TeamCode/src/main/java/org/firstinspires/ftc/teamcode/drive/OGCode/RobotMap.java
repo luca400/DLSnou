@@ -7,6 +7,7 @@ import android.hardware.Sensor;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -24,16 +25,17 @@ public class RobotMap {
 
     public Servo left4Bar = null;
     public Servo right4Bar = null;
-    Servo turnClaw = null;
+    public Servo turnClaw = null;
     Servo closeClaw = null;
     Servo servoLift = null;
     Servo sigurantaLift = null;
     Servo angle4Bar = null;
-    public DcMotorEx motorColectare = null;
+    DistanceSensor senzorClaw = null;
+    public DcMotorEx motorColectareStanga = null;
+    public DcMotorEx motorColectareDreapta = null;
     public DcMotorEx dreaptaLift = null;
     DcMotorEx stangaLift = null;
-    public Encoder encoderMotorColectare = null;
-
+    public static int xAI = 300,yAI = 150,xBI = 320,yBI = 180;
     public RobotMap(HardwareMap Init)
     {
         left4Bar = Init.get(Servo.class, "left4Bar");
@@ -44,12 +46,13 @@ public class RobotMap {
         sigurantaLift = Init.get(Servo.class,"sigurantaLift");
         angle4Bar = Init.get(Servo.class,"angle4Bar");
 
-        motorColectare = Init.get(DcMotorEx.class, "motorColectare");
+        motorColectareStanga = Init.get(DcMotorEx.class, "motorColectareStanga");
+        motorColectareDreapta = Init.get(DcMotorEx.class, "motorColectareDreapta");
         stangaLift = Init.get(DcMotorEx.class, "stangaLift");
         dreaptaLift = Init.get(DcMotorEx.class, "dreaptaLift");
 
 
-        right4Bar.setDirection(Servo.Direction.REVERSE);
+        left4Bar.setDirection(Servo.Direction.REVERSE);
         stangaLift.setDirection(DcMotorSimple.Direction.REVERSE);
 
         dreaptaLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -57,11 +60,17 @@ public class RobotMap {
         stangaLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         dreaptaLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        motorColectare.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorColectare.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        encoderMotorColectare = new Encoder(Init.get(DcMotorEx.class, "motorColectare"));
-        //encoderMotorColectare.setDirection(Encoder.Direction.REVERSE);
-        motorColectare.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorColectare.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorColectareStanga.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorColectareStanga.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorColectareStanga.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
+
+        motorColectareDreapta.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorColectareDreapta.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorColectareDreapta.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorColectareDreapta.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        senzorClaw = Init.get(DistanceSensor.class,"senzorClaw");
     }
 }

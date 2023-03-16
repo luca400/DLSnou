@@ -37,17 +37,17 @@ import java.util.List;
 @Config
 public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 8192;
-    public static double WHEEL_RADIUS = 0.748031; // in
+    public static double WHEEL_RADIUS = 0.6889764; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-    public static double PARALLEL_X = -4.67676; // X is the up and down direction
-    public static double PARALLEL_Y = -2.67716; // Y is the strafe direction
+    public static double PARALLEL_X = -4.68425197; // X is the up and down direction
+    public static double PARALLEL_Y = -2.7263779527559055118110236220472; // Y is the strafe direction
 
-    public static double PERPENDICULAR_X = -3.9;
-    public static double PERPENDICULAR_Y = 0.52598;
+    public static double PERPENDICULAR_X = -7.1622047244094488188976377952756;
+    public static double PERPENDICULAR_Y = 1.3377952755905511811023622047244;
 
-    public static double X_MULTIPLIER = 1.0003019827183181625581723697118; // Multiplier in the X direction
-    public static double Y_MULTIPLIER = 1.000179543692114194415290804387; // Multiplier in the Y direction
+    public static double X_MULTIPLIER = 1.000853144114486382927732271426; // Multiplier in the X direction
+    public static double Y_MULTIPLIER = 1.0022810823382951011759606222331; // Multiplier in the Y direction
     // Parallel/Perpendicular to the forward axis
     // Parallel wheel is parallel to the forward axis
     // Perpendicular is perpendicular to the forward axis
@@ -64,8 +64,8 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
         this.drive = drive;
 
         perpendicularEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "stangaLift"));
-        parallelEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftEncoder"));
-        parallelEncoder.setDirection(Encoder.Direction.REVERSE);
+        parallelEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "motorColectareDreapta"));
+        //parallelEncoder.setDirection(Encoder.Direction.REVERSE);
         perpendicularEncoder.setDirection(Encoder.Direction.REVERSE);
         // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
 

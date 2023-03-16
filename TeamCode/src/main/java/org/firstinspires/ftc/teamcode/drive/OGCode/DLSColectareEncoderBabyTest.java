@@ -20,12 +20,12 @@ import java.util.List;
 @Autonomous(group = "Testers")
 public class DLSColectareEncoderBabyTest extends LinearOpMode {
     public static double DISTANCE = 60; // in
-    public static double Kp = 0.0015;
-    public static double Ki = 0.0015;
-    public static double Kd = 0.0002;
-    public static double maxSpeed = 0.65;
-    public static double RetractedPosition = -75 , ExtendedPosition = 1600;
-    public static double vMax = 50000, AccMax = 50000, JerkMax =50000 , EndPos = 1700;
+    public static double Kp = 0;
+    public static double Ki = 0;
+    public static double Kd = 0;
+    public static double maxSpeed = 1;
+    public static double RetractedPosition = 0 , ExtendedPosition = 700;
+    public static double vMax = 0, AccMax = 0, JerkMax =0 , EndPos = 700;
     int TargetLift = 0;
     ElapsedTime timerPID = new ElapsedTime();
 
@@ -41,15 +41,6 @@ public class DLSColectareEncoderBabyTest extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         RobotMap robot = new RobotMap(hardwareMap);
         SimplePIDController hello = new SimplePIDController(Kp,Ki,Kd);
-        robot.left4Bar.setPosition(0.6);
-        robot.right4Bar.setPosition(0.6);
-        MotionProfile profile = MotionProfileGenerator.generateSimpleMotionProfile(
-                new MotionState(0, 0, 0),
-                new MotionState(EndPos, 0, 0),
-                vMax,
-                AccMax,
-                JerkMax
-        );
         waitForStart();
 
         if (isStopRequested()) return;
@@ -59,12 +50,11 @@ public class DLSColectareEncoderBabyTest extends LinearOpMode {
         hello.targetValue = RetractedPosition;
         while (!isStopRequested() && opModeIsActive())
         {
-            int ColectarePosition = robot.encoderMotorColectare.getCurrentPosition();
-            MotionState bonGiorno = profile.get(now.seconds());
-            hello.targetValue = bonGiorno.getX();
+            int ColectarePosition = robot.motorColectareStanga.getCurrentPosition();
             double powerColectare = hello.update(ColectarePosition);
             powerColectare = Math.max(-1,Math.min(powerColectare,1));
-            robot.motorColectare.setPower(powerColectare);
+            robot.motorColectareStanga.setPower(powerColectare);
+            robot.motorColectareDreapta.setPower(powerColectare);
             if (changePositions.seconds()>4)
             {
                 if (hello.targetValue == RetractedPosition )
@@ -81,9 +71,6 @@ public class DLSColectareEncoderBabyTest extends LinearOpMode {
             telemetry.addData("powerColectare", powerColectare);
             telemetry.addData("TargetLift",hello.targetValue);
             telemetry.addData("Error", hello.measuredError(ColectarePosition));
-            telemetry.addData("MotionProfilePosition",bonGiorno.getX());
-            telemetry.addData("MotionProfileVelocity",bonGiorno.getV());
-            telemetry.addData("MotionProfileAcceleration",bonGiorno.getA());
             if (Kp!=hello.p || Kd!=hello.d || Ki!=hello.i || maxSpeed !=hello.maxOutput )
             {
                 hello.p = Kp;

@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.drive.OGCode.Autonomii;
 
-import static org.firstinspires.ftc.teamcode.drive.OGCode.TurnClawController.pozTurnClaw_COLLECT;
 import static org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive.timeOutBaby;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -16,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.OGCode.Angle4BarController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.AprilTagDetectionPipeline;
 import org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController10_1;
-import org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController10_1_BRATJOS_MID;
+import org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController10_1_BRATJOS_HIGH;
 import org.firstinspires.ftc.teamcode.drive.OGCode.BiggerController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.CloseClawController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.LiftController;
@@ -50,7 +49,7 @@ public static double x_CYCLING_POSITION = 33, y_CYCLING_POSITION = -3, Angle_CYC
 @Config
 @Autonomous(group = "drive")
 
-public class DreaptaBRATJOSMCyclingAutonomous10_1 extends LinearOpMode {
+public class DreaptaBRATJOSMTOH10_1 extends LinearOpMode {
     enum STROBOT
     {
         START,
@@ -70,13 +69,12 @@ public class DreaptaBRATJOSMCyclingAutonomous10_1 extends LinearOpMode {
         PARK,
         STOP_JOC,
     }
-    public static double x_CYCLING_POSITION = 36, y_CYCLING_POSITION = -22.5, Angle_CYCLING_POSITION = 15;
-    public static double x_INTER_LT = 33, y_INTER_LT = -18, x_INTER_STS = 0, y_INTER_STS = -12, angle_INTER_STS = 180, x_INTER_LT2 = -35, y_INTER_LT2 = -12,
-                         x_INTER_LTL = -33, y_INTER_LTL = -18, angle_INTER_LTL = 167;
-    public static double x_INTER = -35.5, y_INTER = -35 , Angle_PARK_INTER = 270;
-    public static double x_PARK1 = -57, y_PARK1 = -15, Angle_PARK1 = 180;
-    public static double x_PARK2 = -36.5, y_PARK2 = -15, Angle_PARK2 = 180;
-    public static double x_PARK3 = -10, y_PARK3 = -15, Angle_PARK3 = 180;
+    public static double x_CYCLING_POSITION = 36, y_CYCLING_POSITION = -21, Angle_CYCLING_POSITION = 10;
+    public static double x_INTER_LT = 33, y_INTER_LT = -18, x_INTER_STS = 0, y_INTER_STS = -11, angle_INTER_STS = 180, x_INTER_LT2 = -35, y_INTER_LT2 = -11,
+            x_INTER_LTL = -35, y_INTER_LTL = -2, angle_INTER_LTL = 192.5;
+    public static double x_PARK1 = -55, y_PARK1 = -5, Angle_PARK1 = 270;
+    public static double x_PARK2 = -35, y_PARK2 = -5, Angle_PARK2 = 270;
+    public static double x_PARK3 = -15, y_PARK3 = -5, Angle_PARK3 = 270;
     ElapsedTime asteapta = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime();
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -123,7 +121,7 @@ public class DreaptaBRATJOSMCyclingAutonomous10_1 extends LinearOpMode {
         RobotController robotController = new RobotController();
         BiggerController biggerController = new BiggerController();
         LiftController liftController = new LiftController();
-        AutoController10_1_BRATJOS_MID autoController101 = new AutoController10_1_BRATJOS_MID();
+        AutoController10_1_BRATJOS_HIGH autoController101 = new AutoController10_1_BRATJOS_HIGH();
         SigurantaLiftController sigurantaLiftController = new SigurantaLiftController();
         Angle4BarController angle4BarController = new Angle4BarController();
         servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.INITIALIZE;
@@ -135,11 +133,12 @@ public class DreaptaBRATJOSMCyclingAutonomous10_1 extends LinearOpMode {
         sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
         angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
 
+        motorColectareController.NrConAuto = 5;
         autoController101.Cone_Stack_Level  =5;
         autoController101.AutoLiftState = LiftController.LiftStatus.MID;
-        autoController101.LimitLift = 0.55;
+        autoController101.LimitLift = 0.45;
         autoController101.stackNumber = 0;
-        motorColectareController.NrConAuto = 5;
+        robot.turnClaw.setPosition(TurnClawController.pozTurnClaw_COLLECT);
 
 
         angle4BarController.update(robot);
@@ -151,7 +150,7 @@ public class DreaptaBRATJOSMCyclingAutonomous10_1 extends LinearOpMode {
         liftController.update(robot,0,sigurantaLiftController,currentVoltage);
         robotController.update(robot,sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
         biggerController.update(robotController,closeClawController,motorColectareController);
-        robot.turnClaw.setPosition(pozTurnClaw_COLLECT);
+
         sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
         sigurantaLiftController.update(robot);
 
@@ -213,6 +212,7 @@ public class DreaptaBRATJOSMCyclingAutonomous10_1 extends LinearOpMode {
         {
             int ColectarePosition = robot.motorColectareStanga.getCurrentPosition();
             int LiftPosition = robot.dreaptaLift.getCurrentPosition(); /// folosesc doar encoderul de la dreaptaLift , celalalt nu exista
+            double servoPosition = robot.left4Bar.getPosition();
             switch (status)
             {
                 case START:
@@ -242,56 +242,58 @@ public class DreaptaBRATJOSMCyclingAutonomous10_1 extends LinearOpMode {
                 {
                     if (timerLift.seconds()>autoController101.LimitLift)
                     {
+                        motorColectareController.NrConAuto = 5;
                         liftController.CurrentStatus = LiftController.LiftStatus.BASE;
-                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_MID.autoControllerStatus.STACK_LEVEL;
+                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_HIGH.autoControllerStatus.STACK_LEVEL;
                         status =  STROBOT.SECOND_CYCLE;
                     }
                     break;
                 }
                 case SECOND_CYCLE:
                 {
-                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_MID.autoControllerStatus.NOTHING)
+                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_HIGH.autoControllerStatus.NOTHING)
                     {
                         motorColectareController.NrConAuto = 4;
-                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_MID.autoControllerStatus.STACK_LEVEL;
+                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_HIGH.autoControllerStatus.STACK_LEVEL;
                         status = STROBOT.THIRD_CYCLE;
                     }
                     break;
                 }
                 case THIRD_CYCLE:
                 {
-                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_MID.autoControllerStatus.NOTHING)
+                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_HIGH.autoControllerStatus.NOTHING)
                     {
                         motorColectareController.NrConAuto = 3;
-                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_MID.autoControllerStatus.STACK_LEVEL;
+                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_HIGH.autoControllerStatus.STACK_LEVEL;
                         status = STROBOT.FOURTH_CYCLE;
                     }
                     break;
                 }
                 case FOURTH_CYCLE:
                 {
-                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_MID.autoControllerStatus.NOTHING)
+                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_HIGH.autoControllerStatus.NOTHING)
                     {
                         motorColectareController.NrConAuto = 2;
-                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_MID.autoControllerStatus.STACK_LEVEL;
+                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_HIGH.autoControllerStatus.STACK_LEVEL;
                         status = STROBOT.FIFTH_CYCLE;
                     }
                     break;
                 }
                 case FIFTH_CYCLE:
                 {
-                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_MID.autoControllerStatus.NOTHING)
+                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_HIGH.autoControllerStatus.NOTHING)
                     {
                         motorColectareController.NrConAuto = 1;
-                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_MID.autoControllerStatus.STACK_LEVEL;
+                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_HIGH.autoControllerStatus.STACK_LEVEL;
                         status = STROBOT.GO_TO_NEXT_POSITION;
                     }
                     break;
                 }
                 case GO_TO_NEXT_POSITION:
                 {
-                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_MID.autoControllerStatus.NOTHING)
+                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_HIGH.autoControllerStatus.NOTHING)
                     {
+                        autoController101.LimitLift = 0.7;
                         drive.followTrajectorySequenceAsync(GO_TO_NEXT_POSITION);
                         status = STROBOT.PLACE_FIFTH_CONE;
                     }
@@ -302,8 +304,9 @@ public class DreaptaBRATJOSMCyclingAutonomous10_1 extends LinearOpMode {
                     if (!drive.isBusy())
                     {
                         motorColectareController.NrConAuto = 5;
-                        liftController.CurrentStatus = LiftController.LiftStatus.MID;
-                        servo4BarController.Collect_Position = Servo4BarController.Fifth_Cone_Position_MID;
+                        autoController101.AutoLiftState = LiftController.LiftStatus.HIGH;
+                        liftController.CurrentStatus = LiftController.LiftStatus.HIGH;
+                        servo4BarController.Collect_Position = servo4BarController.Fifth_Cone_Position_BRATJOSHIGH;
                         servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.COLLECT_DRIVE;
                         motorColectareController.CurrentStatus=  MotorColectareController.MotorColectare.EXTENDED_10_1;
 
@@ -318,54 +321,54 @@ public class DreaptaBRATJOSMCyclingAutonomous10_1 extends LinearOpMode {
                     {
                         motorColectareController.NrConAuto = 5;
                         liftController.CurrentStatus = LiftController.LiftStatus.BASE;
-                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_MID.autoControllerStatus.STACK_LEVEL;
+                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_HIGH.autoControllerStatus.STACK_LEVEL;
                         status = STROBOT.SEVENTH_CYCLE;
                     }
                     break;
                 }
                 case SEVENTH_CYCLE:
                 {
-                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_MID.autoControllerStatus.NOTHING)
+                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_HIGH.autoControllerStatus.NOTHING)
                     {
                         motorColectareController.NrConAuto = 4;
-                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_MID.autoControllerStatus.STACK_LEVEL;
+                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_HIGH.autoControllerStatus.STACK_LEVEL;
                         status = STROBOT.EIGTH_CYCLE;
                     }
                     break;
                 }
                 case EIGTH_CYCLE:
                 {
-                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_MID.autoControllerStatus.NOTHING)
+                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_HIGH.autoControllerStatus.NOTHING)
                     {
                         motorColectareController.NrConAuto = 3;
-                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_MID.autoControllerStatus.STACK_LEVEL;
+                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_HIGH.autoControllerStatus.STACK_LEVEL;
                         status = STROBOT.NINTH_CYCLE;
                     }
                     break;
                 }
                 case NINTH_CYCLE:
                 {
-                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_MID.autoControllerStatus.NOTHING)
+                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_HIGH.autoControllerStatus.NOTHING)
                     {
                         motorColectareController.NrConAuto = 2;
-                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_MID.autoControllerStatus.STACK_LEVEL;
+                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_HIGH.autoControllerStatus.STACK_LEVEL;
                         status = STROBOT.TENTH_CYCLE;
                     }
                     break;
                 }
                 case TENTH_CYCLE:
                 {
-                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_MID.autoControllerStatus.NOTHING)
+                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_HIGH.autoControllerStatus.NOTHING)
                     {
                         motorColectareController.NrConAuto = 1;
-                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_MID.autoControllerStatus.STACK_LEVEL;
+                        autoController101.CurrentStatus = AutoController10_1_BRATJOS_HIGH.autoControllerStatus.STACK_LEVEL;
                         status = STROBOT.PARK;
                     }
                     break;
                 }
                 case PARK:
                 {
-                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_MID.autoControllerStatus.NOTHING)
+                    if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_HIGH.autoControllerStatus.NOTHING)
                     {
                         motorColectareController.CurrentStatus = MotorColectareController.MotorColectare.RETRACTED;
                         if (Case == PipeLineDetector.Status.VERDE1)
@@ -398,8 +401,8 @@ public class DreaptaBRATJOSMCyclingAutonomous10_1 extends LinearOpMode {
             autoController101.update(sigurantaLiftController,robot,angle4BarController, turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
 
             drive.update();
-            telemetry.addData("PozColectare",ColectarePosition);
             telemetry.addData("Pozitie: ", drive.getPoseEstimate());
+            telemetry.addData("Pozitie servo: ", servoPosition);
             // telemetry.addData("caz:", Case);
             telemetry.addData("Status",status);
             telemetry.update();

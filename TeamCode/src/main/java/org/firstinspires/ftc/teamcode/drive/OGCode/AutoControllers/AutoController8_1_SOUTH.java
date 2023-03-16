@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers;
 
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoTurnJunction5_1.autoControllerTurnStatus.GET_LIFT_DOWN;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoTurnJunction5_1.autoControllerTurnStatus.CLOSE_THE_CLAW;
-
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoTurnJunction5_1.autoControllerTurnStatus.FOURBAR_DOWN;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoTurnJunction5_1.autoControllerTurnStatus.NOTHING;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoTurnJunction5_1.autoControllerTurnStatus.PLACE_CONE;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoTurnJunction5_1.autoControllerTurnStatus.RETRIEVE_CONE;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController8_1_SOUTH.autoControllerStatus.CLOSE_THE_CLAW;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController8_1_SOUTH.autoControllerStatus.FOURBAR_DOWN;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController8_1_SOUTH.autoControllerStatus.NOTHING;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController8_1_SOUTH.autoControllerStatus.PLACE_CONE;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController8_1_SOUTH.autoControllerStatus.RETRIEVE_CONE;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.EXTENDED;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.EXTENDED_SOUTH;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.RETRACTED;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -22,8 +21,8 @@ import org.firstinspires.ftc.teamcode.drive.OGCode.Servo4BarController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.SigurantaLiftController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.TurnClawController;
 
-public class AutoTurnJunction5_1 {
-    public enum autoControllerTurnStatus
+public class AutoController8_1_SOUTH {
+    public enum autoControllerStatus
     {
         NOTHING,
         RETRIEVE_CONE,
@@ -36,7 +35,7 @@ public class AutoTurnJunction5_1 {
         RETRACTED,
         GET_LIFT_DOWN,
     }
-    public static autoControllerTurnStatus CurrentStatus = NOTHING, PreviousStatus = NOTHING;
+    public static autoControllerStatus CurrentStatus = NOTHING, PreviousStatus = NOTHING;
     ElapsedTime timerFourBar = new ElapsedTime() ,timerStart = new ElapsedTime(),timerClaw = new ElapsedTime() , timerPlace_Cone = new ElapsedTime(), timerLift =new ElapsedTime();
     public static int Cone_Stack_Level=5;
     public static double LimitLift = 0.75;
@@ -60,48 +59,25 @@ public class AutoTurnJunction5_1 {
                 CurrentStatus = NOTHING;
                 break;
             }
-            case FOURBAR_DOWN:
-            {
-                    servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.COLLECT_DRIVE;
-                    turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
-                    if (Cone_Stack_Level ==4 || Cone_Stack_Level ==3)
-                    {
-                        angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.LIL_FRONT;
-                    }
-                    timerFourBar.reset();
-                    CurrentStatus = CLOSE_THE_CLAW;
-                break;
-            }
             case CLOSE_THE_CLAW:
             {
-                if (timerFourBar.seconds()>1)
-                {
-                    closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
-                    timerClaw.reset();
-                    CurrentStatus = RETRIEVE_CONE;
-                }
+                closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
+                timerClaw.reset();
+                CurrentStatus = RETRIEVE_CONE;
                 break;
             }
-
             case RETRIEVE_CONE:
             {
-                if (ok == 0 && timerClaw.seconds()>0.35)
+                if (ok == 0 && timerClaw.seconds()>0.1)
                 {
                     ok=1;
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
                     angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.RAISED;
                 }
-                if (timerClaw.seconds()>0.55)
+                if (timerClaw.seconds()>0.25)
                 {
                     turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.PLACE;
-                    if (Cone_Stack_Level == 4)
-                    {
-                        angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.LIL_PLACE;
-                    }
-                    else
-                    {
-                        angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.PLACE;
-                    }
+                    angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.PLACE;
                     motorColectareController.CurrentStatus = RETRACTED;
                     timerPlace_Cone.reset();
                     ok=0;
@@ -111,18 +87,18 @@ public class AutoTurnJunction5_1 {
             }
             case PLACE_CONE:
             {
-                if (ok == 0 && timerPlace_Cone.seconds()>0.75)
+                if (ok == 0 && timerPlace_Cone.seconds()>0.55)
                 {
                     Robotel.left4Bar.setPosition(servo4BarController.Place_Cone_Position);
                     Robotel.right4Bar.setPosition(servo4BarController.Place_Cone_Position);
 
                     ok = 1;
                 }
-                if (timerPlace_Cone.seconds()>0.95)
+                if (timerPlace_Cone.seconds()>0.75)
                 {
                     sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
                 }
-                if (timerPlace_Cone.seconds()>1.3)
+                if (timerPlace_Cone.seconds()>1.1)
                 {
                     closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
@@ -135,7 +111,7 @@ public class AutoTurnJunction5_1 {
             case STACK_LEVEL:
             {
                 ok=0;
-                motorColectareController.CurrentStatus = EXTENDED;
+                motorColectareController.CurrentStatus = EXTENDED_SOUTH;
                 closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
                 servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
                 liftController.CurrentStatus = LiftController.LiftStatus.BASE;
@@ -143,7 +119,7 @@ public class AutoTurnJunction5_1 {
                 angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
                 if (Cone_Stack_Level==5)
                 {
-                    servo4BarController.Collect_Position = servo4BarController.Fifth_Cone_Position;
+                    servo4BarController.Collect_Position = servo4BarController.Fifth_Cone_Position_South;
                     Cone_Stack_Level =4;
                 }
                 else if (Cone_Stack_Level==4)
@@ -167,7 +143,7 @@ public class AutoTurnJunction5_1 {
                     Cone_Stack_Level =5;
                 }
                 timerStart.reset();
-                CurrentStatus = FOURBAR_DOWN;
+                CurrentStatus = CLOSE_THE_CLAW;
                 break;
             }
         }

@@ -67,7 +67,12 @@ public class TestServo4Bar extends  LinearOpMode {
                 robot.left4Bar.setPosition(1);
                 robot.right4Bar.setPosition(1);
             }
+            if (!previousGamepad1.dpad_up && currentGamepad1.dpad_up)
+            {
+                robot.angle4Bar.setPosition(Angle4BarController.pozVertical);
+            }
             telemetry.addData("left4Bar", robot.left4Bar.getPosition());
+            telemetry.addData("angle4Bar",robot.angle4Bar.getPosition());
             telemetry.update();
         }
     }

@@ -63,13 +63,9 @@ public class AutoController5_1 {
                 case FOURBAR_DOWN: {
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.COLLECT_DRIVE;
                     turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
-                    motorColectareController.CurrentStatus = MotorColectareController.MotorColectare.EXTENDED;
-                    if (Cone_Stack_Level == 4)
-                    {
-                        angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.LIL_FRONT;
-                    }
-                        timerFourBar.reset();
-                        CurrentStatus = CLOSE_THE_CLAW;
+                    motorColectareController.CurrentStatus = MotorColectareController.MotorColectare.EXTENDED_5_1;
+                    timerFourBar.reset();
+                    CurrentStatus = CLOSE_THE_CLAW;
                     break;
                 }
                 case CLOSE_THE_CLAW:
@@ -84,7 +80,7 @@ public class AutoController5_1 {
                 }
                 case RETRIEVE_CONE:
                 {
-                    if (ok == 0 && timerClaw.seconds()>0.35)
+                    if (ok == 0 && timerClaw.seconds()>0.12)
                     {
                         ok=1;
                         servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
@@ -93,14 +89,7 @@ public class AutoController5_1 {
                     if (timerClaw.seconds()>0.55)
                     {
                         turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.PLACE;
-                        if (Cone_Stack_Level == 4)
-                        {
-                            angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.LIL_PLACE;
-                        }
-                        else
-                        {
-                            angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.PLACE;
-                        }
+                        angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.PLACE;
                         motorColectareController.CurrentStatus = RETRACTED;
                         timerPlace_Cone.reset();
                         ok=0;
@@ -123,7 +112,7 @@ public class AutoController5_1 {
                     }
                     if (timerPlace_Cone.seconds()>1.3)
                     {
-                        closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
+                        closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN_CLAW_BIG;
                         servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
                         angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
                         turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
@@ -148,7 +137,7 @@ public class AutoController5_1 {
                 case STACK_LEVEL:
                 {
                     ok=0;
-                    closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
+                    closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN_CLAW_BIG;
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
                     liftController.CurrentStatus = LiftController.LiftStatus.BASE;
                     turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;

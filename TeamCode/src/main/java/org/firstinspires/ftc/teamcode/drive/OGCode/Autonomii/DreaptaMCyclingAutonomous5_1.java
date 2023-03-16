@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.drive.OGCode.Autonomii;
 
+import static org.firstinspires.ftc.teamcode.drive.OGCode.TurnClawController.pozTurnClaw_COLLECT;
 import static org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive.timeOutBaby;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -53,9 +54,9 @@ public class DreaptaMCyclingAutonomous5_1 extends LinearOpMode {
         PRELOAD,
         GET_DOWN
     }
-    public static double x_CYCLING_POSITION = 38.3, y_CYCLING_POSITION = -23, Angle_CYCLING_POSITION = 13.5;
+    public static double x_CYCLING_POSITION = 36, y_CYCLING_POSITION = -20, Angle_CYCLING_POSITION = 10;
     public static double x_INTER = 35.5, y_INTER = -35 , Angle_PARK_INTER = 270;
-    public static double x_PARK1 = 10, y_PARK1 = -35, Angle_PARK1 = 270;
+    public static double x_PARK1 = 15, y_PARK1 = -35, Angle_PARK1 = 270;
     public static double x_PARK2 = 36.5, y_PARK2 = -35, Angle_PARK2 = 270;
     public static double x_PARK3 = 57, y_PARK3 = -35, Angle_PARK3 = 270;
     ElapsedTime asteapta = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime();
@@ -115,7 +116,7 @@ public class DreaptaMCyclingAutonomous5_1 extends LinearOpMode {
         liftController.CurrentStatus = LiftController.LiftStatus.BASE;
         sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
         angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
-
+        motorColectareController.NrConAuto = 5;
 
 
         autoController51.Cone_Stack_Level  =5;
@@ -128,10 +129,11 @@ public class DreaptaMCyclingAutonomous5_1 extends LinearOpMode {
         turnClawController.update(robot);
         servo4BarController.update(robot);
         sigurantaLiftController.update(robot);
-        motorColectareController.update(robot,0, 1);
+        motorColectareController.update(robot,0, 1 , currentVoltage);
         liftController.update(robot,0,sigurantaLiftController,currentVoltage);
         robotController.update(robot,sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
         biggerController.update(robotController,closeClawController,motorColectareController);
+        robot.turnClaw.setPosition(pozTurnClaw_COLLECT);
         sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
         sigurantaLiftController.update(robot);
         int nr=0;
@@ -153,112 +155,31 @@ public class DreaptaMCyclingAutonomous5_1 extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(x_INTER,y_INTER,Math.toRadians(Angle_PARK_INTER)))
                 .lineToLinearHeading(new Pose2d(x_PARK3,y_PARK3,Math.toRadians(Angle_PARK3)))
                 .build();
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
+        int cameraMonitorViewId = hardwareMap.appContext
+                .getResources().getIdentifier("cameraMonitorViewId",
+                        "id", hardwareMap.appContext.getPackageName());
+        WebcamName webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
+        OpenCvCamera camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
+        PipeLineDetector detector = new PipeLineDetector(270,155,320,185);
+        camera.setPipeline(detector);
+        camera.openCameraDeviceAsync(
+                new OpenCvCamera.AsyncCameraOpenListener() {
+                    @Override
+                    public void onOpened() {
+                        camera.startStreaming(640, 360, OpenCvCameraRotation.UPRIGHT);
+                    }
 
-        camera.setPipeline(aprilTagDetectionPipeline);
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
-            @Override
-            public void onOpened()
-            {
-                camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
-            }
+                    @Override
+                    public void onError(int errorCode) {
 
-            @Override
-            public void onError(int errorCode)
-            {
-
-            }
-        });
-
-        telemetry.setMsTransmissionInterval(50);
-
-        /*
-         * The INIT-loop:
-         * This REPLACES waitForStart!
-         */
-        while (!isStarted() && !isStopRequested())
-        {
-            ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
-
-            if(currentDetections.size() != 0)
-            {
-                boolean tagFound = false;
-
-                for(AprilTagDetection tag : currentDetections)
-                {
-                    if(tag.id == LEFT || tag.id == MIDDLE || tag.id == RIGHT)
-                    {
-                        tagOfInterest = tag;
-                        tagFound = true;
-                        break;
                     }
                 }
-
-                if(tagFound)
-                {
-                    telemetry.addData("Tag of interest is in sight!\n\nLocation data:", tagOfInterest.id);
-                }
-                else
-                {
-                    telemetry.addLine("Don't see tag of interest :(");
-
-                    if(tagOfInterest == null)
-                    {
-                        telemetry.addLine("(The tag has never been seen)");
-                    }
-                    else
-                    {
-                        telemetry.addData("\nBut we HAVE seen the tag before; last seen at:" , tagOfInterest.id);
-                    }
-                }
-
-            }
-            else
-            {
-                telemetry.addLine("Don't see tag of interest :(");
-
-                if(tagOfInterest == null)
-                {
-                    telemetry.addLine("(The tag has never been seen)");
-                }
-                else
-                {
-                    telemetry.addData("\nBut we HAVE seen the tag before; last seen at:" , tagOfInterest.id);
-                }
-
-            }
-
-            telemetry.update();
-            sleep(20);
-        }
-
-        /*
-         * The START command just came in: now work off the latest snapshot acquired
-         * during the init loop.
-         */
-
-        /* Update the telemetry */
-        if(tagOfInterest != null)
-        {
-            telemetry.addData("Tag snapshot:\n" , tagOfInterest.id);
-            telemetry.update();
-        }
-        else
-        {
-            telemetry.addLine("No tag snapshot available, it was never sighted during the init loop :(");
-            telemetry.update();
-        }
-
-        /* Actually do something useful */
-
-
-
-        /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
+        );
+        PipeLineDetector.Status Case = PipeLineDetector.Status.ALBASTRU3;
         while (!isStarted()&&!isStopRequested())
         {
+            Case = detector.caz;
+            telemetry.addData("Caz", detector.caz);
             telemetry.addLine("Init Complete");
             telemetry.update();
             sleep(50);
@@ -267,7 +188,7 @@ public class DreaptaMCyclingAutonomous5_1 extends LinearOpMode {
         if (isStopRequested()) return;
         while (opModeIsActive() && !isStopRequested())
         {
-            int ColectarePosition = robot.encoderMotorColectare.getCurrentPosition();
+            int ColectarePosition = robot.motorColectareStanga.getCurrentPosition();
             int LiftPosition = robot.dreaptaLift.getCurrentPosition(); /// folosesc doar encoderul de la dreaptaLift , celalalt nu exista
             switch (status)
             {
@@ -292,7 +213,9 @@ public class DreaptaMCyclingAutonomous5_1 extends LinearOpMode {
                     if (timerLift.seconds()>0.75)
                     {
                         liftController.CurrentStatus = LiftController.LiftStatus.BASE;
+                        motorColectareController.NrConAuto = 5;
                         autoController51.CurrentStatus = AutoController5_1.autoControllerStatus.STACK_LEVEL;
+
                         status = STROBOT.SECOND_CYCLE;
                     }
                     break;
@@ -301,6 +224,7 @@ public class DreaptaMCyclingAutonomous5_1 extends LinearOpMode {
                 {
                     if (autoController51.CurrentStatus == AutoController5_1.autoControllerStatus.NOTHING)
                     {
+                        motorColectareController.NrConAuto = 4;
                         autoController51.CurrentStatus = AutoController5_1.autoControllerStatus.STACK_LEVEL;
                         status = STROBOT.THIRD_CYCLE;
                     }
@@ -310,6 +234,7 @@ public class DreaptaMCyclingAutonomous5_1 extends LinearOpMode {
                 {
                     if (autoController51.CurrentStatus == AutoController5_1.autoControllerStatus.NOTHING)
                     {
+                        motorColectareController.NrConAuto = 3;
                         autoController51.CurrentStatus = AutoController5_1.autoControllerStatus.STACK_LEVEL;
                         status = STROBOT.FOURTH_CYCLE;
                     }
@@ -319,6 +244,7 @@ public class DreaptaMCyclingAutonomous5_1 extends LinearOpMode {
                 {
                     if (autoController51.CurrentStatus == AutoController5_1.autoControllerStatus.NOTHING)
                     {
+                        motorColectareController.NrConAuto = 2;
                         autoController51.CurrentStatus = AutoController5_1.autoControllerStatus.STACK_LEVEL;
                         status = STROBOT.FIFTH_CYCLE;
                     }
@@ -328,6 +254,7 @@ public class DreaptaMCyclingAutonomous5_1 extends LinearOpMode {
                 {
                     if (autoController51.CurrentStatus == AutoController5_1.autoControllerStatus.NOTHING)
                     {
+                        motorColectareController.NrConAuto = 1;
                         autoController51.CurrentStatus = AutoController5_1.autoControllerStatus.STACK_LEVEL;
                         status = STROBOT.RETRACT;
                     }
@@ -347,18 +274,12 @@ public class DreaptaMCyclingAutonomous5_1 extends LinearOpMode {
                 {
                     if (timerRetract.seconds()>0.3)
                     {
-                        if (tagOfInterest == null)
-                        {
-                            drive.followTrajectorySequenceAsync(PARK2);
-                        }
-                        else
-                        {
-                            if (tagOfInterest.id  == LEFT)
+                            if (Case == PipeLineDetector.Status.VERDE1)
                             {
                                 drive.followTrajectorySequenceAsync(PARK1);
                             }
                             else
-                            if (tagOfInterest.id == MIDDLE)
+                            if (Case == PipeLineDetector.Status.ROZ2)
                             {
                                 drive.followTrajectorySequenceAsync(PARK2);
                             }
@@ -366,7 +287,6 @@ public class DreaptaMCyclingAutonomous5_1 extends LinearOpMode {
                             {
                                 drive.followTrajectorySequenceAsync(PARK3);
                             }
-                        }
                         status = STROBOT.STOP_JOC;
                     }
                     break;
@@ -379,7 +299,7 @@ public class DreaptaMCyclingAutonomous5_1 extends LinearOpMode {
             turnClawController.update(robot);
             servo4BarController.update(robot);
             sigurantaLiftController.update(robot);
-            motorColectareController.update(robot,ColectarePosition, 1);
+            motorColectareController.update(robot,ColectarePosition,  1, currentVoltage);
             liftController.update(robot,LiftPosition,sigurantaLiftController,currentVoltage);
             autoController51.update(sigurantaLiftController,robot,angle4BarController, turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
 

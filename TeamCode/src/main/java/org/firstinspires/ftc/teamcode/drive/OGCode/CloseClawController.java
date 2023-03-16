@@ -10,9 +10,11 @@ public class CloseClawController {
         CLOSED,
         OPEN,
         OPEN_COLLECT,
+        OPEN_CLAW_BIG,
+        OPEN_CLAW_SMALL,
     }
     public static closeClawStatus CurrentStatus = closeClawStatus.INIT,  PreviousStatus = closeClawStatus.INIT;
-    double pozOpenClaw = 0.88, pozCloseClaw = 0.72 ,pozOpenClawCollect = 0.88;
+    double pozOpenClaw = 0.85, pozCloseClaw = 0.72 ,pozOpenClawCollect = 0.85 , pozOpenClawBig = 0.91,pozOpenClawSmall = 0.83;
 
     public void update(RobotMap Robotel)
     {
@@ -33,6 +35,16 @@ public class CloseClawController {
                 case OPEN_COLLECT:
                 {
                     Robotel.closeClaw.setPosition(pozOpenClawCollect);
+                    break;
+                }
+                case OPEN_CLAW_BIG:
+                {
+                    Robotel.closeClaw.setPosition(pozOpenClawBig);
+                    break;
+                }
+                case OPEN_CLAW_SMALL:
+                {
+                    Robotel.closeClaw.setPosition(pozOpenClawSmall);
                     break;
                 }
             }

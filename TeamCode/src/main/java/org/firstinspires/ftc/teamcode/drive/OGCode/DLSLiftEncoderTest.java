@@ -17,12 +17,12 @@ import java.util.List;
 @Autonomous(group = "Testers")
 public class DLSLiftEncoderTest extends LinearOpMode {
     public static double DISTANCE = 60; // in
-    public static double Kp = 0.009;
-    public static double Ki = 0.02;
+    public static double Kp = 0.0065;// 0.006
+    public static double Ki = 0.0055; // 0.0045
     public static double Kd = 0;
     public static double Kg = 0;
     public static double maxSpeed = 1;
-    public static double RetractedPosition = 0 , ExtendedPosition = 965;
+    public static double RetractedPosition = 0 , ExtendedPosition = 700;
     int TargetLift = 0;
     ElapsedTime timerPID = new ElapsedTime();
 
@@ -38,8 +38,6 @@ public class DLSLiftEncoderTest extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         RobotMap robot = new RobotMap(hardwareMap);
         SimplePIDController hello = new SimplePIDController(Kp,Ki,Kd);
-        robot.left4Bar.setPosition(0.4);
-        robot.right4Bar.setPosition(0.4);
         waitForStart();
 
         if (isStopRequested()) return;

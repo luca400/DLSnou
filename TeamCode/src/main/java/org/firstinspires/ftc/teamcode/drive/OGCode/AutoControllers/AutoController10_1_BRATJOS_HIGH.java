@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers;
 
 
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController10_1_BRATJOS_MID.autoControllerStatus.CLOSE_THE_CLAW;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController10_1_BRATJOS_MID.autoControllerStatus.FOURBAR_DOWN;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController10_1_BRATJOS_MID.autoControllerStatus.GET_LIFT_DOWN;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController10_1_BRATJOS_MID.autoControllerStatus.NOTHING;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController10_1_BRATJOS_MID.autoControllerStatus.PLACE_CONE;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController10_1_BRATJOS_MID.autoControllerStatus.RETRIEVE_CONE;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController10_1_BRATJOS_HIGH.autoControllerStatus.CLOSE_THE_CLAW;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController10_1_BRATJOS_HIGH.autoControllerStatus.FOURBAR_DOWN;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController10_1_BRATJOS_HIGH.autoControllerStatus.GET_LIFT_DOWN;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController10_1_BRATJOS_HIGH.autoControllerStatus.NOTHING;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController10_1_BRATJOS_HIGH.autoControllerStatus.PLACE_CONE;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController10_1_BRATJOS_HIGH.autoControllerStatus.RETRIEVE_CONE;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.EXTENDED;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.EXTENDED_10_1;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.EXTENDED_2050;
@@ -26,7 +26,7 @@ import org.firstinspires.ftc.teamcode.drive.OGCode.Servo4BarController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.SigurantaLiftController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.TurnClawController;
 
-public class AutoController10_1_BRATJOS_MID {
+public class AutoController10_1_BRATJOS_HIGH {
     public enum autoControllerStatus
     {
         NOTHING,
@@ -44,39 +44,73 @@ public class AutoController10_1_BRATJOS_MID {
     ElapsedTime timerFourBar = new ElapsedTime() ,timerStart = new ElapsedTime(),timerClaw = new ElapsedTime() , timerPlace_Cone = new ElapsedTime(), timerLift =new ElapsedTime();
     public static int Cone_Stack_Level=5;
     public static int stackNumber = 0;
-    public static double LimitLift = 0.75;
+    public static double LimitLift = 0.65;
     public static LiftController.LiftStatus AutoLiftState = LiftController.LiftStatus.HIGH;
-    int ok=0,ok1=0;
+    int ok=0;
     double timerInter = 2,timeStart=0,timerStartLimit = 0.5;
-    public double positionFromState(int number)
+    public double positionFromState(int stackNumber, int number)
     {
         double finalPos = Servo4BarController.Fifth_Cone_Position_MID;
-        switch (number)
+        if (stackNumber == 0)
         {
-            case 5:
+            switch (number)
             {
-                finalPos =  Servo4BarController.Fifth_Cone_Position_MID;
-                break;
+                case 5:
+                {
+                    finalPos =  Servo4BarController.Fifth_Cone_Position_MID;
+                    break;
+                }
+                case 4:
+                {
+                    finalPos =  Servo4BarController.Fourth_Cone_Position;
+                    break;
+                }
+                case 3:
+                {
+                    finalPos =  Servo4BarController.Third_Cone_Position;
+                    break;
+                }
+                case 2:
+                {
+                    finalPos =  Servo4BarController.Second_Cone_Position;
+                    break;
+                }
+                case 1:
+                {
+                    finalPos =  Servo4BarController.Ground_Position;
+                    break;
+                }
             }
-            case 4:
+        }
+        else
+        {
+            switch (number)
             {
-                finalPos =  Servo4BarController.Fourth_Cone_Position;
-                break;
-            }
-            case 3:
-            {
-                finalPos =  Servo4BarController.Third_Cone_Position;
-                break;
-            }
-            case 2:
-            {
-                finalPos =  Servo4BarController.Second_Cone_Position;
-                break;
-            }
-            case 1:
-            {
-                finalPos =  Servo4BarController.Ground_Position;
-                break;
+                case 5:
+                {
+                    finalPos =  Servo4BarController.Fifth_Cone_Position_BRATJOSHIGH_2;
+                    break;
+                }
+                case 4:
+                {
+                    finalPos =  Servo4BarController.Fourth_Cone_Position_BRATJOSHIGH_2;
+                    break;
+                }
+                case 3:
+                {
+                    finalPos =  Servo4BarController.Third_Cone_Position_BRATJOSHIGH_2;
+                    break;
+                }
+                case 2:
+                {
+                    finalPos =  Servo4BarController.Second_Cone_Position_BRATJOSHIGH_2;
+                    break;
+                }
+                case 1:
+                {
+                    finalPos =  Servo4BarController.Ground_Position_BRATJOSHIGH_2;
+                    break;
+                }
             }
         }
         return finalPos;
@@ -146,7 +180,7 @@ public class AutoController10_1_BRATJOS_MID {
                 }
                 if (timerPlace_Cone.seconds()>0.8)
                 {
-                    servo4BarController.Collect_Position = positionFromState(Cone_Stack_Level);
+                    servo4BarController.Collect_Position = positionFromState(stackNumber,Cone_Stack_Level);
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.COLLECT_DRIVE;
                     ok=0;
                     if (stackNumber == 1 && Cone_Stack_Level == 5)
@@ -164,7 +198,6 @@ public class AutoController10_1_BRATJOS_MID {
                         closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
                         angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
                         turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
-                        ok1=0;
                         CurrentStatus = GET_LIFT_DOWN;
                     }
                 }
@@ -172,7 +205,7 @@ public class AutoController10_1_BRATJOS_MID {
             }
             case GET_LIFT_DOWN:
             {
-                if (timerLift.seconds()>LimitLift)
+                if (timerLift.seconds()>LimitLift-0.1)
                 {
                     if (Cone_Stack_Level == 5)
                     {
@@ -181,10 +214,11 @@ public class AutoController10_1_BRATJOS_MID {
                     }
                     else
                     {
-                        motorColectareController.NrConAuto = motorColectareController.NrConAuto-1;
                         motorColectareController.CurrentStatus = EXTENDED_10_1;
                     }
-                    ok1=1;
+                }
+                if (timerLift.seconds()>LimitLift)
+                {
                     liftController.CurrentStatus = LiftController.LiftStatus.BASE;
                     CurrentStatus= NOTHING;
                 }
@@ -200,37 +234,65 @@ public class AutoController10_1_BRATJOS_MID {
                 {
                     if (stackNumber == 0)
                     {
-                        servo4BarController.Collect_Position = servo4BarController.Fifth_Cone_Position_BRATJOSMID;
+                        servo4BarController.Collect_Position = servo4BarController.Fifth_Cone_Position_BRATJOSHIGH;
                     }
                     else
                     {
-                        servo4BarController.Collect_Position = servo4BarController.Fifth_Cone_Position_BRATJOSMID_2;
+                        servo4BarController.Collect_Position = servo4BarController.Fifth_Cone_Position_BRATJOSHIGH_2;
                     }
                     Cone_Stack_Level =4;
                 }
                 else if (Cone_Stack_Level==4)
                 {
-                    servo4BarController.Collect_Position = servo4BarController.Fourth_Cone_Position;
+                    if (stackNumber == 0)
+                    {
+                        servo4BarController.Collect_Position = servo4BarController.Fourth_Cone_Position;
+                    }
+                    else
+                    {
+                        servo4BarController.Collect_Position = servo4BarController.Fourth_Cone_Position_BRATJOSHIGH_2;
+                    }
                     Cone_Stack_Level =3;
                 }
                 else if (Cone_Stack_Level==3)
                 {
-                    servo4BarController.Collect_Position = servo4BarController.Third_Cone_Position;
+                    if (stackNumber == 0)
+                    {
+                        servo4BarController.Collect_Position = servo4BarController.Third_Cone_Position;
+                    }
+                    else
+                    {
+                        servo4BarController.Collect_Position = servo4BarController.Third_Cone_Position_BRATJOSHIGH_2;
+                    }
                     Cone_Stack_Level =2;
                 }
                 else if (Cone_Stack_Level==2)
                 {
-                    servo4BarController.Collect_Position = servo4BarController.Second_Cone_Position;
+                    if (stackNumber == 0)
+                    {
+                        servo4BarController.Collect_Position = servo4BarController.Second_Cone_Position;
+                    }
+                    else
+                    {
+                        servo4BarController.Collect_Position = servo4BarController.Second_Cone_Position_BRATJOSHIGH_2;
+                    }
                     Cone_Stack_Level =1;
                 }
                 else if (Cone_Stack_Level==1)
                 {
-                    servo4BarController.Collect_Position = servo4BarController.Ground_Position;
+                    if (stackNumber == 0)
+                    {
+                        servo4BarController.Collect_Position = servo4BarController.Ground_Position;
+                    }
+                    else
+                    {
+                        servo4BarController.Collect_Position = servo4BarController.Ground_Position_BRATJOSHIGH_2;
+                    }
                     Cone_Stack_Level =5;
                     stackNumber++;
                 }
                 timerStart.reset();
-                timerStartLimit = 0.5;
+                timerStartLimit = 0.4;
                 CurrentStatus = CLOSE_THE_CLAW;
                 break;
             }

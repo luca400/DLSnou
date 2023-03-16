@@ -59,10 +59,10 @@ public class TestEncoderColectare extends  LinearOpMode {
             currentGamepad2.copy(gamepad2);
 
             /// DRIVE
-            robot.motorColectare.setPower(gamepad1.right_stick_y);
-
-            telemetry.addData("motorColectarePosition",robot.encoderMotorColectare.getCurrentPosition());
-            telemetry.addData("motorColectarePower",robot.motorColectare.getPower());
+            robot.motorColectareStanga.setPower(gamepad1.right_stick_y);
+            robot.motorColectareDreapta.setPower(gamepad1.right_stick_y);
+            telemetry.addData("motorColectarePositionStanga",robot.motorColectareStanga.getCurrentPosition());
+            telemetry.addData("motorColectarePower",robot.motorColectareStanga.getPower());
             telemetry.update();
         }
     }

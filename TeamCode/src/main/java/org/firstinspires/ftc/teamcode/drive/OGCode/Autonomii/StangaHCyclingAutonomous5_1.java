@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.OGCode.Angle4BarController;
+import org.firstinspires.ftc.teamcode.drive.OGCode.AprilTagDetectionPipeline;
 import org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController5_1;
 import org.firstinspires.ftc.teamcode.drive.OGCode.BiggerController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.CloseClawController;
@@ -25,10 +26,12 @@ import org.firstinspires.ftc.teamcode.drive.OGCode.SigurantaLiftController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.TurnClawController;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -56,6 +59,29 @@ public class StangaHCyclingAutonomous5_1 extends LinearOpMode {
     public static double x_PARK3 = -10, y_PARK3 = -17, Angle_PARK3 = 90;
     ElapsedTime asteapta = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime();
 
+    OpenCvCamera camera;
+    AprilTagDetectionPipeline aprilTagDetectionPipeline;
+
+    static final double FEET_PER_METER = 3.28084;
+
+    // Lens intrinsics
+    // UNITS ARE PIXELS
+    // NOTE: this calibration is for the C920 webcam at 800x448.
+    // You will need to do your own calibration for other configurations!
+    double fx = 578.272;
+    double fy = 578.272;
+    double cx = 402.145;
+    double cy = 221.506;
+
+    // UNITS ARE METERS
+    double tagsize = 0.166;
+
+    // Tag ID 1,2,3 from the 36h11 family
+    int LEFT = 0;
+    int MIDDLE = 1;
+    int RIGHT = 2;
+
+    AprilTagDetection tagOfInterest = null;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -101,7 +127,7 @@ public class StangaHCyclingAutonomous5_1 extends LinearOpMode {
         closeClawController.update(robot);
         turnClawController.update(robot);
         servo4BarController.update(robot);
-        motorColectareController.update(robot,0, 0.6);
+        motorColectareController.update(robot,0, 0.6, currentVoltage);
         liftController.update(robot,0,sigurantaLiftController,currentVoltage);
         robotController.update(robot,sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
         biggerController.update(robotController,closeClawController,motorColectareController);
@@ -128,7 +154,7 @@ public class StangaHCyclingAutonomous5_1 extends LinearOpMode {
                         "id", hardwareMap.appContext.getPackageName());
         WebcamName webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
         OpenCvCamera camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
-        PipeLineDetector detector = new PipeLineDetector(270,155,320,185);
+        PipeLineDetector detector = new PipeLineDetector(robot.xAI,robot.yAI,robot.xBI,robot.yBI);
         camera.setPipeline(detector);
         camera.openCameraDeviceAsync(
                 new OpenCvCamera.AsyncCameraOpenListener() {
@@ -156,7 +182,7 @@ public class StangaHCyclingAutonomous5_1 extends LinearOpMode {
         if (isStopRequested()) return;
         while (opModeIsActive() && !isStopRequested())
         {
-            int ColectarePosition = robot.encoderMotorColectare.getCurrentPosition();
+            int ColectarePosition = robot.motorColectareStanga.getCurrentPosition();
             int LiftPosition = robot.dreaptaLift.getCurrentPosition(); /// folosesc doar encoderul de la dreaptaLift , celalalt nu exista
             switch (status)
             {
@@ -270,7 +296,7 @@ public class StangaHCyclingAutonomous5_1 extends LinearOpMode {
             turnClawController.update(robot);
             servo4BarController.update(robot);
             sigurantaLiftController.update(robot);
-            motorColectareController.update(robot,ColectarePosition, 1);
+            motorColectareController.update(robot,ColectarePosition, 1, currentVoltage);
             liftController.update(robot,LiftPosition,sigurantaLiftController,currentVoltage);
             autoController51.update(sigurantaLiftController,robot,angle4BarController, turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
 

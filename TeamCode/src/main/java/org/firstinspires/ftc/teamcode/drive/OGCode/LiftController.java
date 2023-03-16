@@ -1,29 +1,40 @@
 package org.firstinspires.ftc.teamcode.drive.OGCode;
 
+import static org.firstinspires.ftc.teamcode.drive.OGCode.LiftController.LiftStatus.BASE;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.LiftController.LiftStatus.PLACE_SIGURANTA;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.LiftController.LiftStatus.START;
 
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+@Config
 public class LiftController {
     public enum LiftStatus
     {
         START,
+        HIGH_SOUTH,
         HIGH,
+        HIGH_DRIVE,
         LOW,
         MID,
+        PLACE_SIGURANTA,
+        BASE_BAZAVAN,
         BASE,
     }
     public double CurrentSpeed=0;
-    public double Kp = 0.009;
-    public double Ki = 0.02;
+    public double Kp = 0.0065;
+    public double Ki = 0.0055;
     public double Kd = 0;
     public double Kg = 0;
     public double maxSpeed = 1;
     public static LiftStatus CurrentStatus = START, PreviousStatus = START;
     SimplePIDController LiftColectarePID = null;
+    ElapsedTime timeSiguranta = new ElapsedTime();
     /// pe DreaptaLift am encoder
     int basePosition = 0;
-    int lowPosition = 255;
-    int midPosition = 590;
-    int highPosition = 980;
+    public static int lowPosition = 200;
+    public static int midPosition = 425;
+    public static int highPosition = 685, highPositionSouth = 705, highPosition_DRIVE = 685;
     public int CurrentPosition = 0;
     public LiftController()
     {
@@ -39,7 +50,7 @@ public class LiftController {
         CurrentSpeed=powerLift;
         Robotel.stangaLift.setPower(powerLift);
         Robotel.dreaptaLift.setPower(powerLift);
-        if (CurrentStatus != PreviousStatus)
+        if (CurrentStatus != PreviousStatus || CurrentStatus == PLACE_SIGURANTA)
         {
             switch (CurrentStatus)
             {
@@ -49,10 +60,38 @@ public class LiftController {
                     sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.TRANSFER;
                     break;
                 }
+                case BASE_BAZAVAN:
+                {
+                    LiftColectarePID.targetValue = basePosition;
+                    timeSiguranta.reset();
+                    CurrentStatus = PLACE_SIGURANTA;
+                    break;
+                }
+                case PLACE_SIGURANTA:
+                {
+                    if (timeSiguranta.seconds()>0.05)
+                    {
+                        sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.TRANSFER;
+                        CurrentStatus = BASE;
+                    }
+                    break;
+                }
                 case HIGH:
                 {
                     sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
                     LiftColectarePID.targetValue = highPosition;
+                    break;
+                }
+                case HIGH_DRIVE:
+                {
+                    sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
+                    LiftColectarePID.targetValue = highPosition_DRIVE;
+                    break;
+                }
+                case HIGH_SOUTH:
+                {
+                    sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
+                    LiftColectarePID.targetValue = highPositionSouth;
                     break;
                 }
                 case MID:

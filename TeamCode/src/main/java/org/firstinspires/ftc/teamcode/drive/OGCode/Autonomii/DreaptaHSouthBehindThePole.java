@@ -16,9 +16,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.OGCode.Angle4BarController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.AprilTagDetectionPipeline;
-import org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoLeftSouthHighJunction5_1;
 import org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction5_1;
-import org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoTurnJunction5_1;
 import org.firstinspires.ftc.teamcode.drive.OGCode.BiggerController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.CloseClawController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.LiftController;
@@ -36,19 +34,19 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 @Config
 @Autonomous(group = "drive")
 
-public class StangaHSouth5_1 extends LinearOpMode {
+public class DreaptaHSouthBehindThePole extends LinearOpMode {
     enum STROBOT
     {
         START,
         GET_LIFT_DOWN,
         PARK,
+        INTER_GET_LIFT_UP,
         STOP_JOC,
         GET_LIFT_UP,
         TURN_TO_COLLECT,
@@ -56,15 +54,16 @@ public class StangaHSouth5_1 extends LinearOpMode {
         GO_TO_SCORING_POSITION,
         GO_TO_COLLECTING_POSITION,
     }
-    public static double x_CYCLING_POSITION = -10, y_CYCLING_POSITION = -61;
-    public static double x_COLLECT_POSITION = -28, y_COLLECT_POSITION = -12, Angle_COLLECT_POSITION = 180;
-    public static double x_PLACE_SOUTH_HIGH = -13, y_PLACE_SOUTH_HIGH = -17.5, Angle_PLACE_SOUTH_HIGH = 155;
-    public static double x_PARK1 = -60, y_PARK1 = -10, Angle_PARK1 = 180;
-    public static double x_PARK2 = -35, y_PARK2 = -10, Angle_PARK2 = 180;
-    public static double x_PARK3 = -12.5, y_PARK3 = -10, Angle_PARK3 = 180;
-    public static double Angle_TURN_COLLECT = -42.5;
+    public static double x_CYCLING_POSITION = 13, y_CYCLING_POSITION = -61;
+    public static double x_COLLECT_POSITION = 20, y_COLLECT_POSITION = -12, Angle_COLLECT_POSITION = 0.5;
+    public static double x_PLACE_SOUTH_HIGH = 14, y_PLACE_SOUTH_HIGH = -22, Angle_PLACE_SOUTH_HIGH = 12.5;
+    public static double x_PLACE_SOUTH_HIGH_LEFT = -14, y_PLACE_SOUTH_HIGH_LEFT = -18, Angle_PLACE_SOUTH_HIGH_LEFT = 167.5;
+    public static double x_COLLECT_POSITION_LEFT = -20, y_COLLECT_POSITION_LEFT = -8, Angle_COLLECT_POSITION_LEFT = 180;
+    public static double x_PARK1 = 11.5, y_PARK1 = -11, Angle_PARK1 = 0;
+    public static double x_PARK2 = 33, y_PARK2 = -11.5, Angle_PARK2 = 0;
+    public static double x_PARK3 = 60, y_PARK3 = -11, Angle_PARK3 = 0;
+    public static double Angle_TURN_COLLECT = 40;
     ElapsedTime asteapta = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime() , timeCollect = new ElapsedTime();
-
 
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -91,13 +90,9 @@ public class StangaHSouth5_1 extends LinearOpMode {
     AprilTagDetection tagOfInterest = null;
 
 
-
-
-
-
     @Override
     public void runOpMode() throws InterruptedException {
-        timeOutBaby = 0.35;
+        timeOutBaby = 0.1;
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         RobotMap robot = new RobotMap(hardwareMap);
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
@@ -116,7 +111,7 @@ public class StangaHSouth5_1 extends LinearOpMode {
         RobotController robotController = new RobotController();
         BiggerController biggerController = new BiggerController();
         LiftController liftController = new LiftController();
-        AutoLeftSouthHighJunction5_1 autoControllerTurn51 = new AutoLeftSouthHighJunction5_1();
+        AutoSouthHighJunction5_1 autoControllerTurn51 = new AutoSouthHighJunction5_1();
         SigurantaLiftController sigurantaLiftController = new SigurantaLiftController();
         Angle4BarController angle4BarController = new Angle4BarController();
         servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.INITIALIZE;
@@ -131,8 +126,8 @@ public class StangaHSouth5_1 extends LinearOpMode {
 
 
         autoControllerTurn51.Cone_Stack_Level  =5;
-        autoControllerTurn51.AutoLiftStatus = LiftController.LiftStatus.HIGH_SOUTH;
-        autoControllerTurn51.LimitLift = 0.75;
+        autoControllerTurn51.AutoLiftStatus = LiftController.LiftStatus.HIGH;
+        autoControllerTurn51.LimitLift = 0.8;
         motorColectareController.NrConAuto = 5;
         robot.turnClaw.setPosition(TurnClawController.pozTurnClaw_COLLECT);
 
@@ -141,28 +136,77 @@ public class StangaHSouth5_1 extends LinearOpMode {
         turnClawController.update(robot);
         servo4BarController.update(robot);
         sigurantaLiftController.update(robot);
-        motorColectareController.update(robot,0, 0.6, currentVoltage);
+        motorColectareController.update(robot,0, 0.6,currentVoltage);
         liftController.update(robot,0,sigurantaLiftController,currentVoltage);
         robotController.update(robot,sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
         biggerController.update(robotController,closeClawController,motorColectareController);
         sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
         sigurantaLiftController.update(robot);
         int nr=0;
-        ElapsedTime timeStart = new ElapsedTime() , timeTurnPlace = new ElapsedTime();
-        Pose2d startPose = new Pose2d(-35, -63, Math.toRadians(270));
+        ElapsedTime timeStart = new ElapsedTime() , timeTurnPlace = new ElapsedTime(), timerGOPLACE = new ElapsedTime();
+        Pose2d startPose = new Pose2d(35, -63, Math.toRadians(270));
         Pose2d PLACE_SOUTH_HIGH = new Pose2d(x_PLACE_SOUTH_HIGH,y_PLACE_SOUTH_HIGH,Math.toRadians(Angle_PLACE_SOUTH_HIGH));
-        Pose2d COLLECT_POSITION = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION));
+        Pose2d PLACE_SOUTH_HIGH_LEFT = new Pose2d(x_PLACE_SOUTH_HIGH_LEFT,y_PLACE_SOUTH_HIGH_LEFT,Math.toRadians(Angle_PLACE_SOUTH_HIGH_LEFT));
+        Pose2d COLLECT_POSITION_5 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION));
+        Pose2d COLLECT_POSITION_4 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION+1.5));
+        Pose2d COLLECT_POSITION_3 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION+3));
+        Pose2d COLLECT_POSITION_2 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION+4.5));
+        Pose2d COLLECT_POSITION_1 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION+6));
+
+
+
+        Pose2d COLLECT_POSITION_6 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT));
+        Pose2d COLLECT_POSITION_7 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT+1));
+        Pose2d COLLECT_POSITION_8 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT+2));
+        Pose2d COLLECT_POSITION_9 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT+3));
+        Pose2d COLLECT_POSITION_10 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT+4));
         drive.setPoseEstimate(startPose);
         STROBOT status = STROBOT.START;
         TrajectorySequence PLACE_PRELOAD = drive.trajectorySequenceBuilder(startPose)
                 .lineTo(new Vector2d(x_CYCLING_POSITION,y_CYCLING_POSITION))
                 .lineToLinearHeading(PLACE_SOUTH_HIGH)
                 .build();
-        TrajectorySequence GO_TO_PLACE_POSITION = drive.trajectorySequenceBuilder(COLLECT_POSITION)
+        TrajectorySequence GO_TO_PLACE_POSITION = drive.trajectorySequenceBuilder(COLLECT_POSITION_5)
                 .lineToLinearHeading(PLACE_SOUTH_HIGH)
                 .build();
-        TrajectorySequence GO_TO_COLLECTING_POSITION = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH)
-                .lineToLinearHeading(COLLECT_POSITION)
+
+        TrajectorySequence GO_TO_PLACE_POSITION_LEFT = drive.trajectorySequenceBuilder(COLLECT_POSITION_6)
+                .lineToLinearHeading(PLACE_SOUTH_HIGH_LEFT)
+                .build();
+
+
+        TrajectorySequence GO_TO_COLLECTING_POSITION_5 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH)
+                .lineToLinearHeading(COLLECT_POSITION_5)
+                .build();
+        TrajectorySequence GO_TO_COLLECTING_POSITION_4 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH)
+                .lineToLinearHeading(COLLECT_POSITION_4)
+                .build();
+        TrajectorySequence GO_TO_COLLECTING_POSITION_3 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH)
+                .lineToLinearHeading(COLLECT_POSITION_3)
+                .build();
+        TrajectorySequence GO_TO_COLLECTING_POSITION_2 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH)
+                .lineToLinearHeading(COLLECT_POSITION_2)
+                .build();
+        TrajectorySequence GO_TO_COLLECTING_POSITION_1 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH)
+                .lineToLinearHeading(COLLECT_POSITION_1)
+                .build();
+        TrajectorySequence GO_TO_COLLECTING_POSITION_6 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH_LEFT)
+                .lineToLinearHeading(COLLECT_POSITION_6)
+                .build();
+        TrajectorySequence GO_TO_COLLECTING_POSITION_7 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH_LEFT)
+                .lineToLinearHeading(COLLECT_POSITION_7)
+                .build();
+        TrajectorySequence GO_TO_COLLECTING_POSITION_8 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH_LEFT)
+                .lineToLinearHeading(COLLECT_POSITION_8)
+                .build();
+        TrajectorySequence GO_TO_COLLECTING_POSITION_9 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH_LEFT)
+                .lineToLinearHeading(COLLECT_POSITION_9)
+                .build();
+        TrajectorySequence GO_TO_COLLECTING_POSITION_10 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH_LEFT)
+                .lineToLinearHeading(COLLECT_POSITION_10)
+                .build();
+        TrajectorySequence SWITCH_LEFT = drive.trajectorySequenceBuilder(COLLECT_POSITION_1)
+                .lineToLinearHeading(PLACE_SOUTH_HIGH_LEFT)
                 .build();
         TrajectorySequence PARK1 = drive.trajectorySequenceBuilder(GO_TO_PLACE_POSITION.end())
                 .lineToLinearHeading(new Pose2d(x_PARK1,y_PARK1,Math.toRadians(Angle_PARK1)))
@@ -215,11 +259,41 @@ public class StangaHSouth5_1 extends LinearOpMode {
                     break;
                 }
                 case GET_LIFT_UP: {
-                    if (!drive.isBusy()) {
+                    if (nr==0)
+                    {
+                        if (!drive.isBusy()) {
                             liftController.CurrentStatus = LiftController.LiftStatus.HIGH_SOUTH;
                             timerLift.reset();
                             status = STROBOT.GET_LIFT_DOWN;
                         }
+                    }
+                    else
+                    {
+                        if (nr!=5)
+                        {
+                            if (timerGOPLACE.seconds()>0.8) {
+                                liftController.CurrentStatus = LiftController.LiftStatus.HIGH_SOUTH;
+                                timerLift.reset();
+                                status = STROBOT.GET_LIFT_DOWN;
+                            }
+                        }
+                        else
+                        {
+                            drive.followTrajectorySequenceAsync(SWITCH_LEFT);
+                            status = STROBOT.INTER_GET_LIFT_UP;
+                        }
+                    }
+                    break;
+                }
+                case INTER_GET_LIFT_UP:
+                {
+                    if (!drive.isBusy())
+                    {
+                        nr++;
+                        liftController.CurrentStatus = LiftController.LiftStatus.HIGH_SOUTH;
+                        timerLift.reset();
+                        status = STROBOT.GET_LIFT_DOWN;
+                    }
                     break;
                 }
                 case GET_LIFT_DOWN: {
@@ -232,43 +306,99 @@ public class StangaHSouth5_1 extends LinearOpMode {
                 }
                 case COLLECT:
                 {
-                    if (nr==5)
+                    if (nr==10)
                     {
                         status = STROBOT.PARK;
                     }
                     else
                     {
-                            if (timeCollect.seconds()>1)
-                            {
-                                nr++;
-                                autoControllerTurn51.CurrentStatus = AutoLeftSouthHighJunction5_1.autoControllerSouthHigh.STACK_LEVEL;
-                                status = STROBOT.GO_TO_SCORING_POSITION;
-                            }
+                        nr++;
+                        autoControllerTurn51.CurrentStatus = AutoSouthHighJunction5_1.autoControllerSouthHigh.STACK_LEVEL;
+                        status = STROBOT.GO_TO_SCORING_POSITION;
                     }
                     break;
                 }
                 case GO_TO_SCORING_POSITION:
                 {
-                    if (autoControllerTurn51.CurrentStatus  == AutoLeftSouthHighJunction5_1.autoControllerSouthHigh.PLACE_CONE)
+                    if (autoControllerTurn51.CurrentStatus == PLACE_CONE)
                     {
-                        drive.followTrajectorySequenceAsync(GO_TO_PLACE_POSITION);
-                        status = STROBOT.GET_LIFT_UP;
+                        if (nr<=5)
+                        {
+                            drive.followTrajectorySequenceAsync(GO_TO_PLACE_POSITION);
+                            timerGOPLACE.reset();
+                            status = STROBOT.GET_LIFT_UP;
+                        }
+                        else
+                        {
+                            drive.followTrajectorySequenceAsync(GO_TO_PLACE_POSITION_LEFT);
+                            timerGOPLACE.reset();
+                            status = STROBOT.GET_LIFT_UP;
+                        }
                     }
                     break;
                 }
                 case GO_TO_COLLECTING_POSITION:
                 {
-                    if (nr==5)
-                    {
-                        status = STROBOT.PARK;
-                    }
-                    else
-                    {
-                        motorColectareController.NrConAuto = motorColectareController.NrConAuto - 1;
-                        drive.followTrajectorySequenceAsync(GO_TO_COLLECTING_POSITION);
-                        timeCollect.reset();
-                        status = STROBOT.COLLECT;
-                    }
+                            motorColectareController.NrConAuto = motorColectareController.NrConAuto-1;
+                            if (motorColectareController.NrConAuto == -1)
+                            {
+                                motorColectareController.NrConAuto = 4;
+                            }
+                            switch (nr)
+                            {
+                                case 0:
+                                {
+                                    drive.followTrajectorySequenceAsync(GO_TO_COLLECTING_POSITION_5);
+                                    break;
+                                }
+                                case 1:
+                                {
+                                    drive.followTrajectorySequenceAsync(GO_TO_COLLECTING_POSITION_4);
+                                    break;
+                                }
+                                case 2:
+                                {
+                                    drive.followTrajectorySequenceAsync(GO_TO_COLLECTING_POSITION_3);
+                                    break;
+                                }
+                                case 3:
+                                {
+                                    drive.followTrajectorySequenceAsync(GO_TO_COLLECTING_POSITION_2);
+                                    break;
+                                }
+                                case 4:
+                                {
+                                    drive.followTrajectorySequenceAsync(GO_TO_COLLECTING_POSITION_1);
+                                    break;
+                                }
+                                case 5:
+                                {
+                                    drive.followTrajectorySequenceAsync(GO_TO_COLLECTING_POSITION_6);
+                                    break;
+                                }
+                                case 6:
+                                {
+                                    drive.followTrajectorySequenceAsync(GO_TO_COLLECTING_POSITION_7);
+                                    break;
+                                }
+                                case 7:
+                                {
+                                    drive.followTrajectorySequenceAsync(GO_TO_COLLECTING_POSITION_8);
+                                    break;
+                                }
+                                case 8:
+                                {
+                                    drive.followTrajectorySequenceAsync(GO_TO_COLLECTING_POSITION_9);
+                                    break;
+                                }
+                                case 9:
+                                {
+                                    drive.followTrajectorySequenceAsync(GO_TO_COLLECTING_POSITION_10);
+                                    break;
+                                }
+                            }
+                            timeCollect.reset();
+                            status = STROBOT.COLLECT;
                     break;
                 }
                 case PARK:

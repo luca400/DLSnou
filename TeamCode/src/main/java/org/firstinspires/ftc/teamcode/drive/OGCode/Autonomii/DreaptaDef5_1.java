@@ -106,7 +106,7 @@ public class DreaptaDef5_1 extends LinearOpMode {
         turnClawController.update(robot);
         servo4BarController.update(robot);
         sigurantaLiftController.update(robot);
-        motorColectareController.update(robot,0, 0.6);
+        motorColectareController.update(robot,0, 0.6,currentVoltage);
         liftController.update(robot,0,sigurantaLiftController,currentVoltage);
         robotController.update(robot,sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
         biggerController.update(robotController,closeClawController,motorColectareController);
@@ -168,7 +168,7 @@ public class DreaptaDef5_1 extends LinearOpMode {
         if (isStopRequested()) return;
         while (opModeIsActive() && !isStopRequested())
         {
-            int ColectarePosition = robot.encoderMotorColectare.getCurrentPosition();
+            int ColectarePosition = robot.motorColectareStanga.getCurrentPosition();
             int LiftPosition = robot.dreaptaLift.getCurrentPosition(); /// folosesc doar encoderul de la dreaptaLift , celalalt nu exista
             switch (status)
             {
@@ -312,7 +312,7 @@ public class DreaptaDef5_1 extends LinearOpMode {
             turnClawController.update(robot);
             servo4BarController.update(robot);
             sigurantaLiftController.update(robot);
-            motorColectareController.update(robot,ColectarePosition, 0.6);
+            motorColectareController.update(robot,ColectarePosition, 0.6, currentVoltage);
             liftController.update(robot,LiftPosition,sigurantaLiftController,currentVoltage);
             autoController51.update(sigurantaLiftController,robot,angle4BarController, turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
 
