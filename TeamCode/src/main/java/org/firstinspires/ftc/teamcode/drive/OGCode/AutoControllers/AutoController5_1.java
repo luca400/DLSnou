@@ -70,7 +70,7 @@ public class AutoController5_1 {
                 }
                 case CLOSE_THE_CLAW:
                 {
-                    if (timerFourBar.seconds()>timerAAtinsCon)
+                    if (timerFourBar.seconds()>1)
                     {
                         closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
                         timerClaw.reset();
@@ -80,7 +80,7 @@ public class AutoController5_1 {
                 }
                 case RETRIEVE_CONE:
                 {
-                    if (ok == 0 && timerClaw.seconds()>0.12)
+                    if (ok == 0 && timerClaw.seconds()>0.05)
                     {
                         ok=1;
                         servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
@@ -110,16 +110,16 @@ public class AutoController5_1 {
                     {
                         sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
                     }
-                    if (timerPlace_Cone.seconds()>1.3)
+                    if (timerPlace_Cone.seconds()>1.05)
                     {
-                        closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN_CLAW_BIG;
+                        closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN_CLAW_SMALL;
                         servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
                         angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
-                        turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
                     }
-                    if (timerPlace_Cone.seconds()>1.5)
+                    if (timerPlace_Cone.seconds()>1.2)
                     {
                         timerLift.reset();
+                        turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
                         liftController.CurrentStatus = AutoLiftStatus;
                         CurrentStatus = GET_LIFT_DOWN;
                     }

@@ -41,8 +41,8 @@ public class MotorColectareController {
     SimplePIDController MotorColectarePID = null;
     public static double vMax = 0, AccMax = 0, JerkMax =0 , EndPos = 2020 , CurrentPosition = 0;
     public static int extendedPosition = 700 , retractedPosition = -30, extendedDrive = 875;
-    public static int extended5_1Autonomy_5= 480, extended5_1Autonomy_4 = 480   ,extended5_1Autonomy_3 = 480,extended5_1Autonomy_2 = 480,extended5_1Autonomy_1 = 480;
-    public static int extended10_1Autonomy_5= 490, extended10_1Autonomy_4 = 490,extended10_1Autonomy_3 = 470,extended10_1Autonomy_2 = 465,extended10_1Autonomy_1 = 465;
+    public static int extended5_1Autonomy_5= 465, extended5_1Autonomy_4 = 450   ,extended5_1Autonomy_3 = 440,extended5_1Autonomy_2 = 430,extended5_1Autonomy_1 = 430;
+    public static int extended10_1Autonomy_5= 465, extended10_1Autonomy_4 = 450,extended10_1Autonomy_3 = 440,extended10_1Autonomy_2 = 430,extended10_1Autonomy_1 = 430;
     public static int NrConAuto = 5;
     public MotorColectareController()
     {
@@ -91,23 +91,23 @@ public class MotorColectareController {
                     switch (NrConAuto) {
                         case 0:
                         {
-                            MotorColectarePID.targetValue = 660;
-                            break;
-                        }
-                        case 1: {
-                            MotorColectarePID.targetValue = 680;
-                            break;
-                        }
-                        case 2: {
                             MotorColectarePID.targetValue = 700;
                             break;
                         }
+                        case 1: {
+                            MotorColectarePID.targetValue = 725;
+                            break;
+                        }
+                        case 2: {
+                            MotorColectarePID.targetValue = 755;
+                            break;
+                        }
                         case 3: {
-                            MotorColectarePID.targetValue = 740;
+                            MotorColectarePID.targetValue = 795;
                             break;
                         }
                         case 4: {
-                            MotorColectarePID.targetValue = 800;
+                            MotorColectarePID.targetValue = 825;
                             break;
                         }
                     }
@@ -131,23 +131,23 @@ public class MotorColectareController {
                     switch (NrConAuto) {
                         case 0:
                         {
-                            MotorColectarePID.targetValue = 575;
+                            MotorColectarePID.targetValue = 555;
                             break;
                         }
                         case 1: {
-                            MotorColectarePID.targetValue = 565;
+                            MotorColectarePID.targetValue = 555;
                             break;
                         }
                         case 2: {
-                            MotorColectarePID.targetValue = 585;
+                            MotorColectarePID.targetValue = 575;
                             break;
                         }
                         case 3: {
-                            MotorColectarePID.targetValue = 605;
+                            MotorColectarePID.targetValue = 595;
                             break;
                         }
                         case 4: {
-                            MotorColectarePID.targetValue = 615;
+                            MotorColectarePID.targetValue = 595;
                             break;
                         }
                     }

@@ -27,7 +27,7 @@ public class Servo4BarController {
     }
     public static ServoStatus CurrentStatus = INITIALIZE,PreviousStatus = INITIALIZE,WhereFromIntermediary = COLLECT_DRIVE;
     ElapsedTime time = new ElapsedTime();
-    public static double Ground_Position=0.905, Second_Cone_Position=0.88, Third_Cone_Position=0.84, Fourth_Cone_Position = 0.795, Fifth_Cone_Position = 0.75,
+    public static double Ground_Position=0.92, Second_Cone_Position=0.88, Third_Cone_Position=0.84, Fourth_Cone_Position = 0.795, Fifth_Cone_Position = 0.75,
              Fifth_Cone_Position_South_Left = 0.75 , Fifth_Cone_Position_MID = 0.75,
              Fifth_Cone_Position_BRATJOSHIGH = 0.75, Fifth_Cone_Position_BRATJOSMID_2 = 0.75, groundJunctionPosition  = 0.91;
     public static double Collect_Position = 0.85 , Place_Cone_Position = 0.25, Intermediary_Position =0.5 , Drive_Position = 0.5;

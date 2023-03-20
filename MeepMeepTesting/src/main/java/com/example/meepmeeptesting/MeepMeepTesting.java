@@ -10,7 +10,7 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 public class MeepMeepTesting {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
-        Pose2d StartPositionRight = new Pose2d(35,-60,Math.toRadians(270));
+        Pose2d StartPositionRight = new Pose2d(12,-22,Math.toRadians(12.5));
         Pose2d StartPositionLeft = new Pose2d(-35,-63,Math.toRadians(270));
         RoadRunnerBotEntity Autonomia1 = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
@@ -162,11 +162,11 @@ public class MeepMeepTesting {
                 );
         RoadRunnerBotEntity South_1_8 = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(60, 50, 5.69, 5.69, 7)
+               // .setConstraints(60, 50, 5.69, 5.69, 7)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(StartPositionRight)
-                                .lineTo(new Vector2d(10,-61))
-                                .lineToLinearHeading(new Pose2d(15,-17.5,Math.toRadians(20)))
+                                .lineTo(new Vector2d(12,-21))
+                                .splineToConstantHeading(new Vector2d(57,-15),Math.toRadians(180))
                                 .build()
                 );
         meepMeep.setBackground(MeepMeep.Background.FIELD_POWERPLAY_OFFICIAL)

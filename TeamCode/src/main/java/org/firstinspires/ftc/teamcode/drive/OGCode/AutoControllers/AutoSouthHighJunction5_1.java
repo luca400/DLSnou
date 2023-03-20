@@ -69,7 +69,7 @@ public class AutoSouthHighJunction5_1 {
             }
             case CLOSE_THE_CLAW:
             {
-                if (timerFourBar.seconds()>0.8)
+                if (timerFourBar.seconds()>1)
                 {
                     closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
                     timerClaw.reset();
@@ -85,7 +85,7 @@ public class AutoSouthHighJunction5_1 {
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
                     angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.RAISED;
                 }
-                if (timerClaw.seconds()>0.25) {
+                if (timerClaw.seconds()>0.35) {
                     motorColectareController.CurrentStatus = RETRACTED;
                     timerPlace_Cone.reset();
                     ok = 0;
@@ -113,12 +113,12 @@ public class AutoSouthHighJunction5_1 {
                 {
                     sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
                 }
-                if (timerPlace_Cone.seconds()>0.8)
+                if (timerPlace_Cone.seconds()>0.9)
                 {
                     closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN_CLAW_SMALL;
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
                     angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
-                    turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
+                    //turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
                     CurrentStatus = NOTHING;
                 }
                 break;
@@ -127,7 +127,7 @@ public class AutoSouthHighJunction5_1 {
             {
                 if (timerLift.seconds()>LimitLift)
                 {
-                    liftController.CurrentStatus = LiftController.LiftStatus.BASE;
+                    liftController.CurrentStatus = LiftController.LiftStatus.BASE_BAZAVAN;
                     CurrentStatus= NOTHING;
                 }
                 break;

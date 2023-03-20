@@ -30,7 +30,6 @@ public class RobotMap {
     Servo servoLift = null;
     Servo sigurantaLift = null;
     Servo angle4Bar = null;
-    DistanceSensor senzorClaw = null;
     public DcMotorEx motorColectareStanga = null;
     public DcMotorEx motorColectareDreapta = null;
     public DcMotorEx dreaptaLift = null;
@@ -71,6 +70,5 @@ public class RobotMap {
         motorColectareDreapta.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorColectareDreapta.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        senzorClaw = Init.get(DistanceSensor.class,"senzorClaw");
     }
 }

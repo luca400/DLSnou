@@ -78,6 +78,7 @@ public class PipeLineDetector extends OpenCvPipeline {
         sumAlbastrui = sumAlbastru.val[0];
         sumRozului = sumRoz.val[0];
         Arie = arie;
+        roz.release();albastru.release(); verde.release(); HSV.release();bunVerde.release();bunRoz.release();bunAlbastru.release();
         return input;
     }
 }

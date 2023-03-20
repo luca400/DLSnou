@@ -30,6 +30,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
     double pozCloseClaw=0.8, pozOpenClaw=0.2;
     double kp =0, ki=0, kd=0;
     boolean isDown = true, isClosed=false, isTurned = false, isExtended = false;
+    public static boolean oklow=false;
     double  PrecisionDenominator=1, PrecisionDenominator2=1.25;
 
     public void robotCentricDrive(DcMotor leftFront,DcMotor leftBack,DcMotor rightFront,DcMotor rightBack, double  lim, boolean StrafesOn , double LeftTrigger,  double RightTrigger)
@@ -64,35 +65,33 @@ public class SampleOpModeDLS extends  LinearOpMode {
         rightFront.setPower(frontRightPower);
         rightBack.setPower(backRightPower);
     }
-    public void fieldCentricDrive(BNO055IMU imu,DcMotor leftFront, DcMotor leftBack, DcMotor rightFront, DcMotor rightBack , double LeftTrigger , double RightTrigger)
+    public void robotCentricDriveABSO(DcMotor leftFront,DcMotor leftBack,DcMotor rightFront,DcMotor rightBack, double  lim, boolean StrafesOn , double LeftTrigger,  double RightTrigger)
     {
-        double y = -gamepad1.left_stick_y; // Remember, this is reversed!
-        double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
-        double rx = gamepad1.right_stick_x - LeftTrigger + RightTrigger;
+        double y = gamepad1.right_stick_y; // Remember, this is reversed!
+        double x = gamepad1.left_stick_x*1.1;
+        double rx = gamepad1.right_stick_x*1 - LeftTrigger + RightTrigger;
 
-        // Read inverse IMU heading, as the IMU heading is CW positive
-        double botHeading = -imu.getAngularOrientation().firstAngle;
-
-        double rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
-        double rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
-
+        rx/=PrecisionDenominator2;
+        x/=PrecisionDenominator;
+        y/=PrecisionDenominator;
         // Denominator is the largest motor power (absolute value) or 1
         // This ensures all the powers maintain the same ratio, but only when
         // at least one is out of the range [-1, 1]
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-        double frontLeftPower = (rotY + rotX + rx) / denominator;
-        double backLeftPower = (rotY - rotX + rx) / denominator;
-        double frontRightPower = (rotY - rotX - rx) / denominator;
-        double backRightPower = (rotY + rotX - rx) / denominator;
+        double frontLeftPower = (y + x + rx) / denominator;
+        double backLeftPower = (y - x + rx) / denominator;
+        double frontRightPower = (y - x - rx) / denominator;
+        double backRightPower = (y + x - rx) / denominator;
+
+        frontLeftPower = Clip(frontLeftPower,lim);
+        backLeftPower = Clip(backLeftPower,lim);
+        frontRightPower = Clip(frontRightPower,lim);
+        backRightPower = Clip(backRightPower,lim);
 
         leftFront.setPower(frontLeftPower);
         leftBack.setPower(backLeftPower);
         rightFront.setPower(frontRightPower);
         rightBack.setPower(backRightPower);
-    }
-    public void verifyYClaw()
-    {
-
     }
     double Clip(double Speed,double lim)
     {
@@ -194,30 +193,39 @@ public class SampleOpModeDLS extends  LinearOpMode {
         runtime.reset();
         double lim = 1 ; /// limita vitezei la sasiu
         boolean StrafesOn = false;
+        boolean senzorOn = true;
         String typeOfDrive = "RobotCentric";
         while (opModeIsActive()) {
-            double DistanceSenzorClaw = robot.senzorClaw.getDistance(DistanceUnit.MM);
             double current4BarPosition = robot.left4Bar.getPosition();
-            double hello = imu.getAngularVelocity().xRotationRate;
+            int ColectarePosition = robot.motorColectareStanga.getCurrentPosition();
+            int LiftPosition = robot.dreaptaLift.getCurrentPosition(); /// folosesc doar encoderul de la dreaptaLift , celalalt nu exista.
                 previousGamepad1.copy(currentGamepad1);
                 previousGamepad2.copy(currentGamepad2);
 
                 currentGamepad1.copy(gamepad1);
                 currentGamepad2.copy(gamepad2);
 
-
-
                 if (!previousGamepad1.touchpad && currentGamepad1.touchpad)
                 {
                     StrafesOn = !StrafesOn;
                 }
             /// DRIVE
-            if (typeOfDrive == "RobotCentric") {
+            if (typeOfDrive == "RobotCentricNormal") {
                 robotCentricDrive(leftFront, leftBack, rightFront, rightBack, lim,StrafesOn , 0,0);
             } else {
-                fieldCentricDrive(imu, leftFront, leftBack, rightFront, rightBack , 0, 0);
+                robotCentricDriveABSO(leftFront, leftBack, rightFront, rightBack, lim,StrafesOn , 0,0);
             }
-
+            if (!previousGamepad2.touchpad && currentGamepad2.touchpad)
+            {
+                if (typeOfDrive == "RobotCentricNormal")
+                {
+                    typeOfDrive = "RobotCentricABSO";
+                }
+                else
+                {
+                    typeOfDrive = "RobotCentricNormal";
+                }
+            }
             if (timeGetVoltage.seconds()>5)
             {
                 timeGetVoltage.reset();
@@ -319,6 +327,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
                 }
                 if (!previousGamepad2.cross && currentGamepad2.cross)
                 {
+                    oklow=false;
                     if (liftController.CurrentStatus!= LiftController.LiftStatus.HIGH_DRIVE)
                     {
                         liftController.CurrentStatus = LiftController.LiftStatus.HIGH_DRIVE;
@@ -341,17 +350,11 @@ public class SampleOpModeDLS extends  LinearOpMode {
                 }
                 if ( (!previousGamepad2.triangle && currentGamepad2.triangle) )
                 {
-                    if (liftController.CurrentStatus!= LiftController.LiftStatus.LOW)
-                    {
-                        liftController.CurrentStatus = LiftController.LiftStatus.LOW;
-                    }
-                    else
-                    {
-                        liftController.CurrentStatus = LiftController.LiftStatus.BASE;
-                    }
+                    liftController.CurrentStatus = LiftController.LiftStatus.LOW;
                 }
                 if ( (!previousGamepad2.circle && currentGamepad2.circle) )
                 {
+                    oklow=false;
                     if (liftController.CurrentStatus!= LiftController.LiftStatus.MID)
                     {
                         liftController.CurrentStatus = LiftController.LiftStatus.MID;
@@ -432,9 +435,6 @@ public class SampleOpModeDLS extends  LinearOpMode {
                 }
             }
 
-            int ColectarePosition = robot.motorColectareStanga.getCurrentPosition();
-            int LiftPosition = robot.dreaptaLift.getCurrentPosition(); /// folosesc doar encoderul de la dreaptaLift , celalalt nu exista.
-
             if (gamepad1.left_trigger >0)
             {
                 PrecisionDenominator = 2;
@@ -456,13 +456,6 @@ public class SampleOpModeDLS extends  LinearOpMode {
                 PrecisionDenominator = 1;
                 PrecisionDenominator2 = 1.5;
             }
-            if (servo4BarController.CurrentStatus == Servo4BarController.ServoStatus.COLLECT_DRIVE)
-            {
-                if (DistanceSenzorClaw<40)
-                {
-                    closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
-                }
-            }
             biggerController.update(robotController,closeClawController,motorColectareController);
             robotController.update(robot,sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
             closeClawController.update(robot);
@@ -478,7 +471,8 @@ public class SampleOpModeDLS extends  LinearOpMode {
             double loop = System.nanoTime();
             telemetry.addData("hz ", 1000000000 / (loop - loopTime));
             loopTime = loop;
-            telemetry.addData("XRotationRate",hello);
+            telemetry.addData("typeOfDrive",typeOfDrive);
+           /* telemetry.addData("XRotationRate",hello);
             telemetry.addData("AutoStatus", autoController51.CurrentStatus);
             telemetry.addData("RobotStatus",robotController.CurrentStatus);
             telemetry.addData("CurrentStatus",servo4BarController.CurrentStatus);
@@ -498,7 +492,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
             telemetry.addData("DreaptaPutereLift",robot.dreaptaLift.getPower());
             telemetry.addData("timpFSM", servo4BarController.time.seconds());
             telemetry.addData("SigurantaLiftStatus",sigurantaLiftController.CurrentStatus);
-            telemetry.addData("sigurantaLiftPosition",robot.sigurantaLift.getPosition());
+            telemetry.addData("sigurantaLiftPosition",robot.sigurantaLift.getPosition());*/
             telemetry.update();
         }
     }

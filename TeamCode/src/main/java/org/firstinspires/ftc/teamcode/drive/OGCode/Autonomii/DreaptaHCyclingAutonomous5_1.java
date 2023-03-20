@@ -54,7 +54,7 @@ public class DreaptaHCyclingAutonomous5_1 extends LinearOpMode {
         PRELOAD,
         GET_DOWN
     }
-    public static double x_CYCLING_POSITION = 37, y_CYCLING_POSITION = -19, Angle_CYCLING_POSITION = 13.5;
+    public static double x_CYCLING_POSITION = 37, y_CYCLING_POSITION = -19, Angle_CYCLING_POSITION = 13;
     public static double x_PLACE_PRELOAD = 37, y_PLACE_PRELOAD = 3, Angle_PLACE_PRELOAD = 20;
     public static double x_PARK1 = 10, y_PARK1 = -17, Angle_PARK1 = 90;
     public static double x_PARK2 = 35, y_PARK2 = -17, Angle_PARK2 = 90;
@@ -181,6 +181,8 @@ public class DreaptaHCyclingAutonomous5_1 extends LinearOpMode {
         }
         waitForStart();
         if (isStopRequested()) return;
+        camera.closeCameraDevice();
+        ElapsedTime timerStart = new ElapsedTime();
         while (opModeIsActive() && !isStopRequested())
         {
             int ColectarePosition = robot.motorColectareStanga.getCurrentPosition();
@@ -190,8 +192,11 @@ public class DreaptaHCyclingAutonomous5_1 extends LinearOpMode {
             {
                 case START:
                 {
-                    drive.followTrajectorySequenceAsync(PLACE_PRELOAD);
-                    status = STROBOT.PRELOAD;
+                    if (timerStart.seconds()>1.5)
+                    {
+                        drive.followTrajectorySequenceAsync(PLACE_PRELOAD);
+                        status = STROBOT.PRELOAD;
+                    }
                     break;
                 }
                 case PRELOAD:
@@ -312,8 +317,8 @@ public class DreaptaHCyclingAutonomous5_1 extends LinearOpMode {
             autoController51.update(sigurantaLiftController,robot,angle4BarController, turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
 
             drive.update();
-            telemetry.addData("Pozitie: ", drive.getPoseEstimate());
-            telemetry.addData("SpeedLift", liftController.CurrentSpeed);
+            //telemetry.addData("Pozitie: ", drive.getPoseEstimate());
+            //telemetry.addData("SpeedLift", liftController.CurrentSpeed);
            // telemetry.addData("caz:", Case);
             telemetry.addData("Status",status);
             telemetry.update();

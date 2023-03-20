@@ -164,7 +164,7 @@ public class AutoController10_1_LimitTesting {
             {
                 if (timerLift.seconds()>LimitLift)
                 {
-                    motorColectareController.CurrentStatus= MotorColectareController.MotorColectare.EXTENDED;
+                    motorColectareController.CurrentStatus= MotorColectareController.MotorColectare.EXTENDED_5_1;
                     liftController.CurrentStatus = LiftController.LiftStatus.BASE;
                     CurrentStatus= NOTHING;
                 }
@@ -175,7 +175,7 @@ public class AutoController10_1_LimitTesting {
                 ok=0;
                 closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
                 liftController.CurrentStatus = LiftController.LiftStatus.BASE;
-                motorColectareController.CurrentStatus= MotorColectareController.MotorColectare.EXTENDED;
+                motorColectareController.CurrentStatus= MotorColectareController.MotorColectare.EXTENDED_5_1;
                 turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
                 angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
                 if (Cone_Stack_Level==5)
