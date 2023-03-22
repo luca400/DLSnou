@@ -70,7 +70,7 @@ public class AutoSouthHighJunction5_1 {
             }
             case CLOSE_THE_CLAW:
             {
-                if (timerFourBar.seconds()>0.85)
+                if (timerFourBar.seconds()>1)
                 {
                     closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
                     timerClaw.reset();
@@ -80,7 +80,7 @@ public class AutoSouthHighJunction5_1 {
             }
             case RETRIEVE_CONE:
             {
-                if (ok == 0 && timerClaw.seconds()>0.05)
+                if (ok == 0 && timerClaw.seconds()>0.1)
                 {
                     ok=1;
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
@@ -139,7 +139,7 @@ public class AutoSouthHighJunction5_1 {
                 servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
                 turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
                 angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
-                 if (Cone_Stack_Level==5)
+                if (Cone_Stack_Level==5)
                 {
                     servo4BarController.Collect_Position = servo4BarController.Fifth_Cone_Position_South;
                     Cone_Stack_Level =4;
