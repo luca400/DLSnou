@@ -275,7 +275,7 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
                     {
                         if (nr!=5)
                         {
-                            if (timerGOPLACE.seconds()>1.1) {
+                            if (timerGOPLACE.seconds()>0.9) {
                                 liftController.CurrentStatus = LiftController.LiftStatus.HIGH_SOUTH;
                                 timerLift.reset();
                                 status = STROBOT.GET_LIFT_DOWN;
@@ -303,7 +303,7 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
                 case GET_LIFT_DOWN: {
                         if (timerLift.seconds() > autoControllerTurn51.LimitLift) {
                             timerLift.reset();
-                            if (nr!=8)
+                            if (nr!=9)
                             {
                                 autoControllerTurn51.CurrentStatus = AutoSouthHighJunction5_1.autoControllerSouthHigh.STACK_LEVEL;
                                 liftController.CurrentStatus = LiftController.LiftStatus.BASE;

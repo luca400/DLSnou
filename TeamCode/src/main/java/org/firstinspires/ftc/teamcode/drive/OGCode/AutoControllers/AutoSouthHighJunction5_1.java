@@ -70,7 +70,7 @@ public class AutoSouthHighJunction5_1 {
             }
             case CLOSE_THE_CLAW:
             {
-                if (timerFourBar.seconds()>1)
+                if (timerFourBar.seconds()>0.8)
                 {
                     closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
                     timerClaw.reset();
@@ -103,17 +103,17 @@ public class AutoSouthHighJunction5_1 {
                     angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.PLACE;
                     ok2 = 1;
                 }
-                if (ok == 0 && timerPlace_Cone.seconds()>0.65)
+                if (ok == 0 && timerPlace_Cone.seconds()>0.55)
                 {
                     Robotel.left4Bar.setPosition(servo4BarController.Place_Cone_Position);
                     Robotel.right4Bar.setPosition(servo4BarController.Place_Cone_Position);
                     ok = 1;
                 }
-                if (timerPlace_Cone.seconds()>0.75)
+                if (timerPlace_Cone.seconds()>0.7)
                 {
                     sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
                 }
-                if (timerPlace_Cone.seconds()>0.9)
+                if (timerPlace_Cone.seconds()>0.85)
                 {
                     closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN_CLAW_SMALL;
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;

@@ -96,24 +96,24 @@ public class MotorColectareController {
                             break;
                         }
                         case 1: {
-                            MotorColectarePID.targetValue = 750;
-                            break;
-                        }
-                        case 2: {
                             MotorColectarePID.targetValue = 760;
                             break;
                         }
+                        case 2: {
+                            MotorColectarePID.targetValue = 770;
+                            break;
+                        }
                         case 3: {
-                            MotorColectarePID.targetValue = 780;
+                            MotorColectarePID.targetValue = 790;
                             break;
                         }
                         case 4: {
-                            MotorColectarePID.targetValue = 790;
+                            MotorColectarePID.targetValue = 800;
                             break;
                         }
                         case 5:
                         {
-                            MotorColectarePID.targetValue = 820;
+                            MotorColectarePID.targetValue = 830;
                             break;
                         }
                     }
