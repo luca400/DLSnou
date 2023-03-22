@@ -8,6 +8,7 @@ import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSo
 import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.EXTENDED;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.EXTENDED_SOUTH;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.RETRACTED;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.RETRACTED_0;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -69,7 +70,7 @@ public class AutoSouthHighJunction5_1 {
             }
             case CLOSE_THE_CLAW:
             {
-                if (timerFourBar.seconds()>1)
+                if (timerFourBar.seconds()>0.85)
                 {
                     closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
                     timerClaw.reset();
@@ -85,8 +86,8 @@ public class AutoSouthHighJunction5_1 {
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
                     angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.RAISED;
                 }
-                if (timerClaw.seconds()>0.35) {
-                    motorColectareController.CurrentStatus = RETRACTED;
+                if (timerClaw.seconds()>0.2) {
+                    motorColectareController.CurrentStatus = RETRACTED_0;
                     timerPlace_Cone.reset();
                     ok = 0;
                     ok2 =0;
@@ -106,7 +107,6 @@ public class AutoSouthHighJunction5_1 {
                 {
                     Robotel.left4Bar.setPosition(servo4BarController.Place_Cone_Position);
                     Robotel.right4Bar.setPosition(servo4BarController.Place_Cone_Position);
-
                     ok = 1;
                 }
                 if (timerPlace_Cone.seconds()>0.75)
@@ -118,7 +118,6 @@ public class AutoSouthHighJunction5_1 {
                     closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN_CLAW_SMALL;
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
                     angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
-                    //turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
                     CurrentStatus = NOTHING;
                 }
                 break;
@@ -136,9 +135,8 @@ public class AutoSouthHighJunction5_1 {
             {
                 ok=0;
                 motorColectareController.CurrentStatus = EXTENDED_SOUTH;
-                closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN_CLAW_BIG;
+                closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
                 servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
-                liftController.CurrentStatus = LiftController.LiftStatus.BASE;
                 turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
                 angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
                  if (Cone_Stack_Level==5)

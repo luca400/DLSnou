@@ -19,6 +19,7 @@ public class LiftController {
         MID,
         PLACE_SIGURANTA,
         BASE_BAZAVAN,
+        HIGH_SOUTH_CYCLING,
         BASE,
     }
     public double CurrentSpeed=0;
@@ -34,7 +35,7 @@ public class LiftController {
     int basePosition = 0;
     public static int lowPosition = 200;
     public static int midPosition = 425;
-    public static int highPosition = 685, highPositionSouth = 705, highPosition_DRIVE = 685;
+    public static int highPosition = 685, highPositionSouth = 705, highPosition_DRIVE = 685 , highPositionSouth_Cycling = 710;
     public int CurrentPosition = 0;
     public LiftController()
     {
@@ -69,7 +70,7 @@ public class LiftController {
                 }
                 case PLACE_SIGURANTA:
                 {
-                    if (timeSiguranta.seconds()>0.05)
+                    if (timeSiguranta.seconds()>0.25)
                     {
                         sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.TRANSFER;
                         CurrentStatus = BASE;
@@ -92,6 +93,12 @@ public class LiftController {
                 {
                     sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
                     LiftColectarePID.targetValue = highPositionSouth;
+                    break;
+                }
+                case HIGH_SOUTH_CYCLING:
+                {
+                    sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
+                    LiftColectarePID.targetValue = highPositionSouth_Cycling;
                     break;
                 }
                 case MID:

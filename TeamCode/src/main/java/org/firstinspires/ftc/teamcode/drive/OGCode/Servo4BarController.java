@@ -39,6 +39,7 @@ public class Servo4BarController {
 
     public static double Ground_Position_South=0.92, Second_Cone_Position_South=0.89, Third_Cone_Position_South=0.855, Fourth_Cone_Position_South = 0.81, Fifth_Cone_Position_South = 0.765;
 
+    public static double CyclingSouthPositions[] = {0,0.92,0.88,0.84,0.795,0.795};
 
     int salut =0;
     public void update(RobotMap Robot)

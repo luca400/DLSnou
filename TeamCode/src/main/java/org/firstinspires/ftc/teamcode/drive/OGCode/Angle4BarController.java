@@ -19,7 +19,7 @@ public class Angle4BarController {
         LIL_PLACE
     }
     public static angle4BarStatus CurrentStatus = angle4BarStatus.INIT,  PreviousStatus = angle4BarStatus.INIT;
-    public static double pozLilFront=0.45 , pozVertical = 0.44, pozCollectCones = 0.86 , pozRaised = 0.30 ,pozPlace = 0.55 , pozLilRaised = 0.34 , pozPlaceLow = 0.21,pozLilPlace = 0.5;
+    public static double pozLilFront=0.45 , pozVertical = 0.44, pozCollectCones = 0.86 , pozRaised = 0.30 ,pozPlace = 0.55 , pozLilRaised = 0.39 , pozPlaceLow = 0.21,pozLilPlace = 0.5;
 
     public void update(RobotMap Robotel)
     {

@@ -12,9 +12,10 @@ public class TurnClawController {
         INIT,
         COLLECT,
         PLACE,
+        COLLECT_SOUTH,
     }
     public static TurnClawStatus CurrentStatus = INIT , PreviousStatus = INIT;
-    public static double pozTurnClaw_COLLECT=0.70, pozTurnClaw_PLACE = 0.03;
+    public static double pozTurnClaw_COLLECT=0.70, pozTurnClaw_PLACE = 0.03,pozTurnCollectSouthCycling = 0.65;
     public void update(RobotMap Robotel)
     {
         if (PreviousStatus != CurrentStatus)
@@ -29,6 +30,11 @@ public class TurnClawController {
                 case COLLECT:
                 {
                     Robotel.turnClaw.setPosition(pozTurnClaw_COLLECT);
+                    break;
+                }
+                case COLLECT_SOUTH:
+                {
+                    Robotel.turnClaw.setPosition(pozTurnCollectSouthCycling);
                     break;
                 }
             }

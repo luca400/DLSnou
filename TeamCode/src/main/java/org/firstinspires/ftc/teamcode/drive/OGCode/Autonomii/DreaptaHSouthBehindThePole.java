@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive.OGCode.Autonomii;
 
 
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction5_1.autoControllerSouthHigh.NOTHING;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction5_1.autoControllerSouthHigh.PLACE_CONE;
 import static org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive.timeOutBaby;
 
@@ -55,13 +56,13 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
         GO_TO_COLLECTING_POSITION,
     }
     public static double x_CYCLING_POSITION = 13, y_CYCLING_POSITION = -61;
-    public static double x_COLLECT_POSITION = 20, y_COLLECT_POSITION = -12, Angle_COLLECT_POSITION = 0.5;
-    public static double x_PLACE_SOUTH_HIGH = 14, y_PLACE_SOUTH_HIGH = -22, Angle_PLACE_SOUTH_HIGH = 12.5;
-    public static double x_PLACE_SOUTH_HIGH_LEFT = -14, y_PLACE_SOUTH_HIGH_LEFT = -18, Angle_PLACE_SOUTH_HIGH_LEFT = 167.5;
-    public static double x_COLLECT_POSITION_LEFT = -20, y_COLLECT_POSITION_LEFT = -8, Angle_COLLECT_POSITION_LEFT = 180;
-    public static double x_PARK1 = 11.5, y_PARK1 = -11, Angle_PARK1 = 0;
-    public static double x_PARK2 = 33, y_PARK2 = -11.5, Angle_PARK2 = 0;
-    public static double x_PARK3 = 60, y_PARK3 = -11, Angle_PARK3 = 0;
+    public static double x_COLLECT_POSITION = 17, y_COLLECT_POSITION = -18, Angle_COLLECT_POSITION = 6;
+    public static double x_PLACE_SOUTH_HIGH = 14, y_PLACE_SOUTH_HIGH = -20, Angle_PLACE_SOUTH_HIGH = 16;
+    public static double x_COLLECT_POSITION_LEFT = -17, y_COLLECT_POSITION_LEFT = -13, Angle_COLLECT_POSITION_LEFT = 180;
+    public static double x_PLACE_SOUTH_HIGH_LEFT = -14, y_PLACE_SOUTH_HIGH_LEFT = -19, Angle_PLACE_SOUTH_HIGH_LEFT = 170;
+    public static double x_PARK1 = -11.5, y_PARK1 = -14, Angle_PARK1 = 180;
+    public static double x_PARK2 = -33, y_PARK2 = -14.5, Angle_PARK2 = 180;
+    public static double x_PARK3 = -55, y_PARK3 = -14, Angle_PARK3 = 180;
     public static double Angle_TURN_COLLECT = 40;
     ElapsedTime asteapta = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime() , timeCollect = new ElapsedTime();
 
@@ -127,7 +128,7 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
 
         autoControllerTurn51.Cone_Stack_Level  =5;
         autoControllerTurn51.AutoLiftStatus = LiftController.LiftStatus.HIGH;
-        autoControllerTurn51.LimitLift = 0.8;
+        autoControllerTurn51.LimitLift = 0.7;
         motorColectareController.NrConAuto = 5;
         robot.turnClaw.setPosition(TurnClawController.pozTurnClaw_COLLECT);
 
@@ -148,18 +149,18 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
         Pose2d PLACE_SOUTH_HIGH = new Pose2d(x_PLACE_SOUTH_HIGH,y_PLACE_SOUTH_HIGH,Math.toRadians(Angle_PLACE_SOUTH_HIGH));
         Pose2d PLACE_SOUTH_HIGH_LEFT = new Pose2d(x_PLACE_SOUTH_HIGH_LEFT,y_PLACE_SOUTH_HIGH_LEFT,Math.toRadians(Angle_PLACE_SOUTH_HIGH_LEFT));
         Pose2d COLLECT_POSITION_5 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION));
-        Pose2d COLLECT_POSITION_4 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION+1.5));
-        Pose2d COLLECT_POSITION_3 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION+3));
-        Pose2d COLLECT_POSITION_2 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION+4.5));
-        Pose2d COLLECT_POSITION_1 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION+6));
+        Pose2d COLLECT_POSITION_4 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION));
+        Pose2d COLLECT_POSITION_3 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION+1));
+        Pose2d COLLECT_POSITION_2 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION+2));
+        Pose2d COLLECT_POSITION_1 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION+3));
 
 
 
         Pose2d COLLECT_POSITION_6 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT));
-        Pose2d COLLECT_POSITION_7 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT+1));
-        Pose2d COLLECT_POSITION_8 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT+2));
-        Pose2d COLLECT_POSITION_9 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT+3));
-        Pose2d COLLECT_POSITION_10 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT+4));
+        Pose2d COLLECT_POSITION_7 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-1));
+        Pose2d COLLECT_POSITION_8 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-2));
+        Pose2d COLLECT_POSITION_9 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-3));
+        Pose2d COLLECT_POSITION_10 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT));
         drive.setPoseEstimate(startPose);
         STROBOT status = STROBOT.START;
         TrajectorySequence PLACE_PRELOAD = drive.trajectorySequenceBuilder(startPose)
@@ -208,13 +209,13 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
         TrajectorySequence SWITCH_LEFT = drive.trajectorySequenceBuilder(COLLECT_POSITION_1)
                 .lineToLinearHeading(PLACE_SOUTH_HIGH_LEFT)
                 .build();
-        TrajectorySequence PARK1 = drive.trajectorySequenceBuilder(GO_TO_PLACE_POSITION.end())
+        TrajectorySequence PARK1 = drive.trajectorySequenceBuilder(COLLECT_POSITION_6)
                 .lineToLinearHeading(new Pose2d(x_PARK1,y_PARK1,Math.toRadians(Angle_PARK1)))
                 .build();
-        TrajectorySequence PARK2 = drive.trajectorySequenceBuilder(GO_TO_PLACE_POSITION.end())
+        TrajectorySequence PARK2 = drive.trajectorySequenceBuilder(COLLECT_POSITION_6)
                 .lineToLinearHeading(new Pose2d(x_PARK2,y_PARK2,Math.toRadians(Angle_PARK2)))
                 .build();
-        TrajectorySequence PARK3 = drive.trajectorySequenceBuilder(GO_TO_PLACE_POSITION.end())
+        TrajectorySequence PARK3 = drive.trajectorySequenceBuilder(COLLECT_POSITION_6)
                 .lineToLinearHeading(new Pose2d(x_PARK3,y_PARK3,Math.toRadians(Angle_PARK3)))
                 .build();
         int cameraMonitorViewId = hardwareMap.appContext
@@ -247,7 +248,9 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
             sleep(50);
         }
         waitForStart();
+        camera.closeCameraDevice();
         if (isStopRequested()) return;
+        int OKEIUT = 0;
         while (opModeIsActive() && !isStopRequested())
         {
             int ColectarePosition = robot.motorColectareStanga.getCurrentPosition();
@@ -259,6 +262,7 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
                     break;
                 }
                 case GET_LIFT_UP: {
+                    OKEIUT=0;
                     if (nr==0)
                     {
                         if (!drive.isBusy()) {
@@ -271,7 +275,7 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
                     {
                         if (nr!=5)
                         {
-                            if (timerGOPLACE.seconds()>0.8) {
+                            if (timerGOPLACE.seconds()>1.1) {
                                 liftController.CurrentStatus = LiftController.LiftStatus.HIGH_SOUTH;
                                 timerLift.reset();
                                 status = STROBOT.GET_LIFT_DOWN;
@@ -299,28 +303,29 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
                 case GET_LIFT_DOWN: {
                         if (timerLift.seconds() > autoControllerTurn51.LimitLift) {
                             timerLift.reset();
-                            liftController.CurrentStatus = LiftController.LiftStatus.BASE;
-                            status = STROBOT.GO_TO_COLLECTING_POSITION;
+                            if (nr!=8)
+                            {
+                                autoControllerTurn51.CurrentStatus = AutoSouthHighJunction5_1.autoControllerSouthHigh.STACK_LEVEL;
+                                liftController.CurrentStatus = LiftController.LiftStatus.BASE;
+                                status = STROBOT.GO_TO_COLLECTING_POSITION;
+                            }
+                            else
+                            {
+                                liftController.CurrentStatus = LiftController.LiftStatus.BASE;
+                                status = STROBOT.PARK;
+                            }
                         }
                     break;
                 }
                 case COLLECT:
                 {
-                    if (nr==10)
-                    {
-                        status = STROBOT.PARK;
-                    }
-                    else
-                    {
-                        nr++;
-                        autoControllerTurn51.CurrentStatus = AutoSouthHighJunction5_1.autoControllerSouthHigh.STACK_LEVEL;
-                        status = STROBOT.GO_TO_SCORING_POSITION;
-                    }
+                    nr++;
+                    status = STROBOT.GO_TO_SCORING_POSITION;
                     break;
                 }
                 case GO_TO_SCORING_POSITION:
                 {
-                    if (autoControllerTurn51.CurrentStatus == PLACE_CONE)
+                    if (autoControllerTurn51.CurrentStatus == PLACE_CONE || autoControllerTurn51.CurrentStatus == NOTHING)
                     {
                         if (nr<=5)
                         {
