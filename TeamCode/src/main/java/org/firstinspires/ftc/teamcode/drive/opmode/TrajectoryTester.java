@@ -45,16 +45,10 @@ public class TrajectoryTester extends LinearOpMode {
         Servo4BarController servo4BarController = new Servo4BarController();
         MotorColectareController motorColectareController = new MotorColectareController();
         TrajectorySequence AutonomiaDreapta = drive.trajectorySequenceBuilder(StartPositionRight)
-                .lineToLinearHeading(new Pose2d(x_CYCLING_POSITION,y_CYCLING_POSITION,Angle_CYCLING_POSITION))
-                .lineTo(new  Vector2d(x_CYCLING_POSITION-2, y_CYCLING_POSITION-1))
-                .splineToSplineHeading(new Pose2d(-15,-12.6,Math.toRadians(180)),Math.toRadians(180))
-                .lineTo(new Vector2d(-30,-12.6))
-                .build();
-        TrajectorySequence AutonomiaStanga = drive.trajectorySequenceBuilder(StartPositionLeft)
-                .lineToLinearHeading(new Pose2d(x_CYCLING_POSITION_LEFT,y_CYCLING_POSITION_LEFT,Math.toRadians(Angle_CYCLING_POSITION_LEFT)))
-                .splineToSplineHeading(new Pose2d(x_SSH_LEFT,y_SSH_LEFT,Math.toRadians(Angle_SSH_LEFT)),Math.toRadians(Tanget_Angle_SSH_LEFT))
-                .lineTo(new Vector2d(x_LINETO_LEFT,y_LINETO_LEFT))
-                .lineToLinearHeading(new Pose2d(x_LLH_LEFT,y_LLH_LEFT,Math.toRadians(Angle_LLH_LEFT)))
+                .lineToLinearHeading(new Pose2d(37.5,-12,Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(17,-18,Math.toRadians(7.2)))
+                .lineToLinearHeading(new Pose2d(8,-13,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-14.02679549603315,-18, Math.toRadians(170)))
                 .build();
         waitForStart();
 

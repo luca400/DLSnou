@@ -70,12 +70,15 @@ public class DreaptaCyclingSouth extends LinearOpMode {
         PARK,
         STOP_JOC,
     }
-    public static double x_CYCLING_POSITION = 16, y_CYCLING_POSITION = -18, Angle_CYCLING_POSITION = 9;
+    public static double x_CYCLING_POSITION = 17, y_CYCLING_POSITION = -18, Angle_CYCLING_POSITION = 7.2;
     public static double x_CYCLING_POSITION_INTER = 37.5, y_CYCLING_POSITION_INTER = -12;
+    public static double x_CYCLE_LEFT = -14.02679549603315,y_CYCLE_LEFT = -18 , Angle_CYCLE_LEFT = 170;
     public static double x_PARK1 = -55, y_PARK1 = -20, Angle_PARK1 = 270;
     public static double x_PARK2 = -35, y_PARK2 = -20, Angle_PARK2 = 270;
     public static double x_PARK3 = -15, y_PARK3 = -15, Angle_PARK3 = 270;
     public static double y_LLH = -5.5, Angle_LLH = 192.5, x_LLH = -36;
+
+    Pose2d CYCLE_LEFT = new Pose2d(x_CYCLE_LEFT,y_CYCLE_LEFT,Math.toRadians(Angle_CYCLE_LEFT));
     ElapsedTime asteapta = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime();
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -164,10 +167,8 @@ public class DreaptaCyclingSouth extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(x_CYCLING_POSITION,y_CYCLING_POSITION,Math.toRadians(Angle_CYCLING_POSITION)))
                 .build();
         TrajectorySequence GO_TO_NEXT_POSITION = drive.trajectorySequenceBuilder(PLACE_PRELOAD.end())
-                .lineTo(new  Vector2d(x_CYCLING_POSITION-2, y_CYCLING_POSITION-1))
-                .splineToSplineHeading(new Pose2d(-15,-12.6,Math.toRadians(180)),Math.toRadians(180))
-                .lineTo(new Vector2d(-30,-12.6))
-                .lineToLinearHeading(new Pose2d(x_LLH,y_LLH,Math.toRadians(Angle_LLH)))
+                .lineToLinearHeading(new Pose2d(-5,-11,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-14.5,-17, Math.toRadians(169.2)))
                 .build();
         TrajectorySequence PARK1 = drive.trajectorySequenceBuilder(GO_TO_NEXT_POSITION.end())
                 .lineToLinearHeading(new Pose2d(x_PARK1,y_PARK1,Math.toRadians(Angle_PARK1)))
@@ -287,7 +288,7 @@ public class DreaptaCyclingSouth extends LinearOpMode {
                     {
                         motorColectareController.NrConAuto = 1;
                         autoController101.CurrentStatus = CyclingSouth.autoControllerStatus.STACK_LEVEL;
-                        status = STROBOT.STOP_JOC;
+                        status = STROBOT.GO_TO_NEXT_POSITION;
                     }
                     break;
                 }

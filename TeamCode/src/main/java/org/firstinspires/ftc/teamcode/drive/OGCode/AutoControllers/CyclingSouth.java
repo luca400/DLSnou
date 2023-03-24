@@ -47,7 +47,7 @@ public class CyclingSouth {
     public static int stackNumber = 0;
     public static double LimitLift = 1.2;
     public static LiftController.LiftStatus AutoLiftState = LiftController.LiftStatus.HIGH;
-    int ok=0;
+    int ok=0,ok2=0;
     double timerInter = 2,timeStart=0,timerStartLimit = 0.5;
     public double positionFromState(int stackNumber, int number)
     {
@@ -71,7 +71,7 @@ public class CyclingSouth {
             }
             case CLOSE_THE_CLAW:
             {
-                if (timerStart.seconds()>timerStartLimit)
+                if (timerStart.seconds()>0.2)
                 {
                     closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
                     timerClaw.reset();
@@ -81,25 +81,31 @@ public class CyclingSouth {
             }
             case RETRIEVE_CONE:
             {
-                if (ok == 0 && timerClaw.seconds()>0.5)
+                if (ok == 0 && timerClaw.seconds()>0.15)
                 {
                     ok=1;
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
                     angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.RAISED;
                 }
-                if (timerClaw.seconds()>0.85)
+                if (timerClaw.seconds()>0.35)
                 {
-                    turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.PLACE;
-                    angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.PLACE;
+
                     motorColectareController.CurrentStatus = RETRACTED_0;
                     timerPlace_Cone.reset();
                     ok=0;
+                    ok2=0;
                     CurrentStatus = PLACE_CONE;
                 }
                 break;
             }
             case PLACE_CONE:
             {
+                if (ok2 == 0 &&timerPlace_Cone.seconds()>0.15)
+                {
+                    turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.PLACE;
+                    angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.PLACE;
+                    ok2 = 1;
+                }
                 if (ok == 0 && timerPlace_Cone.seconds()>0.55)
                 {
                     Robotel.left4Bar.setPosition(servo4BarController.Place_Cone_Position);
@@ -133,7 +139,7 @@ public class CyclingSouth {
                     {
                         timerLift.reset();
                         liftController.CurrentStatus = AutoLiftState;
-                        closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN_CLAW_BIG;
+                        closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
                         angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
                         turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
                         CurrentStatus = GET_LIFT_DOWN;
@@ -143,8 +149,6 @@ public class CyclingSouth {
             }
             case GET_LIFT_DOWN:
             {
-                if (timerLift.seconds()>LimitLift-0.1)
-                {
                     if (Cone_Stack_Level == 5)
                     {
                         motorColectareController.CurrentStatus = RETRACTED;
@@ -154,21 +158,23 @@ public class CyclingSouth {
                     {
                         motorColectareController.CurrentStatus = EXTENDED_10_1_SOUTH;
                     }
+                if (timerLift.seconds()>0.4)
+                {
+                    closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN_CLAW_BIG;
                 }
                 if (timerLift.seconds()>LimitLift)
                 {
-                    liftController.CurrentStatus = LiftController.LiftStatus.BASE_BAZAVAN;
+                    liftController.CurrentStatus = LiftController.LiftStatus.BASE;
                     CurrentStatus= NOTHING;
                 }
                 break;
             }
             case STACK_LEVEL:
             {
-                closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN_CLAW_BIG;
                 liftController.CurrentStatus = LiftController.LiftStatus.BASE;
                 if (Cone_Stack_Level ==5 )
                 {
-                    angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.LIL_RAISED;
+                    angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
                 }
                 else
                 {
@@ -176,7 +182,10 @@ public class CyclingSouth {
 
                 }
                 servo4BarController.Collect_Position = Servo4BarController.CyclingSouthPositions[Cone_Stack_Level];
-                turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT_SOUTH;
+                if (stackNumber==0)
+                {
+                    turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT_SOUTH;
+                }
                 if (Cone_Stack_Level == 1)
                 {
                     stackNumber++;
@@ -187,7 +196,6 @@ public class CyclingSouth {
                     Cone_Stack_Level = Cone_Stack_Level -1;
                 }
                 timerStart.reset();
-                timerStartLimit = 1.5;
                 CurrentStatus = CLOSE_THE_CLAW;
                 break;
             }
