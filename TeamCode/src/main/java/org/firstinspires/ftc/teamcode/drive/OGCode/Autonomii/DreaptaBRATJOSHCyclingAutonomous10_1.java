@@ -69,12 +69,12 @@ public class DreaptaBRATJOSHCyclingAutonomous10_1 extends LinearOpMode {
         PARK,
         STOP_JOC,
     }
-    public static double x_CYCLING_POSITION = 37.5, y_CYCLING_POSITION = -5.5, Angle_CYCLING_POSITION = 345;
-    public static double x_PARK1 = -55, y_PARK1 = -20, Angle_PARK1 = 270;
-    public static double x_PARK2 = -35, y_PARK2 = -20, Angle_PARK2 = 270;
-    public static double x_PARK3 = -15, y_PARK3 = -15, Angle_PARK3 = 270;
-    public static double y_LLH = -5.5, Angle_LLH = 192.5, x_LLH = -36;
-    ElapsedTime asteapta = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime();
+    public static double x_CYCLING_POSITION = 36.5, y_CYCLING_POSITION = -5.26, Angle_CYCLING_POSITION = 347.5;
+    public static double x_PARK1 = -50, y_PARK1 = -23, Angle_PARK1 = 270;
+    public static double x_PARK2 = -35, y_PARK2 = -23, Angle_PARK2 = 270;
+    public static double x_PARK3 = -12, y_PARK3 = -15, Angle_PARK3 = 270;
+    public static double y_LLH = -4.8, Angle_LLH = 194, x_LLH = -35;
+    ElapsedTime asteapta = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime(), timerSecondPos = new ElapsedTime();
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
@@ -101,7 +101,7 @@ public class DreaptaBRATJOSHCyclingAutonomous10_1 extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        timeOutBaby = 0.5;
+        timeOutBaby = 0.3;
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         RobotMap robot = new RobotMap(hardwareMap);
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
@@ -132,10 +132,10 @@ public class DreaptaBRATJOSHCyclingAutonomous10_1 extends LinearOpMode {
         sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
         angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
 
-        motorColectareController.NrConAuto = 5;
+        motorColectareController.NrConAuto = 10;
         autoController101.Cone_Stack_Level  =5;
-        autoController101.AutoLiftState = LiftController.LiftStatus.HIGH_SOUTH;
-        autoController101.LimitLift = 0.7;
+        autoController101.AutoLiftState = LiftController.LiftStatus.HIGH;
+        autoController101.LimitLift = 0.65;
         autoController101.stackNumber = 0;
         robot.turnClaw.setPosition(TurnClawController.pozTurnClaw_COLLECT);
 
@@ -167,13 +167,13 @@ public class DreaptaBRATJOSHCyclingAutonomous10_1 extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(x_LLH,y_LLH,Math.toRadians(Angle_LLH)))
                 .build();
         TrajectorySequence PARK1 = drive.trajectorySequenceBuilder(GO_TO_NEXT_POSITION.end())
-                .lineToLinearHeading(new Pose2d(x_PARK1,y_PARK1,Math.toRadians(Angle_PARK1)))
+                .lineTo(new Vector2d(x_PARK1,y_PARK1))
                 .build();
         TrajectorySequence PARK2 = drive.trajectorySequenceBuilder(GO_TO_NEXT_POSITION.end())
-                .lineToLinearHeading(new Pose2d(x_PARK2,y_PARK2,Math.toRadians(Angle_PARK2)))
+                .lineTo(new Vector2d(x_PARK2,y_PARK2))
                 .build();
         TrajectorySequence PARK3 = drive.trajectorySequenceBuilder(GO_TO_NEXT_POSITION.end())
-                .lineToLinearHeading(new Pose2d(x_PARK3,y_PARK3,Math.toRadians(Angle_PARK3)))
+                .lineTo(new Vector2d(x_PARK3,y_PARK3))
                 .build();
 
         int cameraMonitorViewId = hardwareMap.appContext
@@ -224,7 +224,7 @@ public class DreaptaBRATJOSHCyclingAutonomous10_1 extends LinearOpMode {
                 {
                     if (!drive.isBusy())
                     {
-                        motorColectareController.NrConAuto = 5;
+                        motorColectareController.NrConAuto = 10;
                         liftController.CurrentStatus = LiftController.LiftStatus.HIGH;
                         servo4BarController.Collect_Position = Servo4BarController.Fifth_Cone_Position_MID;
                         servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.COLLECT_DRIVE;
@@ -241,7 +241,7 @@ public class DreaptaBRATJOSHCyclingAutonomous10_1 extends LinearOpMode {
                 {
                     if (timerLift.seconds()>autoController101.LimitLift)
                     {
-                        motorColectareController.NrConAuto = 5;
+                        motorColectareController.NrConAuto = 10;
                         liftController.CurrentStatus = LiftController.LiftStatus.BASE;
                         autoController101.CurrentStatus = AutoController10_1_BRATJOS_HIGH.autoControllerStatus.STACK_LEVEL;
                         status =  STROBOT.SECOND_CYCLE;
@@ -252,7 +252,7 @@ public class DreaptaBRATJOSHCyclingAutonomous10_1 extends LinearOpMode {
                 {
                     if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_HIGH.autoControllerStatus.NOTHING)
                     {
-                        motorColectareController.NrConAuto = 4;
+                        motorColectareController.NrConAuto = 9;
                         autoController101.CurrentStatus = AutoController10_1_BRATJOS_HIGH.autoControllerStatus.STACK_LEVEL;
                         status = STROBOT.THIRD_CYCLE;
                     }
@@ -262,7 +262,7 @@ public class DreaptaBRATJOSHCyclingAutonomous10_1 extends LinearOpMode {
                 {
                     if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_HIGH.autoControllerStatus.NOTHING)
                     {
-                        motorColectareController.NrConAuto = 3;
+                        motorColectareController.NrConAuto = 8;
                         autoController101.CurrentStatus = AutoController10_1_BRATJOS_HIGH.autoControllerStatus.STACK_LEVEL;
                         status = STROBOT.FOURTH_CYCLE;
                     }
@@ -272,7 +272,7 @@ public class DreaptaBRATJOSHCyclingAutonomous10_1 extends LinearOpMode {
                 {
                     if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_HIGH.autoControllerStatus.NOTHING)
                     {
-                        motorColectareController.NrConAuto = 2;
+                        motorColectareController.NrConAuto = 7;
                         autoController101.CurrentStatus = AutoController10_1_BRATJOS_HIGH.autoControllerStatus.STACK_LEVEL;
                         status = STROBOT.FIFTH_CYCLE;
                     }
@@ -282,7 +282,7 @@ public class DreaptaBRATJOSHCyclingAutonomous10_1 extends LinearOpMode {
                 {
                     if (autoController101.CurrentStatus == AutoController10_1_BRATJOS_HIGH.autoControllerStatus.NOTHING)
                     {
-                        motorColectareController.NrConAuto = 1;
+                        motorColectareController.NrConAuto = 6;
                         autoController101.CurrentStatus = AutoController10_1_BRATJOS_HIGH.autoControllerStatus.STACK_LEVEL;
                         status = STROBOT.GO_TO_NEXT_POSITION;
                     }
@@ -294,12 +294,13 @@ public class DreaptaBRATJOSHCyclingAutonomous10_1 extends LinearOpMode {
                     {
                         drive.followTrajectorySequenceAsync(GO_TO_NEXT_POSITION);
                         status = STROBOT.PLACE_FIFTH_CONE;
+                        timerSecondPos.reset();
                     }
                     break;
                 }
                 case PLACE_FIFTH_CONE:
                 {
-                    if (!drive.isBusy())
+                    if (timerSecondPos.seconds()>4.3)
                     {
                         motorColectareController.NrConAuto = 5;
                         liftController.CurrentStatus = LiftController.LiftStatus.HIGH;

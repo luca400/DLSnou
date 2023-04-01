@@ -15,7 +15,7 @@ public class TurnClawController {
         COLLECT_SOUTH,
     }
     public static TurnClawStatus CurrentStatus = INIT , PreviousStatus = INIT;
-    public static double pozTurnClaw_COLLECT=0.70, pozTurnClaw_PLACE = 0.03,pozTurnCollectSouthCycling = 0.65;
+    public static double pozTurnClaw_COLLECT=0.70, pozTurnClaw_PLACE = 0,pozTurnCollectSouthCycling = 0.65;
     public void update(RobotMap Robotel)
     {
         if (PreviousStatus != CurrentStatus)

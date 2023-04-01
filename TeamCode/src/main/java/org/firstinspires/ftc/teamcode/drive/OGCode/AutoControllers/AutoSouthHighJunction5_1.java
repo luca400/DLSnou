@@ -39,7 +39,7 @@ public class AutoSouthHighJunction5_1 {
     public static autoControllerSouthHigh CurrentStatus = NOTHING, PreviousStatus = NOTHING;
     ElapsedTime timerFourBar = new ElapsedTime() ,timerStart = new ElapsedTime(),timerClaw = new ElapsedTime() , timerPlace_Cone = new ElapsedTime(), timerLift =new ElapsedTime();
     public static int Cone_Stack_Level=5;
-    public static double LimitLift = 0.75;
+    public static double LimitLift = 0.75, Limit4Bar = 0.55, LimitSiguranta=0.7, LimitOpenClaw =0.85;
     public static LiftController.LiftStatus AutoLiftStatus = LiftController.LiftStatus.HIGH_SOUTH;
     boolean moreThanOneStack = false;
     int ok=0,ok2=0;
@@ -70,7 +70,7 @@ public class AutoSouthHighJunction5_1 {
             }
             case CLOSE_THE_CLAW:
             {
-                if (timerFourBar.seconds()>0.8)
+                if (timerFourBar.seconds()>0.75)
                 {
                     closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
                     timerClaw.reset();
@@ -80,13 +80,13 @@ public class AutoSouthHighJunction5_1 {
             }
             case RETRIEVE_CONE:
             {
-                if (ok == 0 && timerClaw.seconds()>0.1)
+                if (ok == 0 && timerClaw.seconds()>0)
                 {
                     ok=1;
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
                     angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.RAISED;
                 }
-                if (timerClaw.seconds()>0.2) {
+                if (timerClaw.seconds()>0.1) {
                     motorColectareController.CurrentStatus = RETRACTED_0;
                     timerPlace_Cone.reset();
                     ok = 0;
@@ -103,17 +103,17 @@ public class AutoSouthHighJunction5_1 {
                     angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.PLACE;
                     ok2 = 1;
                 }
-                if (ok == 0 && timerPlace_Cone.seconds()>0.55)
+                if (ok == 0 && timerPlace_Cone.seconds()>Limit4Bar)
                 {
                     Robotel.left4Bar.setPosition(servo4BarController.Place_Cone_Position);
                     Robotel.right4Bar.setPosition(servo4BarController.Place_Cone_Position);
                     ok = 1;
                 }
-                if (timerPlace_Cone.seconds()>0.7)
+                if (timerPlace_Cone.seconds()>LimitSiguranta)
                 {
                     sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
                 }
-                if (timerPlace_Cone.seconds()>0.85)
+                if (timerPlace_Cone.seconds()>LimitOpenClaw)
                 {
                     closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN_CLAW_SMALL;
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;

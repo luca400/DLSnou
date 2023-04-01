@@ -59,10 +59,10 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
     public static double x_COLLECT_POSITION = 17, y_COLLECT_POSITION = -18, Angle_COLLECT_POSITION = 6;
     public static double x_PLACE_SOUTH_HIGH = 14, y_PLACE_SOUTH_HIGH = -20, Angle_PLACE_SOUTH_HIGH = 16;
     public static double x_COLLECT_POSITION_LEFT = -17, y_COLLECT_POSITION_LEFT = -13, Angle_COLLECT_POSITION_LEFT = 180;
-    public static double x_PLACE_SOUTH_HIGH_LEFT = -14, y_PLACE_SOUTH_HIGH_LEFT = -19, Angle_PLACE_SOUTH_HIGH_LEFT = 167;
+    public static double x_PLACE_SOUTH_HIGH_LEFT = -14, y_PLACE_SOUTH_HIGH_LEFT = -18.5, Angle_PLACE_SOUTH_HIGH_LEFT = 166;
     public static double x_PARK1 = -11.5, y_PARK1 = -14, Angle_PARK1 = 180;
     public static double x_PARK2 = -33, y_PARK2 = -14.5, Angle_PARK2 = 180;
-    public static double x_PARK3 = -55, y_PARK3 = -14, Angle_PARK3 = 180;
+    public static double x_PARK3 = -56, y_PARK3 = -14, Angle_PARK3 = 180;
     public static double Angle_TURN_COLLECT = 40;
     ElapsedTime asteapta = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime() , timeCollect = new ElapsedTime();
 
@@ -128,7 +128,7 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
 
         autoControllerTurn51.Cone_Stack_Level  =5;
         autoControllerTurn51.AutoLiftStatus = LiftController.LiftStatus.HIGH;
-        autoControllerTurn51.LimitLift = 0.7;
+        autoControllerTurn51.LimitLift = 0.6;
         motorColectareController.NrConAuto = 5;
         robot.turnClaw.setPosition(TurnClawController.pozTurnClaw_COLLECT);
 
@@ -152,15 +152,15 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
         Pose2d COLLECT_POSITION_4 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION));
         Pose2d COLLECT_POSITION_3 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION+1));
         Pose2d COLLECT_POSITION_2 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION+1));
-        Pose2d COLLECT_POSITION_1 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION+2));
+        Pose2d COLLECT_POSITION_1 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION+1.5));
 
 
 
-        Pose2d COLLECT_POSITION_6 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT));
-        Pose2d COLLECT_POSITION_7 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-1));
-        Pose2d COLLECT_POSITION_8 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-1));
-        Pose2d COLLECT_POSITION_9 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-2));
-        Pose2d COLLECT_POSITION_10 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-2));
+        Pose2d COLLECT_POSITION_6 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-0.8));
+        Pose2d COLLECT_POSITION_7 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-2));
+        Pose2d COLLECT_POSITION_8 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-3));
+        Pose2d COLLECT_POSITION_9 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-3));
+        Pose2d COLLECT_POSITION_10 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-3));
         drive.setPoseEstimate(startPose);
         STROBOT status = STROBOT.START;
         TrajectorySequence PLACE_PRELOAD = drive.trajectorySequenceBuilder(startPose)
@@ -282,7 +282,11 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
                             }
                         }
                         else
-                        {
+                        {autoControllerTurn51.Limit4Bar = 0.9;
+                            autoControllerTurn51.LimitSiguranta = 1.05;
+                            autoControllerTurn51.LimitOpenClaw = 1.2;
+
+
                             drive.followTrajectorySequenceAsync(SWITCH_LEFT);
                             status = STROBOT.INTER_GET_LIFT_UP;
                         }
@@ -303,8 +307,19 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
                 case GET_LIFT_DOWN: {
                         if (timerLift.seconds() > autoControllerTurn51.LimitLift) {
                             timerLift.reset();
-                            if (nr!=9)
+                            if (nr!=10)
                             {
+                                if (nr==5) {
+                                    autoControllerTurn51.Limit4Bar = 0.9;
+                                    autoControllerTurn51.LimitSiguranta = 1.05;
+                                    autoControllerTurn51.LimitOpenClaw = 1.2;
+                                }
+                                else {
+                                    autoControllerTurn51.Limit4Bar = 0.55;
+                                    autoControllerTurn51.LimitSiguranta = 0.7;
+                                    autoControllerTurn51.LimitOpenClaw = 0.85;
+
+                                }
                                 autoControllerTurn51.CurrentStatus = AutoSouthHighJunction5_1.autoControllerSouthHigh.STACK_LEVEL;
                                 liftController.CurrentStatus = LiftController.LiftStatus.BASE;
                                 status = STROBOT.GO_TO_COLLECTING_POSITION;
@@ -441,6 +456,8 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
 
             drive.update();
             telemetry.addData("Pozitie: ", drive.getPoseEstimate());
+            telemetry.addData("nr", nr);
+            telemetry.addData("limit4bar", autoControllerTurn51.Limit4Bar);
             // telemetry.addData("caz:", Case);
             telemetry.addData("Status",status);
             telemetry.update();

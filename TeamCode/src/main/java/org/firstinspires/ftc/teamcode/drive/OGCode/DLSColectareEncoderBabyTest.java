@@ -20,11 +20,11 @@ import java.util.List;
 @Autonomous(group = "Testers")
 public class DLSColectareEncoderBabyTest extends LinearOpMode {
     public static double DISTANCE = 60; // in
-    public static double Kp = 0;
-    public static double Ki = 0;
+    public static double Kp = 0.00325;
+    public static double Ki = 0.0022;
     public static double Kd = 0;
     public static double maxSpeed = 1;
-    public static double RetractedPosition = 0 , ExtendedPosition = 700;
+    public static double RetractedPosition = 0 , ExtendedPosition = 300;
     public static double vMax = 0, AccMax = 0, JerkMax =0 , EndPos = 700;
     int TargetLift = 0;
     ElapsedTime timerPID = new ElapsedTime();

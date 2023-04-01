@@ -39,6 +39,7 @@ public class RobotMap {
     {
         left4Bar = Init.get(Servo.class, "left4Bar");
         right4Bar = Init.get(Servo.class,"right4Bar");
+
         turnClaw = Init.get(Servo.class, "turnClaw");
         closeClaw = Init.get(Servo.class, "closeClaw");
         servoLift = Init.get(Servo.class,"servoLift");
@@ -51,7 +52,9 @@ public class RobotMap {
         dreaptaLift = Init.get(DcMotorEx.class, "dreaptaLift");
 
 
-        left4Bar.setDirection(Servo.Direction.REVERSE);
+        //right4Bar.setDirection(Servo.Direction.REVERSE);
+        //left4Bar.setDirection(Servo.Direction.REVERSE);
+
         stangaLift.setDirection(DcMotorSimple.Direction.REVERSE);
 
         dreaptaLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

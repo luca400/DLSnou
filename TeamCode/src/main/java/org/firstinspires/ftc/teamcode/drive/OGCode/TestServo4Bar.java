@@ -59,13 +59,13 @@ public class TestServo4Bar extends  LinearOpMode {
             }
             if (!previousGamepad1.triangle && currentGamepad1.triangle)
             {
-                robot.left4Bar.setPosition(0.15);
-                robot.right4Bar.setPosition(0.15);
+                robot.left4Bar.setPosition(0.25);
+                robot.right4Bar.setPosition(0.25);
             }
             if (!previousGamepad1.cross && currentGamepad1.cross)
             {
-                robot.left4Bar.setPosition(1);
-                robot.right4Bar.setPosition(1);
+                robot.left4Bar.setPosition(0.85);
+                robot.right4Bar.setPosition(0.85);
             }
             if (!previousGamepad1.dpad_up && currentGamepad1.dpad_up)
             {

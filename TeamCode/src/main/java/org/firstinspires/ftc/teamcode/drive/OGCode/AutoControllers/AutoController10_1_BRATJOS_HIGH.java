@@ -44,9 +44,9 @@ public class AutoController10_1_BRATJOS_HIGH {
     ElapsedTime timerFourBar = new ElapsedTime() ,timerStart = new ElapsedTime(),timerClaw = new ElapsedTime() , timerPlace_Cone = new ElapsedTime(), timerLift =new ElapsedTime();
     public static int Cone_Stack_Level=5;
     public static int stackNumber = 0;
-    public static double LimitLift = 0.65;
+    public static double LimitLift = 0.55;
     public static LiftController.LiftStatus AutoLiftState = LiftController.LiftStatus.HIGH;
-    int ok=0;
+    int ok=0,ok2=0;
     double timerInter = 2,timeStart=0,timerStartLimit = 0.5;
     public double positionFromState(int stackNumber, int number)
     {
@@ -151,17 +151,23 @@ public class AutoController10_1_BRATJOS_HIGH {
                 }
                 if (timerClaw.seconds()>0.2)
                 {
-                    turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.PLACE;
-                    angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.PLACE;
+
                     motorColectareController.CurrentStatus = RETRACTED_0;
                     timerPlace_Cone.reset();
                     ok=0;
+                    ok2=0;
                     CurrentStatus = PLACE_CONE;
                 }
                 break;
             }
             case PLACE_CONE:
             {
+                if (ok2==0 && timerPlace_Cone.seconds()>0.05)
+                {
+                    turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.PLACE;
+                    angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.PLACE;
+                    ok2=1;
+                }
                 if (ok == 0 && timerPlace_Cone.seconds()>0.55)
                 {
                     Robotel.left4Bar.setPosition(servo4BarController.Place_Cone_Position);
