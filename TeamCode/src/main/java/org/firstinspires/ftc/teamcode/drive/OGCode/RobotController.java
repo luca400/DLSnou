@@ -25,7 +25,7 @@ public class RobotController {
         GO_PLACE_FIRST_CONE_AUTO,
         INTER_GO_PLACE_FIRST_CONE_AUTO,
     }
-    public double timerTransfer = 0.35;
+    public double timerTransfer = 1.2;
     public static RobotControllerStatus CurrentStatus = START, PreviousStatus = START;
     ElapsedTime timerGO_COLLECT = new ElapsedTime() , timerGO_PLACE = new ElapsedTime() ,timeCOLLECT_RAPID_FIRE = new ElapsedTime();
     public void update(RobotMap Robot, SigurantaLiftController sigurantaLiftController, Angle4BarController angle4BarController, Servo4BarController servo4BarController, MotorColectareController motorColectareController, CloseClawController closeClawController, TurnClawController turnClawController)

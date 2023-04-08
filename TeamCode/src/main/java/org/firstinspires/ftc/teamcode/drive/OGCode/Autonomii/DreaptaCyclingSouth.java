@@ -22,7 +22,6 @@ import org.firstinspires.ftc.teamcode.drive.OGCode.CloseClawController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.LiftController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.PipeLineDetector;
-import org.firstinspires.ftc.teamcode.drive.OGCode.PoseTransfer;
 import org.firstinspires.ftc.teamcode.drive.OGCode.RobotController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.RobotMap;
 import org.firstinspires.ftc.teamcode.drive.OGCode.Servo4BarController;
@@ -401,7 +400,6 @@ public class DreaptaCyclingSouth extends LinearOpMode {
             motorColectareController.update(robot,ColectarePosition, 1 , currentVoltage);
             liftController.update(robot,LiftPosition,sigurantaLiftController,currentVoltage);
             autoController101.update(sigurantaLiftController,robot,angle4BarController, turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
-            PoseTransfer.currentPose = drive.getPoseEstimate();
             drive.update();
             telemetry.addData("Pozitie: ", drive.getPoseEstimate());
             telemetry.addData("Pozitie servo: ", servoPosition);

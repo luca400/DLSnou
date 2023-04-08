@@ -52,8 +52,8 @@ public class RobotMap {
         dreaptaLift = Init.get(DcMotorEx.class, "dreaptaLift");
 
 
-        //right4Bar.setDirection(Servo.Direction.REVERSE);
-        //left4Bar.setDirection(Servo.Direction.REVERSE);
+        right4Bar.setDirection(Servo.Direction.REVERSE);
+        left4Bar.setDirection(Servo.Direction.REVERSE);
 
         stangaLift.setDirection(DcMotorSimple.Direction.REVERSE);
 

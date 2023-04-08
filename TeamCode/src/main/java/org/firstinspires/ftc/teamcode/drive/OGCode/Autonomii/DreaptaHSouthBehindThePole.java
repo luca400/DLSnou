@@ -55,11 +55,12 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
         GO_TO_SCORING_POSITION,
         GO_TO_COLLECTING_POSITION,
     }
+    public static double INTER_SPLINE_X = 13, INTER_SPLINE_Y = -50;
     public static double x_CYCLING_POSITION = 13, y_CYCLING_POSITION = -61;
-    public static double x_COLLECT_POSITION = 17, y_COLLECT_POSITION = -18, Angle_COLLECT_POSITION = 6;
-    public static double x_PLACE_SOUTH_HIGH = 14, y_PLACE_SOUTH_HIGH = -20, Angle_PLACE_SOUTH_HIGH = 16;
-    public static double x_COLLECT_POSITION_LEFT = -17, y_COLLECT_POSITION_LEFT = -13, Angle_COLLECT_POSITION_LEFT = 180;
-    public static double x_PLACE_SOUTH_HIGH_LEFT = -14, y_PLACE_SOUTH_HIGH_LEFT = -18.5, Angle_PLACE_SOUTH_HIGH_LEFT = 166;
+    public static double x_COLLECT_POSITION = 18, y_COLLECT_POSITION = -18, Angle_COLLECT_POSITION = 6;
+    public static double x_PLACE_SOUTH_HIGH = 14.5, y_PLACE_SOUTH_HIGH = -20, Angle_PLACE_SOUTH_HIGH = 16;
+    public static double x_COLLECT_POSITION_LEFT = -16, y_COLLECT_POSITION_LEFT = -11, Angle_COLLECT_POSITION_LEFT = 180;
+    public static double x_PLACE_SOUTH_HIGH_LEFT = -12, y_PLACE_SOUTH_HIGH_LEFT = -17, Angle_PLACE_SOUTH_HIGH_LEFT = 160;
     public static double x_PARK1 = -11.5, y_PARK1 = -14, Angle_PARK1 = 180;
     public static double x_PARK2 = -33, y_PARK2 = -14.5, Angle_PARK2 = 180;
     public static double x_PARK3 = -56, y_PARK3 = -14, Angle_PARK3 = 180;
@@ -164,8 +165,11 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
         drive.setPoseEstimate(startPose);
         STROBOT status = STROBOT.START;
         TrajectorySequence PLACE_PRELOAD = drive.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(x_CYCLING_POSITION,y_CYCLING_POSITION))
-                .lineToLinearHeading(PLACE_SOUTH_HIGH)
+                /*.lineTo(new Vector2d(x_CYCLING_POSITION,y_CYCLING_POSITION))
+                .lineToLinearHeading(PLACE_SOUTH_HIGH)*/
+                .lineTo(new Vector2d(31,-62))
+                .splineToConstantHeading(new Vector2d(INTER_SPLINE_X,INTER_SPLINE_Y),Math.toRadians(90))
+                .splineToSplineHeading(PLACE_SOUTH_HIGH,Math.toRadians(90))
                 .build();
         TrajectorySequence GO_TO_PLACE_POSITION = drive.trajectorySequenceBuilder(COLLECT_POSITION_5)
                 .lineToLinearHeading(PLACE_SOUTH_HIGH)
@@ -307,7 +311,7 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
                 case GET_LIFT_DOWN: {
                         if (timerLift.seconds() > autoControllerTurn51.LimitLift) {
                             timerLift.reset();
-                            if (nr!=10)
+                            if (nr!=11)
                             {
                                 if (nr==5) {
                                     autoControllerTurn51.Limit4Bar = 0.9;
@@ -318,7 +322,6 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
                                     autoControllerTurn51.Limit4Bar = 0.55;
                                     autoControllerTurn51.LimitSiguranta = 0.7;
                                     autoControllerTurn51.LimitOpenClaw = 0.85;
-
                                 }
                                 autoControllerTurn51.CurrentStatus = AutoSouthHighJunction5_1.autoControllerSouthHigh.STACK_LEVEL;
                                 liftController.CurrentStatus = LiftController.LiftStatus.BASE;
@@ -416,6 +419,11 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
                                     drive.followTrajectorySequenceAsync(GO_TO_COLLECTING_POSITION_10);
                                     break;
                                 }
+                                case 10:
+                                {
+                                    drive.followTrajectorySequenceAsync(GO_TO_COLLECTING_POSITION_10);
+                                    break;
+                                }
                             }
                             timeCollect.reset();
                             status = STROBOT.COLLECT;
@@ -423,8 +431,6 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
                 }
                 case PARK:
                 {
-                    if (!drive.isBusy())
-                    {
                         if (Case == PipeLineDetector.Status.VERDE1)
                         {
                             drive.followTrajectorySequenceAsync(PARK1);
@@ -439,7 +445,6 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
                             drive.followTrajectorySequenceAsync(PARK3);
                         }
                         status = STROBOT.STOP_JOC;
-                    }
                     break;
                 }
             }

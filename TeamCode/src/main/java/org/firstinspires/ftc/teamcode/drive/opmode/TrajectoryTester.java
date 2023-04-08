@@ -45,10 +45,8 @@ public class TrajectoryTester extends LinearOpMode {
         Servo4BarController servo4BarController = new Servo4BarController();
         MotorColectareController motorColectareController = new MotorColectareController();
         TrajectorySequence AutonomiaDreapta = drive.trajectorySequenceBuilder(StartPositionRight)
-                .lineToLinearHeading(new Pose2d(37.5,-12,Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(17,-18,Math.toRadians(7.2)))
-                .lineToLinearHeading(new Pose2d(8,-13,Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(-14.02679549603315,-18, Math.toRadians(170)))
+                .strafeRight(1)
+                .splineToSplineHeading(new Pose2d(10,-40,Math.toRadians(180)),Math.toRadians(180))
                 .build();
         waitForStart();
 

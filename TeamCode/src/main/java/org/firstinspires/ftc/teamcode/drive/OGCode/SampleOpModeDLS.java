@@ -120,8 +120,8 @@ public class SampleOpModeDLS extends  LinearOpMode {
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        if (PoseTransfer.currentPose.getY()==0) PoseTransfer.currentPose = new Pose2d(35, -63, Math.toRadians(270));
-        drive.setPoseEstimate(PoseTransfer.currentPose);
+        /*if (PoseTransfer.currentPose.getY()==0) PoseTransfer.currentPose = new Pose2d(35, -63, Math.toRadians(270));
+        drive.setPoseEstimate(PoseTransfer.currentPose);*/
 
         double currentVoltage;
         VoltageSensor batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
@@ -145,7 +145,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
         autoController51.PreviousStatus = NOTHING;
         allCycleController.CurrentStatus = AllCycleController.AllCycleControllerStatus.NOTHING;
 
-        robotController.timerTransfer = 0.35;
+        robotController.timerTransfer = 0.45;
 
         closeClawController.update(robot);
         robot.turnClaw.setPosition(pozTurnClaw_COLLECT);
@@ -209,14 +209,26 @@ public class SampleOpModeDLS extends  LinearOpMode {
         while (opModeIsActive()) {
             if (isStopRequested()) return;
 
-
-            drive.setWeightedDrivePower(
-                    new Pose2d(
-                            -gamepad1.right_stick_y / PrecisionDenominator,
-                            0,
-                            -gamepad1.left_stick_x / PrecisionDenominator2
-                    )
-            );
+            if (StrafesOn == false)
+            {
+                drive.setWeightedDrivePower(
+                        new Pose2d(
+                                -gamepad1.right_stick_y / PrecisionDenominator,
+                                0,
+                                -gamepad1.left_stick_x / PrecisionDenominator2
+                        )
+                );
+            }
+            else
+            {
+                drive.setWeightedDrivePower(
+                        new Pose2d(
+                                -gamepad1.right_stick_y / PrecisionDenominator,
+                                gamepad1.right_stick_x/PrecisionDenominator,
+                                -gamepad1.left_stick_x / PrecisionDenominator2
+                        )
+                );
+            }
             double current4BarPosition = robot.left4Bar.getPosition();
             int ColectarePosition = robot.motorColectareStanga.getCurrentPosition();
             int LiftPosition = robot.dreaptaLift.getCurrentPosition(); /// folosesc doar encoderul de la dreaptaLift , celalalt nu exista.
@@ -344,7 +356,14 @@ public class SampleOpModeDLS extends  LinearOpMode {
                     }
                 }
                 if ((!previousGamepad2.triangle && currentGamepad2.triangle)) {
-                    liftController.CurrentStatus = LiftController.LiftStatus.LOW;
+                    if (liftController.CurrentStatus!= LiftController.LiftStatus.LOW)
+                    {
+                        liftController.CurrentStatus = LiftController.LiftStatus.LOW;
+                    }
+                    else
+                    {
+                        liftController.CurrentStatus = LiftController.LiftStatus.BASE;
+                    }
                 }
                 if ((!previousGamepad2.circle && currentGamepad2.circle)) {
                     oklow = false;
@@ -468,7 +487,6 @@ public class SampleOpModeDLS extends  LinearOpMode {
             //telemetry.addData("y", poseEstimate.getY());
             //telemetry.addData("heading", poseEstimate.getHeading());
             //telemetry.addData("ticksColectare", intakeTicks);
-           /* telemetry.addData("XRotationRate",hello);
             telemetry.addData("AutoStatus", autoController51.CurrentStatus);
             telemetry.addData("RobotStatus",robotController.CurrentStatus);
             telemetry.addData("CurrentStatus",servo4BarController.CurrentStatus);
@@ -488,7 +506,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
             telemetry.addData("DreaptaPutereLift",robot.dreaptaLift.getPower());
             telemetry.addData("timpFSM", servo4BarController.time.seconds());
             telemetry.addData("SigurantaLiftStatus",sigurantaLiftController.CurrentStatus);
-            telemetry.addData("sigurantaLiftPosition",robot.sigurantaLift.getPosition());*/
+            telemetry.addData("sigurantaLiftPosition",robot.sigurantaLift.getPosition());
             telemetry.update();
         }
     }
