@@ -172,16 +172,19 @@ public class MeepMeepTesting {
                 );
         double x_PLACE_SOUTH_HIGH = 13, y_PLACE_SOUTH_HIGH = -20, Angle_PLACE_SOUTH_HIGH = 16;
         Pose2d PLACE_SOUTH_HIGH = new Pose2d(x_PLACE_SOUTH_HIGH,y_PLACE_SOUTH_HIGH,Math.toRadians(Angle_PLACE_SOUTH_HIGH));
+        double x_COLLECT_POSITION = 18, y_COLLECT_POSITION = -18, Angle_COLLECT_POSITION = 4.25;
+        Pose2d COLLECT_POSITION_1 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION+1.2));
+        double x_SWITCH_LEFT = -12, y_SWITCH_LEFT = -17, Angle_SIWTCH_LEFT = 160;
+        Pose2d SWITCH = new Pose2d(x_SWITCH_LEFT, y_SWITCH_LEFT, Math.toRadians(Angle_SIWTCH_LEFT));
         RoadRunnerBotEntity South_1_8 = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                // .setConstraints(60, 50, 5.69, 5.69, 7)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(StartPositionRight)
+                        drive.trajectorySequenceBuilder(COLLECT_POSITION_1)
                                 //.lineTo(new Vector2d(31,-62))
                                 .setTangent(Math.toRadians(170))
-                                .splineToConstantHeading(new Vector2d(14,-50),Math.toRadians(90))
-                                .resetConstraints()
-                                .lineToSplineHeading(PLACE_SOUTH_HIGH)
+                                .splineToLinearHeading(SWITCH,Math.toRadians(270))
+
                                 .build()
                 );
         meepMeep.setBackground(MeepMeep.Background.FIELD_POWERPLAY_OFFICIAL)

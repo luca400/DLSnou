@@ -33,8 +33,8 @@ public class LiftController {
     ElapsedTime timeSiguranta = new ElapsedTime();
     /// pe DreaptaLift am encoder
     int basePosition = 0;
-    public static int lowPosition = 215;
-    public static int midPosition = 425;
+    public static int lowPosition = 210;
+    public static int midPosition = 420;
     public static int highPosition = 670, highPositionSouth = 685, highPosition_DRIVE = 685 , highPositionSouth_Cycling = 705;
     public int CurrentPosition = 0;
     public LiftController()

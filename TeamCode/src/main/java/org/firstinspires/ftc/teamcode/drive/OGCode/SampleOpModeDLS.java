@@ -118,9 +118,9 @@ public class SampleOpModeDLS extends  LinearOpMode {
         AutoController5_1 autoController51 = new AutoController5_1();
         AllCycleController allCycleController = new AllCycleController();
 
-       // SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-       // drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        /*if (PoseTransfer.currentPose.getY()==0) PoseTransfer.currentPose = new Pose2d(35, -63, Math.toRadians(270));
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+       /* if (PoseTransfer.currentPose.getY()==0) PoseTransfer.currentPose = new Pose2d(35, -63, Math.toRadians(270));
         drive.setPoseEstimate(PoseTransfer.currentPose);*/
 
         double currentVoltage;
@@ -145,7 +145,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
         autoController51.PreviousStatus = NOTHING;
         allCycleController.CurrentStatus = AllCycleController.AllCycleControllerStatus.NOTHING;
 
-        robotController.timerTransfer = 0.45;
+        robotController.timerTransfer = 0.5;
 
         closeClawController.update(robot);
         robot.turnClaw.setPosition(pozTurnClaw_COLLECT);
@@ -211,23 +211,23 @@ public class SampleOpModeDLS extends  LinearOpMode {
 
             if (StrafesOn == false)
             {
-               /* drive.setWeightedDrivePower(
+                drive.setWeightedDrivePower(
                         new Pose2d(
                                 -gamepad1.right_stick_y / PrecisionDenominator,
                                 0,
                                 -gamepad1.left_stick_x / PrecisionDenominator2
                         )
-                );*/
+                );
             }
             else
             {
-               /* drive.setWeightedDrivePower(
+                drive.setWeightedDrivePower(
                         new Pose2d(
                                 -gamepad1.right_stick_y / PrecisionDenominator,
                                 gamepad1.right_stick_x/PrecisionDenominator,
                                 -gamepad1.left_stick_x / PrecisionDenominator2
                         )
-                );*/
+                );
             }
             double current4BarPosition = robot.left4Bar.getPosition();
             double currentAngle4BarPosition = robot.angle4Bar.getPosition();
@@ -394,6 +394,11 @@ public class SampleOpModeDLS extends  LinearOpMode {
                 } else {
                     motorColectareController.CurrentStatus = MotorColectareController.MotorColectare.RETRACTED;
                 }
+            }
+            if (motorColectareController.CurrentStatus == MotorColectareController.MotorColectare.EXTENDED_DRIVE && servo4BarController.CurrentStatus == Servo4BarController.ServoStatus.COLLECT_DRIVE)
+            {
+                robot.left4Bar.setPosition(0.925);
+                robot.right4Bar.setPosition(0.925);
             }
             if ((!previousGamepad1.dpad_down && currentGamepad1.dpad_down)) {
                 robot.angle4Bar.setPosition(currentAngle4BarPosition + 0.05);

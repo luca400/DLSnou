@@ -70,12 +70,12 @@ public class DreaptaCyclingSouth extends LinearOpMode {
         PARK,
         STOP_JOC,
     }
-    public static double x_CYCLING_POSITION = 17, y_CYCLING_POSITION = -18, Angle_CYCLING_POSITION = 7.2;
+    public static double x_CYCLING_POSITION = 13.5, y_CYCLING_POSITION = -18, Angle_CYCLING_POSITION = 6.5;
     public static double x_CYCLING_POSITION_INTER = 37.5, y_CYCLING_POSITION_INTER = -12;
-    public static double x_CYCLE_LEFT = -14.02679549603315,y_CYCLE_LEFT = -18 , Angle_CYCLE_LEFT = 170;
-    public static double x_PARK1 = -55, y_PARK1 = -20, Angle_PARK1 = 270;
-    public static double x_PARK2 = -35, y_PARK2 = -20, Angle_PARK2 = 270;
-    public static double x_PARK3 = -15, y_PARK3 = -15, Angle_PARK3 = 270;
+    public static double x_CYCLE_LEFT = -12,y_CYCLE_LEFT = -17 , Angle_CYCLE_LEFT = 167.5;
+    public static double x_PARK1 = -55, y_PARK1 = -20, Angle_PARK1 = 180;
+    public static double x_PARK2 = -35, y_PARK2 = -20, Angle_PARK2 = 180;
+    public static double x_PARK3 = -15, y_PARK3 = -20, Angle_PARK3 = 180;
     public static double y_LLH = -5.5, Angle_LLH = 192.5, x_LLH = -36;
 
     Pose2d CYCLE_LEFT = new Pose2d(x_CYCLE_LEFT,y_CYCLE_LEFT,Math.toRadians(Angle_CYCLE_LEFT));
@@ -297,7 +297,7 @@ public class DreaptaCyclingSouth extends LinearOpMode {
                     if (autoController101.CurrentStatus == CyclingSouth.autoControllerStatus.NOTHING)
                     {
                         drive.followTrajectorySequenceAsync(GO_TO_NEXT_POSITION);
-                        status = STROBOT.PLACE_FIFTH_CONE;
+                        status = STROBOT.STOP_JOC;
                     }
                     break;
                 }
