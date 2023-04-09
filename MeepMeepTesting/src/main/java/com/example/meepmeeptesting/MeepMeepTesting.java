@@ -170,19 +170,24 @@ public class MeepMeepTesting {
                                 //.splineToConstantHeading(new Vector2d(17,-17),Math.toRadians(0))
                                 .build()
                 );
+        double x_PLACE_SOUTH_HIGH = 13, y_PLACE_SOUTH_HIGH = -20, Angle_PLACE_SOUTH_HIGH = 16;
+        Pose2d PLACE_SOUTH_HIGH = new Pose2d(x_PLACE_SOUTH_HIGH,y_PLACE_SOUTH_HIGH,Math.toRadians(Angle_PLACE_SOUTH_HIGH));
         RoadRunnerBotEntity South_1_8 = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                // .setConstraints(60, 50, 5.69, 5.69, 7)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(StartPositionRight)
-                                .lineTo(new Vector2d(12,-21))
-                                .splineToConstantHeading(new Vector2d(57,-15),Math.toRadians(180))
+                                //.lineTo(new Vector2d(31,-62))
+                                .setTangent(Math.toRadians(170))
+                                .splineToConstantHeading(new Vector2d(14,-50),Math.toRadians(90))
+                                .resetConstraints()
+                                .lineToSplineHeading(PLACE_SOUTH_HIGH)
                                 .build()
                 );
         meepMeep.setBackground(MeepMeep.Background.FIELD_POWERPLAY_OFFICIAL)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
-                .addEntity(Autonomia1)
+                .addEntity(South_1_8)
                 .start();
     }
 }

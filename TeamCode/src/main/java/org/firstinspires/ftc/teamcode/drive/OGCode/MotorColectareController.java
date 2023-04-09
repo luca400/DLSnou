@@ -48,6 +48,7 @@ public class MotorColectareController {
                       extended10_1Autonomy_7 = 298,extended10_1Autonomy_6 = 298, extended10_1Autonomy_5 = 312,
                       extended10_1Autonomy_4= 301 , extended10_1Autonomy_3 = 298,extended10_1Autonomy_2 = 291,
                       extended10_1Autonomy_1 = 291;
+    public static double ExtendoCyclingSouthPositions[] = {460,453,460,475,515 , 470,490,490,510,530 };
     public static int NrConAuto = 5;
     public MotorColectareController()
     {
@@ -99,29 +100,7 @@ public class MotorColectareController {
                 case EXTENDED_SOUTH:
                 {
                     MotorColectarePID.maxOutput = 1;
-                    switch (NrConAuto) {
-                        case 0:
-                        {
-                            MotorColectarePID.targetValue = 510;
-                            break;
-                        }
-                        case 1: {
-                            MotorColectarePID.targetValue = 530;
-                            break;
-                        }
-                        case 2: {
-                            MotorColectarePID.targetValue = 550;
-                            break;
-                        }
-                        case 3: {
-                            MotorColectarePID.targetValue = 570;
-                            break;
-                        }
-                        case 4: {
-                            MotorColectarePID.targetValue = 590;
-                            break;
-                        }
-                    }
+                    MotorColectarePID.targetValue = ExtendoCyclingSouthPositions[NrConAuto];
                     break;
                 }
                 case HALF_WAY:

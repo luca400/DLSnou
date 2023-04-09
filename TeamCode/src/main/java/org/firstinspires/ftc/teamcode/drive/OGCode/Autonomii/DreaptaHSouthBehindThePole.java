@@ -61,14 +61,15 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
         GO_TO_COLLECTING_POSITION,
     }
     public static double INTER_SPLINE_X = 13, INTER_SPLINE_Y = -50;
-    public static double x_CYCLING_POSITION = 13, y_CYCLING_POSITION = -61;
-    public static double x_COLLECT_POSITION = 18, y_COLLECT_POSITION = -18, Angle_COLLECT_POSITION = 6;
-    public static double x_PLACE_SOUTH_HIGH = 14.5, y_PLACE_SOUTH_HIGH = -20, Angle_PLACE_SOUTH_HIGH = 16;
-    public static double x_COLLECT_POSITION_LEFT = -16, y_COLLECT_POSITION_LEFT = -11, Angle_COLLECT_POSITION_LEFT = 180;
+    public static double x_CYCLING_POSITION = 13.5, y_CYCLING_POSITION = -61;
+    public static double x_COLLECT_POSITION = 18, y_COLLECT_POSITION = -18, Angle_COLLECT_POSITION = 4.25;
+    public static double x_PLACE_SOUTH_HIGH = 13.5, y_PLACE_SOUTH_HIGH = -20, Angle_PLACE_SOUTH_HIGH = 16;
+    public static double x_COLLECT_POSITION_LEFT = -16, y_COLLECT_POSITION_LEFT = -13, Angle_COLLECT_POSITION_LEFT = 180;
+    public static double x_SWITCH_LEFT = -12, y_SWITCH_LEFT = -13, Angle_SIWTCH_LEFT = 160;
     public static double x_PLACE_SOUTH_HIGH_LEFT = -12, y_PLACE_SOUTH_HIGH_LEFT = -17, Angle_PLACE_SOUTH_HIGH_LEFT = 160;
     public static double x_PARK1 = -11.5, y_PARK1 = -14, Angle_PARK1 = 180;
     public static double x_PARK2 = -33, y_PARK2 = -14.5, Angle_PARK2 = 180;
-    public static double x_PARK3 = -56, y_PARK3 = -14, Angle_PARK3 = 180;
+    public static double x_PARK3 = -60, y_PARK3 = -14, Angle_PARK3 = 180;
     public static double Angle_TURN_COLLECT = 40;
     ElapsedTime asteapta = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime() , timeCollect = new ElapsedTime();
 
@@ -155,11 +156,12 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
         Pose2d startPose = new Pose2d(35, -63, Math.toRadians(270));
         Pose2d PLACE_SOUTH_HIGH = new Pose2d(x_PLACE_SOUTH_HIGH,y_PLACE_SOUTH_HIGH,Math.toRadians(Angle_PLACE_SOUTH_HIGH));
         Pose2d PLACE_SOUTH_HIGH_LEFT = new Pose2d(x_PLACE_SOUTH_HIGH_LEFT,y_PLACE_SOUTH_HIGH_LEFT,Math.toRadians(Angle_PLACE_SOUTH_HIGH_LEFT));
+        Pose2d SWITCH = new Pose2d(x_SWITCH_LEFT, y_SWITCH_LEFT, Math.toRadians(Angle_SIWTCH_LEFT));
         Pose2d COLLECT_POSITION_5 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION));
         Pose2d COLLECT_POSITION_4 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION));
         Pose2d COLLECT_POSITION_3 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION));
-        Pose2d COLLECT_POSITION_2 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION));
-        Pose2d COLLECT_POSITION_1 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION));
+        Pose2d COLLECT_POSITION_2 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION+0.7));
+        Pose2d COLLECT_POSITION_1 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION+1.2));
 
         Pose2d COLLECT_POSITION_6 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT));
         Pose2d COLLECT_POSITION_7 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT));
@@ -171,10 +173,10 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
         TrajectorySequence PLACE_PRELOAD = drive.trajectorySequenceBuilder(startPose)
                 /*.lineTo(new Vector2d(x_CYCLING_POSITION,y_CYCLING_POSITION))
                 .lineToLinearHeading(PLACE_SOUTH_HIGH)*/
-                .setVelConstraint(PATH_1_CONSTRAINT)
-                .lineTo(new Vector2d(31,-62))
-                .splineToConstantHeading(new Vector2d(INTER_SPLINE_X,INTER_SPLINE_Y),Math.toRadians(90))
-                .splineToSplineHeading(PLACE_SOUTH_HIGH,Math.toRadians(90))
+                .setTangent(Math.toRadians(170))
+                .splineToConstantHeading(new Vector2d(13.5,-50),Math.toRadians(90))
+                //.resetConstraints()
+                .lineToSplineHeading(PLACE_SOUTH_HIGH)
                 .build();
         TrajectorySequence GO_TO_PLACE_POSITION = drive.trajectorySequenceBuilder(COLLECT_POSITION_5)
                 .lineToLinearHeading(PLACE_SOUTH_HIGH)
@@ -200,7 +202,7 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
         TrajectorySequence GO_TO_COLLECTING_POSITION_1 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH)
                 .lineToLinearHeading(COLLECT_POSITION_1)
                 .build();
-        TrajectorySequence GO_TO_COLLECTING_POSITION_6 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH_LEFT)
+        TrajectorySequence GO_TO_COLLECTING_POSITION_6 = drive.trajectorySequenceBuilder(SWITCH)
                 .lineToLinearHeading(COLLECT_POSITION_6)
                 .build();
         TrajectorySequence GO_TO_COLLECTING_POSITION_7 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH_LEFT)
@@ -216,7 +218,7 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
                 .lineToLinearHeading(COLLECT_POSITION_10)
                 .build();
         TrajectorySequence SWITCH_LEFT = drive.trajectorySequenceBuilder(COLLECT_POSITION_1)
-                .lineToLinearHeading(PLACE_SOUTH_HIGH_LEFT)
+                .lineToLinearHeading(SWITCH)
                 .build();
         TrajectorySequence PARK1 = drive.trajectorySequenceBuilder(COLLECT_POSITION_6)
                 .lineToLinearHeading(new Pose2d(x_PARK1,y_PARK1,Math.toRadians(Angle_PARK1)))
@@ -368,9 +370,8 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
                 case GO_TO_COLLECTING_POSITION:
                 {
                             motorColectareController.NrConAuto = motorColectareController.NrConAuto-1;
-                            if (motorColectareController.NrConAuto == -1)
-                            {
-                                motorColectareController.NrConAuto = 4;
+                            if (motorColectareController.NrConAuto == -1) {
+                                motorColectareController.NrConAuto = 9;
                             }
                             switch (nr)
                             {
