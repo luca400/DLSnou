@@ -118,8 +118,8 @@ public class SampleOpModeDLS extends  LinearOpMode {
         AutoController5_1 autoController51 = new AutoController5_1();
         AllCycleController allCycleController = new AllCycleController();
 
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+       // SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+       // drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         /*if (PoseTransfer.currentPose.getY()==0) PoseTransfer.currentPose = new Pose2d(35, -63, Math.toRadians(270));
         drive.setPoseEstimate(PoseTransfer.currentPose);*/
 
@@ -211,25 +211,26 @@ public class SampleOpModeDLS extends  LinearOpMode {
 
             if (StrafesOn == false)
             {
-                drive.setWeightedDrivePower(
+               /* drive.setWeightedDrivePower(
                         new Pose2d(
                                 -gamepad1.right_stick_y / PrecisionDenominator,
                                 0,
                                 -gamepad1.left_stick_x / PrecisionDenominator2
                         )
-                );
+                );*/
             }
             else
             {
-                drive.setWeightedDrivePower(
+               /* drive.setWeightedDrivePower(
                         new Pose2d(
                                 -gamepad1.right_stick_y / PrecisionDenominator,
                                 gamepad1.right_stick_x/PrecisionDenominator,
                                 -gamepad1.left_stick_x / PrecisionDenominator2
                         )
-                );
+                );*/
             }
             double current4BarPosition = robot.left4Bar.getPosition();
+            double currentAngle4BarPosition = robot.angle4Bar.getPosition();
             int ColectarePosition = robot.motorColectareStanga.getCurrentPosition();
             int LiftPosition = robot.dreaptaLift.getCurrentPosition(); /// folosesc doar encoderul de la dreaptaLift , celalalt nu exista.
             previousGamepad1.copy(currentGamepad1);
@@ -283,6 +284,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
                 }
                 if ((!previousGamepad2.dpad_up && currentGamepad2.dpad_up)) {
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
+                    angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
                 }
                 if ((!previousGamepad2.dpad_down && currentGamepad2.dpad_down)) {
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.LOW_POSITION;
@@ -327,6 +329,8 @@ public class SampleOpModeDLS extends  LinearOpMode {
                 if ((!previousGamepad2.dpad_down && currentGamepad2.dpad_down)) {
                     robotController.CurrentStatus = RobotController.RobotControllerStatus.GO_COLLECT;
                     servo4BarController.Collect_Position = servo4BarController.Collect_Drive;
+                    angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
+
                 }
                 if ((!previousGamepad2.dpad_up && currentGamepad2.dpad_up)) {
                     robotController.CurrentStatus = RobotController.RobotControllerStatus.GO_PLACE;
@@ -392,14 +396,13 @@ public class SampleOpModeDLS extends  LinearOpMode {
                 }
             }
             if ((!previousGamepad1.dpad_down && currentGamepad1.dpad_down)) {
-                /*angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.COLLECT_CONES;
-                servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.FALLEN_CONES;
-                turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;*/
-                if (angle4BarController.CurrentStatus == Angle4BarController.angle4BarStatus.VERTICAL) {
-                    angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.COLLECT_CONES;
-                } else {
-                    angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
-                }
+                robot.angle4Bar.setPosition(currentAngle4BarPosition + 0.05);
+                angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.INCREMENT;
+            }
+            if ((!previousGamepad1.dpad_up && currentGamepad1.dpad_up)) {
+                robot.angle4Bar.setPosition(currentAngle4BarPosition - 0.05);
+                angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.INCREMENT;
+
             }
             if ((!previousGamepad1.cross && currentGamepad1.cross))
             {
@@ -487,7 +490,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
             //telemetry.addData("y", poseEstimate.getY());
             //telemetry.addData("heading", poseEstimate.getHeading());
             //telemetry.addData("ticksColectare", intakeTicks);
-            telemetry.addData("AutoStatus", autoController51.CurrentStatus);
+           /* telemetry.addData("AutoStatus", autoController51.CurrentStatus);
             telemetry.addData("RobotStatus",robotController.CurrentStatus);
             telemetry.addData("CurrentStatus",servo4BarController.CurrentStatus);
             telemetry.addData("salut", servo4BarController.salut);
@@ -507,7 +510,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
             telemetry.addData("timpFSM", servo4BarController.time.seconds());
             telemetry.addData("SigurantaLiftStatus",sigurantaLiftController.CurrentStatus);
             telemetry.addData("sigurantaLiftPosition",robot.sigurantaLift.getPosition());
-            telemetry.update();
+            telemetry.update();*/
         }
     }
 }

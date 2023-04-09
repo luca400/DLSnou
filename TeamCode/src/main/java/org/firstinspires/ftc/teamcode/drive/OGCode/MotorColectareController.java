@@ -42,7 +42,7 @@ public class MotorColectareController {
     public static MotorColectare CurrentStatus = INITIALIZED,  PreviousStatus = INITIALIZED;
     SimplePIDController MotorColectarePID = null;
     public static double vMax = 0, AccMax = 0, JerkMax =0 , EndPos = 2020 , CurrentPosition = 0;
-    public static double extendedPosition = 497 , retractedPosition = -30, extendedDrive = 655, extendedDriveMax = 655;
+    public static double extendedPosition = 497 , retractedPosition = -10, extendedDrive = 655, extendedDriveMax = 655;
     public static int extended5_1Autonomy_5= 330, extended5_1Autonomy_4 = 319   ,extended5_1Autonomy_3 = 312,extended5_1Autonomy_2 = 305,extended5_1Autonomy_1 = 305;
     public static int extended10_1Autonomy_10= 325, extended10_1Autonomy_9 = 312,extended10_1Autonomy_8 = 305,
                       extended10_1Autonomy_7 = 298,extended10_1Autonomy_6 = 298, extended10_1Autonomy_5 = 312,

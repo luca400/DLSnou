@@ -99,7 +99,7 @@ public class RobotController {
                         Robot.left4Bar.setPosition(Servo4BarController.Place_Cone_Position);
                         Robot.right4Bar.setPosition(Servo4BarController.Place_Cone_Position);
                     }
-                    if (timerGO_PLACE.seconds()>0.65)
+                    if (timerGO_PLACE.seconds()>0.7)
                     {
                         sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
                     }

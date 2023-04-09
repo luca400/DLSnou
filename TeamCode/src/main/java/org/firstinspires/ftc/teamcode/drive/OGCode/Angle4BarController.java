@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive.OGCode;
 
+import static org.firstinspires.ftc.teamcode.drive.OGCode.Servo4BarController.ServoStatus.INTERMEDIARY;
+
 import com.acmerobotics.dashboard.config.Config;
 
 import org.checkerframework.checker.units.qual.Current;
@@ -16,57 +18,58 @@ public class Angle4BarController {
         LIL_FRONT,
         LIL_RAISED,
         PLACE_LOW,
-        LIL_PLACE
+        LIL_PLACE,
+        INCREMENT
     }
     public static angle4BarStatus CurrentStatus = angle4BarStatus.INIT,  PreviousStatus = angle4BarStatus.INIT;
-    public static double pozLilFront=0.45 , pozVertical = 0.44, pozCollectCones = 0.86 , pozRaised = 0.30 ,pozPlace = 0.55 , pozLilRaised = 0.39 , pozPlaceLow = 0.21,pozLilPlace = 0.5;
+    public static double pozLilFront=0.45 , pozVertical = 0.455, pozCollectCones = 0.86 , pozRaised = 0.30 ,pozPlace = 0.55 , pozLilRaised = 0.39 , pozPlaceLow = 0.21,pozLilPlace = 0.5;
 
     public void update(RobotMap Robotel)
     {
-            switch(CurrentStatus)
-            {
-                case VERTICAL:
-                {
+
+        if (PreviousStatus != CurrentStatus || CurrentStatus==angle4BarStatus.VERTICAL)
+        {
+            switch (CurrentStatus) {
+                case VERTICAL: {
                     Robotel.angle4Bar.setPosition(pozVertical);
                     break;
                 }
-                case LIL_FRONT:
-                {
+                case LIL_FRONT: {
                     Robotel.angle4Bar.setPosition(pozLilFront);
                     break;
                 }
-                case LIL_PLACE:
-                {
+                case LIL_PLACE: {
                     Robotel.angle4Bar.setPosition(pozLilPlace);
                     break;
                 }
-                case COLLECT_CONES:
-                {
+                case COLLECT_CONES: {
                     Robotel.angle4Bar.setPosition(pozCollectCones);
                     break;
                 }
-                case RAISED:
-                {
+                case RAISED: {
                     Robotel.angle4Bar.setPosition(pozRaised);
                     break;
                 }
-                case PLACE:
-                {
+                case PLACE: {
                     Robotel.angle4Bar.setPosition(pozPlace);
                     break;
                 }
-                case LIL_RAISED:
-                {
+                case LIL_RAISED: {
                     Robotel.angle4Bar.setPosition(pozLilRaised);
                     break;
                 }
-                case PLACE_LOW:
-                {
+                case PLACE_LOW: {
                     Robotel.angle4Bar.setPosition(pozPlaceLow);
+                    break;
+                }
+                case INCREMENT: {
+                    CurrentStatus = angle4BarStatus.PLACE_LOW;
                     break;
                 }
 
             }
-        PreviousStatus = CurrentStatus;
+        }
+            PreviousStatus = CurrentStatus;
+
     }
 }
