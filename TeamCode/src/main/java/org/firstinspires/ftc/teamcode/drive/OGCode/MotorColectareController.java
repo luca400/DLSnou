@@ -102,28 +102,23 @@ public class MotorColectareController {
                     switch (NrConAuto) {
                         case 0:
                         {
-                            MotorColectarePID.targetValue = 550;
+                            MotorColectarePID.targetValue = 510;
                             break;
                         }
                         case 1: {
-                            MotorColectarePID.targetValue = 560;
+                            MotorColectarePID.targetValue = 530;
                             break;
                         }
                         case 2: {
-                            MotorColectarePID.targetValue = 580;
+                            MotorColectarePID.targetValue = 550;
                             break;
                         }
                         case 3: {
-                            MotorColectarePID.targetValue = 610;
+                            MotorColectarePID.targetValue = 570;
                             break;
                         }
                         case 4: {
                             MotorColectarePID.targetValue = 590;
-                            break;
-                        }
-                        case 5:
-                        {
-                            MotorColectarePID.targetValue = 610;
                             break;
                         }
                     }
