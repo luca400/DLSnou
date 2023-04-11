@@ -63,15 +63,16 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
     }
     public static double INTER_SPLINE_X = 13, INTER_SPLINE_Y = -50;
     public static double x_CYCLING_POSITION = 13.5, y_CYCLING_POSITION = -61;
-    public static double x_COLLECT_POSITION = 14, y_COLLECT_POSITION = -13, Angle_COLLECT_POSITION = 0.5;
+    public static double x_COLLECT_POSITION = 15, y_COLLECT_POSITION = -14, Angle_COLLECT_POSITION = 0.5;
     public static double x_PLACE_SOUTH_HIGH = 13.5, y_PLACE_SOUTH_HIGH = -19.5, Angle_PLACE_SOUTH_HIGH = 10;
     public static double x_COLLECT_POSITION_LEFT = -16, y_COLLECT_POSITION_LEFT = -11, Angle_COLLECT_POSITION_LEFT = 176.5;
-    public static double x_SWITCH_LEFT = -15, y_SWITCH_LEFT = -16, Angle_SIWTCH_LEFT = 160;
+    public static double x_SWITCH_LEFT = -14.5, y_SWITCH_LEFT = -16.5, Angle_SIWTCH_LEFT = 160;
     public static double x_PLACE_SOUTH_HIGH_LEFT = -15, y_PLACE_SOUTH_HIGH_LEFT = -15, Angle_PLACE_SOUTH_HIGH_LEFT = 160;
     public static double x_PARK1 = -11.5, y_PARK1 = -14, Angle_PARK1 = 180;
     public static double x_PARK2 = -33, y_PARK2 = -14.5, Angle_PARK2 = 180;
-    public static double x_PARK3 = 11.5, y_PARK3 = -14, Angle_PARK3 = 180;
+    public static double x_PARK3 = 11.5, y_PARK3 = -11, Angle_PARK3 = 180;
     public static double Angle_TURN_COLLECT = 40;
+
     ElapsedTime asteapta = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime() , timeCollect = new ElapsedTime(), timerSwitchLeft = new ElapsedTime();
 
     OpenCvCamera camera;
@@ -305,9 +306,9 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
                             }
                         }
                         else
-                        {autoControllerTurn51.Limit4Bar = 1;
-                            autoControllerTurn51.LimitSiguranta = 1.15;
-                            autoControllerTurn51.LimitOpenClaw = 1.3;
+                        {autoControllerTurn51.Limit4Bar = 0.8;
+                            autoControllerTurn51.LimitSiguranta = 0.95;
+                            autoControllerTurn51.LimitOpenClaw = 1.2;
 
 
                             drive.followTrajectorySequenceAsync(SWITCH_LEFT);
@@ -346,7 +347,7 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
                 }
                 case COLLECT:
                 {
-                    if (timeCollect.seconds()>0.2)
+                    if (timeCollect.seconds()>0)
                     {
                         if (nr==5) {
                             autoControllerTurn51.Limit4Bar = 1;
