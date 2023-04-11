@@ -49,7 +49,7 @@ public class MotorColectareController {
                       extended10_1Autonomy_7 = 298, extended10_1Autonomy_6 = 298, extended10_1Autonomy_5 = 312,
                       extended10_1Autonomy_4= 301 , extended10_1Autonomy_3 = 298,extended10_1Autonomy_2 = 291,
                       extended10_1Autonomy_1 = 291;
-    public static double ExtendoCyclingSouthPositions[] = {630,630,635,635,665, 585,585,585,600,645};
+    public static double ExtendoCyclingSouthPositions[] = {630,630,635,635,685, 585,585,585,600,645};
     public static double Extendo5_1SouthPositions[] = {495,495,500,510,535};
     public static double Extendo5_1SouthLeftPositions[] = {495,495,515,525,545};
     public static int NrConAuto = 5;
@@ -63,7 +63,7 @@ public class MotorColectareController {
     {
         CurrentPosition = ColectarePosition;
         double powerColectare = MotorColectarePID.update(ColectarePosition);
-        powerColectare = Math.max(-PowerCap,Math.min(powerColectare* 13.5 / CurrentVoltage,PowerCap));
+        powerColectare = Math.max(-PowerCap,Math.min(powerColectare* 14 / CurrentVoltage,PowerCap));
         Robotel.motorColectareStanga.setPower(powerColectare);
         Robotel.motorColectareDreapta.setPower(powerColectare);
         if (PreviousStatus != CurrentStatus || CurrentStatus == EXTENDED_1050 || CurrentStatus == EXTENDED || CurrentStatus == EXTENDED_2050)
