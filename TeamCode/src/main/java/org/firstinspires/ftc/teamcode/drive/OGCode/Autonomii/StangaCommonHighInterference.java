@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode.drive.OGCode.Autonomii;
 
 
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_VEL;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_VEL;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TRACK_WIDTH;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController5_1_CommonHighInterference.autoControllerSouthHigh.PLACE_CONE;
 import static org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive.getVelocityConstraint;
 import static org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive.timeOutBaby;
@@ -21,8 +18,6 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.OGCode.Angle4BarController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.AprilTagDetectionPipeline;
 import org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController5_1_CommonHighInterference;
-import org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction5_1;
-import org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoTurnJunction5_1;
 import org.firstinspires.ftc.teamcode.drive.OGCode.BiggerController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.CloseClawController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.LiftController;
@@ -40,7 +35,6 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 

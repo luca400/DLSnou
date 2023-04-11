@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.drive.OGCode.Autonomii;
 
 
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_VEL;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_VEL;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TRACK_WIDTH;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction5_1.autoControllerSouthHigh.NOTHING;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction5_1.autoControllerSouthHigh.PLACE_CONE;
@@ -22,6 +20,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.OGCode.Angle4BarController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.AprilTagDetectionPipeline;
+import org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction5_1;
 import org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction5_1;
 import org.firstinspires.ftc.teamcode.drive.OGCode.BiggerController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.CloseClawController;
@@ -46,7 +45,7 @@ import java.util.List;
 @Config
 @Autonomous(group = "drive")
 
-public class DreaptaHSouthBehindThePole extends LinearOpMode {
+public class DreaptaSouth5_1 extends LinearOpMode {
     enum STROBOT
     {
         START,
@@ -62,14 +61,14 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
     }
     public static double INTER_SPLINE_X = 13, INTER_SPLINE_Y = -50;
     public static double x_CYCLING_POSITION = 13.5, y_CYCLING_POSITION = -61;
-    public static double x_COLLECT_POSITION = 18, y_COLLECT_POSITION = -18, Angle_COLLECT_POSITION = 4.25;
-    public static double x_PLACE_SOUTH_HIGH = 13.5, y_PLACE_SOUTH_HIGH = -20, Angle_PLACE_SOUTH_HIGH = 16;
+    public static double x_COLLECT_POSITION = 18, y_COLLECT_POSITION = -12, Angle_COLLECT_POSITION = 0;
+    public static double x_PLACE_SOUTH_HIGH = 13.5, y_PLACE_SOUTH_HIGH = -18, Angle_PLACE_SOUTH_HIGH = 16;
     public static double x_COLLECT_POSITION_LEFT = -16, y_COLLECT_POSITION_LEFT = -13, Angle_COLLECT_POSITION_LEFT = 177.75;
     public static double x_SWITCH_LEFT = -12, y_SWITCH_LEFT = -17, Angle_SIWTCH_LEFT = 160;
     public static double x_PLACE_SOUTH_HIGH_LEFT = -12, y_PLACE_SOUTH_HIGH_LEFT = -17, Angle_PLACE_SOUTH_HIGH_LEFT = 160;
-    public static double x_PARK1 = -60, y_PARK1 = -14, Angle_PARK1 = 180;
-    public static double x_PARK2 = -33, y_PARK2 = -14.5, Angle_PARK2 = 180;
-    public static double x_PARK3 = -11.5, y_PARK3 = -14, Angle_PARK3 = 180;
+    public static double x_PARK1 = 11.5, y_PARK1 = -14, Angle_PARK1 = 0;
+    public static double x_PARK2 = 33, y_PARK2 = -14.5, Angle_PARK2 = 0;
+    public static double x_PARK3 = 60, y_PARK3 = -14, Angle_PARK3 = 0;
     public static double Angle_TURN_COLLECT = 40;
     ElapsedTime asteapta = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime() , timeCollect = new ElapsedTime(), timerSwitchLeft = new ElapsedTime();
 
@@ -159,10 +158,10 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
         Pose2d PLACE_SOUTH_HIGH_LEFT_10 = new Pose2d(x_PLACE_SOUTH_HIGH_LEFT-1,y_PLACE_SOUTH_HIGH_LEFT,Math.toRadians(Angle_PLACE_SOUTH_HIGH_LEFT));
         Pose2d SWITCH = new Pose2d(x_SWITCH_LEFT, y_SWITCH_LEFT, Math.toRadians(Angle_SIWTCH_LEFT));
         Pose2d COLLECT_POSITION_5 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION));
-        Pose2d COLLECT_POSITION_4 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION));
-        Pose2d COLLECT_POSITION_3 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION));
-        Pose2d COLLECT_POSITION_2 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION+0.7));
-        Pose2d COLLECT_POSITION_1 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION+1.2));
+        Pose2d COLLECT_POSITION_4 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION+0.2));
+        Pose2d COLLECT_POSITION_3 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION+0.2));
+        Pose2d COLLECT_POSITION_2 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION+0.2));
+        Pose2d COLLECT_POSITION_1 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION+0.2));
 
         Pose2d COLLECT_POSITION_6 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT));
         Pose2d COLLECT_POSITION_7 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-0.5));
@@ -175,9 +174,8 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
                 /*.lineTo(new Vector2d(x_CYCLING_POSITION,y_CYCLING_POSITION))
                 .lineToLinearHeading(PLACE_SOUTH_HIGH)*/
                 .setTangent(Math.toRadians(170))
-                .splineToConstantHeading(new Vector2d(13.5,-50),Math.toRadians(90))
-                //.resetConstraints()
-                .lineToSplineHeading(PLACE_SOUTH_HIGH)
+                .lineTo(new Vector2d(13.5,-60))
+                .lineToLinearHeading(PLACE_SOUTH_HIGH)
                 .build();
         TrajectorySequence GO_TO_PLACE_POSITION = drive.trajectorySequenceBuilder(COLLECT_POSITION_5)
                 .lineToLinearHeading(PLACE_SOUTH_HIGH)
@@ -224,13 +222,13 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
                 .setTangent(Math.toRadians(170))
                 .splineToLinearHeading(SWITCH,Math.toRadians(270))
                 .build();
-        TrajectorySequence PARK1 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH_LEFT_10)
+        TrajectorySequence PARK1 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH)
                 .lineTo(new Vector2d(x_PARK1,y_PARK1))
                 .build();
-        TrajectorySequence PARK2 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH_LEFT_10)
+        TrajectorySequence PARK2 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH)
                 .lineTo(new Vector2d(x_PARK2,y_PARK2))
                 .build();
-        TrajectorySequence PARK3 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH_LEFT_10)
+        TrajectorySequence PARK3 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH)
                 .lineTo(new Vector2d(x_PARK3,y_PARK3))
                 .build();
         int cameraMonitorViewId = hardwareMap.appContext
@@ -288,54 +286,19 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
                     }
                     else
                     {
-                        if (nr!=5)
-                        {
-                            if (timerGOPLACE.seconds()>0.9) {
+                            if (timerGOPLACE.seconds()>1.1) {
                                 liftController.CurrentStatus = LiftController.LiftStatus.HIGH_SOUTH;
                                 timerLift.reset();
                                 status = STROBOT.GET_LIFT_DOWN;
                             }
-                        }
-                        else
-                        {autoControllerTurn51.Limit4Bar = 1;
-                            autoControllerTurn51.LimitSiguranta = 1.15;
-                            autoControllerTurn51.LimitOpenClaw = 1.3;
-
-
-                            drive.followTrajectorySequenceAsync(SWITCH_LEFT);
-                            timerSwitchLeft.reset();
-                            status = STROBOT.INTER_GET_LIFT_UP;
-                        }
-                    }
-                    break;
-                }
-                case INTER_GET_LIFT_UP:
-                {
-                    if (timerSwitchLeft.seconds()>1.65)
-                    {
-                        nr++;
-                        liftController.CurrentStatus = LiftController.LiftStatus.HIGH_SOUTH;
-                        timerLift.reset();
-                        status = STROBOT.GET_LIFT_DOWN;
                     }
                     break;
                 }
                 case GET_LIFT_DOWN: {
                     if (timerLift.seconds() > autoControllerTurn51.LimitLift) {
                         timerLift.reset();
-                        if (nr!=11)
+                        if (nr!=5)
                         {
-                            if (nr==5) {
-                                autoControllerTurn51.Limit4Bar = 1;
-                                autoControllerTurn51.LimitSiguranta = 1.15;
-                                autoControllerTurn51.LimitOpenClaw = 1.3;
-                            }
-                            else {
-                                autoControllerTurn51.Limit4Bar = 0.55;
-                                autoControllerTurn51.LimitSiguranta = 0.7;
-                                autoControllerTurn51.LimitOpenClaw = 0.85;
-                            }
-                            autoControllerTurn51.CurrentStatus = AutoSouthHighJunction5_1.autoControllerSouthHigh.STACK_LEVEL;
                             liftController.CurrentStatus = LiftController.LiftStatus.BASE;
                             status = STROBOT.GO_TO_COLLECTING_POSITION;
                         }
@@ -349,8 +312,15 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
                 }
                 case COLLECT:
                 {
-                    nr++;
-                    status = STROBOT.GO_TO_SCORING_POSITION;
+                    if (timeCollect.seconds()>0.4)
+                    {
+                        nr++;
+                        autoControllerTurn51.Limit4Bar = 0.55;
+                        autoControllerTurn51.LimitSiguranta = 0.7;
+                        autoControllerTurn51.LimitOpenClaw = 0.85;
+                        autoControllerTurn51.CurrentStatus = AutoSouthHighJunction5_1.autoControllerSouthHigh.STACK_LEVEL;
+                        status = STROBOT.GO_TO_SCORING_POSITION;
+                    }
                     break;
                 }
                 case GO_TO_SCORING_POSITION:
@@ -359,10 +329,7 @@ public class DreaptaHSouthBehindThePole extends LinearOpMode {
                     {
                         if (nr<=5)
                         {
-                            if (nr!=5)
-                            {
-                                drive.followTrajectorySequenceAsync(GO_TO_PLACE_POSITION);
-                            }
+                            drive.followTrajectorySequenceAsync(GO_TO_PLACE_POSITION);
                             timerGOPLACE.reset();
                             status = STROBOT.GET_LIFT_UP;
                         }

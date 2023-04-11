@@ -22,6 +22,7 @@ public class MotorColectareController {
         RETRACTED_0,
         EXTENDED_FAST,
         EXTENDED_5_1,
+        EXTENDED_SOUTH_SIGUR,
         EXTENDED_10_1,
         EXTENDED_10_1_SOUTH,
         EXTENDED_COMMONHIGHINTERFERENCE,
@@ -45,10 +46,12 @@ public class MotorColectareController {
     public static double extendedPosition = 497 , retractedPosition = -30, extendedDrive = 655, extendedDriveMax = 655;
     public static int extended5_1Autonomy_5= 330, extended5_1Autonomy_4 = 319   ,extended5_1Autonomy_3 = 312,extended5_1Autonomy_2 = 305,extended5_1Autonomy_1 = 305;
     public static int extended10_1Autonomy_10= 325, extended10_1Autonomy_9 = 312,extended10_1Autonomy_8 = 305,
-                      extended10_1Autonomy_7 = 298,extended10_1Autonomy_6 = 298, extended10_1Autonomy_5 = 312,
+                      extended10_1Autonomy_7 = 298, extended10_1Autonomy_6 = 298, extended10_1Autonomy_5 = 312,
                       extended10_1Autonomy_4= 301 , extended10_1Autonomy_3 = 298,extended10_1Autonomy_2 = 291,
                       extended10_1Autonomy_1 = 291;
-    public static double ExtendoCyclingSouthPositions[] = {460,460,465,475,515 , 490,490,490,515,550};
+    public static double ExtendoCyclingSouthPositions[] = {630,630,635,635,665, 585,585,585,600,645};
+    public static double Extendo5_1SouthPositions[] = {495,495,500,510,535};
+    public static double Extendo5_1SouthLeftPositions[] = {495,495,515,525,545};
     public static int NrConAuto = 5;
     public MotorColectareController()
     {
@@ -60,7 +63,7 @@ public class MotorColectareController {
     {
         CurrentPosition = ColectarePosition;
         double powerColectare = MotorColectarePID.update(ColectarePosition);
-        powerColectare = Math.max(-PowerCap,Math.min(powerColectare,PowerCap));
+        powerColectare = Math.max(-PowerCap,Math.min(powerColectare* 13.5 / CurrentVoltage,PowerCap));
         Robotel.motorColectareStanga.setPower(powerColectare);
         Robotel.motorColectareDreapta.setPower(powerColectare);
         if (PreviousStatus != CurrentStatus || CurrentStatus == EXTENDED_1050 || CurrentStatus == EXTENDED || CurrentStatus == EXTENDED_2050)
@@ -103,6 +106,12 @@ public class MotorColectareController {
                     MotorColectarePID.targetValue = ExtendoCyclingSouthPositions[NrConAuto];
                     break;
                 }
+                case EXTENDED_SOUTH_SIGUR:
+                {
+                    MotorColectarePID.maxOutput = 1;
+                    MotorColectarePID.targetValue = Extendo5_1SouthPositions[NrConAuto];
+                    break;
+                }
                 case HALF_WAY:
                 {
                     MotorColectarePID.maxOutput = 0.4;
@@ -117,30 +126,8 @@ public class MotorColectareController {
                 }
                 case EXTENDED_SOUTH_LEFT:
                 {
-                    MotorColectarePID.maxOutput = 0.7;
-                    switch (NrConAuto) {
-                        case 0:
-                        {
-                            MotorColectarePID.targetValue = 394;
-                            break;
-                        }
-                        case 1: {
-                            MotorColectarePID.targetValue = 394;
-                            break;
-                        }
-                        case 2: {
-                            MotorColectarePID.targetValue = 408;
-                            break;
-                        }
-                        case 3: {
-                            MotorColectarePID.targetValue = 422;
-                            break;
-                        }
-                        case 4: {
-                            MotorColectarePID.targetValue = 422;
-                            break;
-                        }
-                    }
+                    MotorColectarePID.maxOutput = 1;
+                    MotorColectarePID.targetValue = Extendo5_1SouthLeftPositions[NrConAuto];
                     break;
                 }
                 case EXTENDED_COMMONHIGHINTERFERENCE:

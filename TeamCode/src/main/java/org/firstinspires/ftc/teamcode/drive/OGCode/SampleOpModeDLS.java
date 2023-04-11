@@ -224,7 +224,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
                 drive.setWeightedDrivePower(
                         new Pose2d(
                                 -gamepad1.right_stick_y / PrecisionDenominator,
-                                gamepad1.right_stick_x/PrecisionDenominator,
+                                -gamepad1.right_stick_x/PrecisionDenominator,
                                 -gamepad1.left_stick_x / PrecisionDenominator2
                         )
                 );

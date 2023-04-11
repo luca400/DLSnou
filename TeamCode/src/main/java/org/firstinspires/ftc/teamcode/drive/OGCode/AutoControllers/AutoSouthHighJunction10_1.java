@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers;
 
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction5_1.autoControllerSouthHigh.CLOSE_THE_CLAW;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction5_1.autoControllerSouthHigh.FOURBAR_DOWN;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction5_1.autoControllerSouthHigh.NOTHING;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction5_1.autoControllerSouthHigh.PLACE_CONE;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction5_1.autoControllerSouthHigh.RETRIEVE_CONE;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction10_1.autoControllerSouthHigh.CLOSE_THE_CLAW;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction10_1.autoControllerSouthHigh.FOURBAR_DOWN;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction10_1.autoControllerSouthHigh.NOTHING;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction10_1.autoControllerSouthHigh.PLACE_CONE;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction10_1.autoControllerSouthHigh.RETRIEVE_CONE;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.EXTENDED_SOUTH;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.EXTENDED_SOUTH_SIGUR;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.RETRACTED;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.RETRACTED_0;
 
@@ -22,7 +21,7 @@ import org.firstinspires.ftc.teamcode.drive.OGCode.Servo4BarController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.SigurantaLiftController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.TurnClawController;
 
-public class AutoSouthHighJunction5_1 {
+public class AutoSouthHighJunction10_1 {
     public enum autoControllerSouthHigh
     {
         NOTHING,
@@ -70,7 +69,7 @@ public class AutoSouthHighJunction5_1 {
             }
             case CLOSE_THE_CLAW:
             {
-                if (timerFourBar.seconds()>0.85)
+                if (timerFourBar.seconds()>0.6)
                 {
                     closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
                     timerClaw.reset();
@@ -86,7 +85,7 @@ public class AutoSouthHighJunction5_1 {
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
                     angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.RAISED;
                 }
-                if (timerClaw.seconds()>0.35) {
+                if (timerClaw.seconds()>0.25) {
                     motorColectareController.CurrentStatus = RETRACTED_0;
                     timerPlace_Cone.reset();
                     ok = 0;
@@ -134,7 +133,7 @@ public class AutoSouthHighJunction5_1 {
             case STACK_LEVEL:
             {
                 ok=0;
-                motorColectareController.CurrentStatus = EXTENDED_SOUTH_SIGUR;
+                motorColectareController.CurrentStatus = EXTENDED_SOUTH;
                 closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN_CLAW_BIG;
                 servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
                 turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;

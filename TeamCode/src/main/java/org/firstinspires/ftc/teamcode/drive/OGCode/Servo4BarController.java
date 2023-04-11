@@ -30,8 +30,8 @@ public class Servo4BarController {
     public static double Ground_Position=0.925, Second_Cone_Position=0.9, Third_Cone_Position=0.86, Fourth_Cone_Position = 0.82, Fifth_Cone_Position = 0.775,
              Fifth_Cone_Position_South_Left = 0.75 , Fifth_Cone_Position_MID = 0.75,
              Fifth_Cone_Position_BRATJOSHIGH = 0.75, Fifth_Cone_Position_BRATJOSMID_2 = 0.75, groundJunctionPosition  = 0.91;
-    public static double Collect_Position = 0.85 , Place_Cone_Position = 0.26, Intermediary_Position =0.5 , Drive_Position = 0.5;
-    public static double Collect_Drive = 0.934 , Low_Position = 0.6;
+    public static double Collect_Position = 0.85 , Place_Cone_Position = 0.25, Intermediary_Position =0.5 , Drive_Position = 0.5;
+    public static double Collect_Drive = 0.932 , Low_Position = 0.6;
     public static double Fallen_Cones = 0.955;
     public static double Fifth_Cone_Position_BRATJOSHIGH_2 = 0.75, Fourth_Cone_Position_BRATJOSHIGH_2 = 0.795 , Third_Cone_Position_BRATJOSHIGH_2 = 0.84, Second_Cone_Position_BRATJOSHIGH_2 = 0.88, Ground_Position_BRATJOSHIGH_2 = 0.91;
 

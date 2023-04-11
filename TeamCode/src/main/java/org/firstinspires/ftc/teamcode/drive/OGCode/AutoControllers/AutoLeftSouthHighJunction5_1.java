@@ -70,7 +70,7 @@ public class AutoLeftSouthHighJunction5_1 {
             }
             case CLOSE_THE_CLAW:
             {
-                if (timerFourBar.seconds()>0.8)
+                if (timerFourBar.seconds()>0.85)
                 {
                     closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
                     timerClaw.reset();
@@ -80,13 +80,13 @@ public class AutoLeftSouthHighJunction5_1 {
             }
             case RETRIEVE_CONE:
             {
-                if (ok == 0 && timerClaw.seconds()>0.05)
+                if (ok == 0 && timerClaw.seconds()>0.1)
                 {
                     ok=1;
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
                     angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.RAISED;
                 }
-                if (timerClaw.seconds()>0.45)
+                if (timerClaw.seconds()>0.35)
                 {
                     turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.PLACE;
                     angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.PLACE;
@@ -106,11 +106,11 @@ public class AutoLeftSouthHighJunction5_1 {
 
                     ok = 1;
                 }
-                if (timerPlace_Cone.seconds()>0.75)
+                if (timerPlace_Cone.seconds()>0.7)
                 {
                     sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
                 }
-                if (timerPlace_Cone.seconds()>0.9)
+                if (timerPlace_Cone.seconds()>0.85)
                 {
                     closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
