@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.drive.OGCode.Autonomii;
 
+import static org.firstinspires.ftc.teamcode.drive.OGCode.Autonomii.DreaptaMCyclingAutonomous5_1.Angle_PARK_INTER;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.Autonomii.DreaptaMCyclingAutonomous5_1.x_INTER;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.Autonomii.DreaptaMCyclingAutonomous5_1.y_INTER;
 import static org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive.timeOutBaby;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -31,14 +34,13 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 @Config
-@Autonomous(group = "drive")
+@Autonomous(group = "Worlds")
 
-public class DreaptaHCyclingAutonomous5_1 extends LinearOpMode {
+public class DreaptaHaz extends LinearOpMode {
     enum STROBOT
     {
         START,
@@ -56,9 +58,9 @@ public class DreaptaHCyclingAutonomous5_1 extends LinearOpMode {
     }
     public static double x_CYCLING_POSITION = 37, y_CYCLING_POSITION = -19, Angle_CYCLING_POSITION = 13;
     public static double x_PLACE_PRELOAD = 37, y_PLACE_PRELOAD = 3, Angle_PLACE_PRELOAD = 20;
-    public static double x_PARK1 = 10, y_PARK1 = -17, Angle_PARK1 = 90;
-    public static double x_PARK2 = 35, y_PARK2 = -17, Angle_PARK2 = 90;
-    public static double x_PARK3 = 60, y_PARK3 = -17, Angle_PARK3 = 90;
+    public static double x_PARK1 = 10, y_PARK1 = -35, Angle_PARK1 = 0;
+    public static double x_PARK2 = 35, y_PARK2 = -35, Angle_PARK2 = 0;
+    public static double x_PARK3 = 60, y_PARK3 = -35, Angle_PARK3 = 0;
     ElapsedTime asteapta = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime();
 
     OpenCvCamera camera;
@@ -141,13 +143,17 @@ public class DreaptaHCyclingAutonomous5_1 extends LinearOpMode {
         TrajectorySequence PLACE_PRELOAD = drive.trajectorySequenceBuilder(startPose)
                 .lineToLinearHeading(new Pose2d(x_PLACE_PRELOAD,y_PLACE_PRELOAD,Math.toRadians(Angle_PLACE_PRELOAD)))
                 .build();
-        TrajectorySequence PARK1 = drive.trajectorySequenceBuilder(PLACE_PRELOAD.end())
+        TrajectorySequence PARK1 = drive.trajectorySequenceBuilder(Cycling_Position)
+                .lineToLinearHeading(new Pose2d(x_INTER,y_INTER,Math.toRadians(Angle_PARK_INTER)))
                 .lineToLinearHeading(new Pose2d(x_PARK1,y_PARK1,Math.toRadians(Angle_PARK1)))
                 .build();
-        TrajectorySequence PARK2 = drive.trajectorySequenceBuilder(PLACE_PRELOAD.end())
+        TrajectorySequence PARK2 = drive.trajectorySequenceBuilder(Cycling_Position)
+                .lineToLinearHeading(new Pose2d(x_INTER,y_INTER,Math.toRadians(Angle_PARK_INTER)))
+
                 .lineToLinearHeading(new Pose2d(x_PARK2,y_PARK2,Math.toRadians(Angle_PARK2)))
                 .build();
-        TrajectorySequence PARK3 = drive.trajectorySequenceBuilder(PLACE_PRELOAD.end())
+        TrajectorySequence PARK3 = drive.trajectorySequenceBuilder(Cycling_Position)
+                .lineToLinearHeading(new Pose2d(x_INTER,y_INTER,Math.toRadians(Angle_PARK_INTER)))
                 .lineToLinearHeading(new Pose2d(x_PARK3,y_PARK3,Math.toRadians(Angle_PARK3)))
                 .build();
         int cameraMonitorViewId = hardwareMap.appContext
