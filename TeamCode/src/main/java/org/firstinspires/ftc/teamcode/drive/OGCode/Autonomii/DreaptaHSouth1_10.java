@@ -74,7 +74,7 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
     public static double x_PARK3 = 9, y_PARK3 = -13, Angle_PARK3 = 180;
     public static double Angle_TURN_COLLECT = 40;
 
-    ElapsedTime asteapta = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime() , timeCollect = new ElapsedTime(), timerSwitchLeft = new ElapsedTime();
+    ElapsedTime asteapta = new ElapsedTime(),timeGetVoltage = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime() , timeCollect = new ElapsedTime(), timerSwitchLeft = new ElapsedTime();
 
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -160,7 +160,7 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
         ElapsedTime timeStart = new ElapsedTime() , timeTurnPlace = new ElapsedTime(), timerGOPLACE = new ElapsedTime();
         Pose2d startPose = new Pose2d(35, -63, Math.toRadians(270));
         Pose2d PLACE_SOUTH_HIGH = new Pose2d(x_PLACE_SOUTH_HIGH,y_PLACE_SOUTH_HIGH,Math.toRadians(Angle_PLACE_SOUTH_HIGH));
-        Pose2d PLACE_PRELOAD_TRAJ = new Pose2d(x_PLACE_SOUTH_HIGH-2,y_PLACE_SOUTH_HIGH,Math.toRadians(Angle_PLACE_SOUTH_HIGH));
+        Pose2d PLACE_PRELOAD_TRAJ = new Pose2d(x_PLACE_SOUTH_HIGH-2,y_PLACE_SOUTH_HIGH,Math.toRadians(Angle_PLACE_SOUTH_HIGH+1.5));
 
         Pose2d PLACE_SOUTH_HIGH_LEFT = new Pose2d(x_PLACE_SOUTH_HIGH_LEFT,y_PLACE_SOUTH_HIGH_LEFT,Math.toRadians(Angle_PLACE_SOUTH_HIGH_LEFT));
         Pose2d PLACE_SOUTH_HIGH_LEFT_10 = new Pose2d(x_PLACE_SOUTH_HIGH_LEFT,y_PLACE_SOUTH_HIGH_LEFT,Math.toRadians(Angle_PLACE_SOUTH_HIGH_LEFT));
@@ -197,7 +197,7 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
                 .lineToLinearHeading(PLACE_SOUTH_HIGH_LEFT_10)
                 .build();
 
-        TrajectorySequence GO_TO_COLLECTING_POSITION_5 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH)
+        TrajectorySequence GO_TO_COLLECTING_POSITION_5 = drive.trajectorySequenceBuilder(PLACE_PRELOAD_TRAJ)
                 //.setVelConstraint(CONSTRAINTO)
                 .lineToLinearHeading(COLLECT_POSITION_5)
                 .build();
@@ -342,7 +342,7 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
                     break;
                 }
                 case GET_LIFT_DOWN: {
-                    if (timerLift.seconds() > autoControllerTurn51.LimitLift) {
+                    if (LiftPosition > 700) {
                         timerLift.reset();
                         if (nr!=11)
                         {
@@ -493,6 +493,10 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
                     break;
                 }
             }
+            if (timeGetVoltage.seconds() > 5) {
+                timeGetVoltage.reset();
+                currentVoltage = batteryVoltageSensor.getVoltage();
+            }
             biggerController.update(robotController,closeClawController,motorColectareController);
             robotController.update(robot,sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
             closeClawController.update(robot);
@@ -505,12 +509,12 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
             autoControllerTurn51.update(sigurantaLiftController,robot,angle4BarController, turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
 
             drive.update();
-            telemetry.addData("Pozitie: ", drive.getPoseEstimate());
-            telemetry.addData("nr", nr);
-            telemetry.addData("limit4bar", autoControllerTurn51.Limit4Bar);
+            //telemetry.addData("Pozitie: ", drive.getPoseEstimate());
+            //telemetry.addData("nr", nr);
+            //telemetry.addData("limit4bar", autoControllerTurn51.Limit4Bar);
             // telemetry.addData("caz:", Case);
-            telemetry.addData("Status",status);
-            telemetry.update();
+            //telemetry.addData("Status",status);
+            //telemetry.update();
         }
     }
 
