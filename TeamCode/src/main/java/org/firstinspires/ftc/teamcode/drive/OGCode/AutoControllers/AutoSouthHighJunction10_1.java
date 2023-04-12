@@ -116,7 +116,7 @@ public class AutoSouthHighJunction10_1 {
                 {
                     closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN_CLAW_SMALL;
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
-                    angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
+                    //fangle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
                     CurrentStatus = NOTHING;
                 }
                 break;

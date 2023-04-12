@@ -35,7 +35,7 @@ public class LiftController {
     int basePosition = 0;
     public static int lowPosition = 200;
     public static int midPosition = 420;
-    public static int highPosition = 670, highPositionSouth = 675, highPosition_DRIVE = 675 , highPositionSouth_Cycling = 705;
+    public static int highPosition = 670, highPositionSouth = 680, highPosition_DRIVE = 675 , highPositionSouth_Cycling = 705;
     public int CurrentPosition = 0;
     public LiftController()
     {

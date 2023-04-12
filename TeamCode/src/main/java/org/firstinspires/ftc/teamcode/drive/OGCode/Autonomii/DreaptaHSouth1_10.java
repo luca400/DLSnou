@@ -63,14 +63,14 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
     }
     public static double INTER_SPLINE_X = 13, INTER_SPLINE_Y = -50;
     public static double x_CYCLING_POSITION = 13.5, y_CYCLING_POSITION = -61;
-    public static double x_COLLECT_POSITION = 15, y_COLLECT_POSITION = -14, Angle_COLLECT_POSITION = 0.5;
-    public static double x_PLACE_SOUTH_HIGH = 13.5, y_PLACE_SOUTH_HIGH = -19.5, Angle_PLACE_SOUTH_HIGH = 10;
-    public static double x_COLLECT_POSITION_LEFT = -16, y_COLLECT_POSITION_LEFT = -11, Angle_COLLECT_POSITION_LEFT = 176.5;
-    public static double x_SWITCH_LEFT = -14.5, y_SWITCH_LEFT = -16.5, Angle_SIWTCH_LEFT = 160;
-    public static double x_PLACE_SOUTH_HIGH_LEFT = -15, y_PLACE_SOUTH_HIGH_LEFT = -15, Angle_PLACE_SOUTH_HIGH_LEFT = 160;
+    public static double x_COLLECT_POSITION = 17, y_COLLECT_POSITION = -14, Angle_COLLECT_POSITION = 0;
+    public static double x_PLACE_SOUTH_HIGH = 15.5, y_PLACE_SOUTH_HIGH = -18.5, Angle_PLACE_SOUTH_HIGH = 10;
+    public static double x_COLLECT_POSITION_LEFT = -15, y_COLLECT_POSITION_LEFT = -11, Angle_COLLECT_POSITION_LEFT = 177;
+    public static double x_SWITCH_LEFT = -14, y_SWITCH_LEFT = -15.5, Angle_SIWTCH_LEFT = 160;
+    public static double x_PLACE_SOUTH_HIGH_LEFT = -14, y_PLACE_SOUTH_HIGH_LEFT = -16, Angle_PLACE_SOUTH_HIGH_LEFT = 160;
     public static double x_PARK1 = -11.5, y_PARK1 = -14, Angle_PARK1 = 180;
     public static double x_PARK2 = -33, y_PARK2 = -14.5, Angle_PARK2 = 180;
-    public static double x_PARK3 = 11.5, y_PARK3 = -11, Angle_PARK3 = 180;
+    public static double x_PARK3 = -55.5, y_PARK3 = -9, Angle_PARK3 = 180;
     public static double Angle_TURN_COLLECT = 40;
 
     ElapsedTime asteapta = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime() , timeCollect = new ElapsedTime(), timerSwitchLeft = new ElapsedTime();
@@ -159,8 +159,10 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
         ElapsedTime timeStart = new ElapsedTime() , timeTurnPlace = new ElapsedTime(), timerGOPLACE = new ElapsedTime();
         Pose2d startPose = new Pose2d(35, -63, Math.toRadians(270));
         Pose2d PLACE_SOUTH_HIGH = new Pose2d(x_PLACE_SOUTH_HIGH,y_PLACE_SOUTH_HIGH,Math.toRadians(Angle_PLACE_SOUTH_HIGH));
+        Pose2d PLACE_PRELOAD_TRAJ = new Pose2d(x_PLACE_SOUTH_HIGH-2,y_PLACE_SOUTH_HIGH,Math.toRadians(Angle_PLACE_SOUTH_HIGH));
+
         Pose2d PLACE_SOUTH_HIGH_LEFT = new Pose2d(x_PLACE_SOUTH_HIGH_LEFT,y_PLACE_SOUTH_HIGH_LEFT,Math.toRadians(Angle_PLACE_SOUTH_HIGH_LEFT));
-        Pose2d PLACE_SOUTH_HIGH_LEFT_10 = new Pose2d(x_PLACE_SOUTH_HIGH_LEFT-1,y_PLACE_SOUTH_HIGH_LEFT,Math.toRadians(Angle_PLACE_SOUTH_HIGH_LEFT));
+        Pose2d PLACE_SOUTH_HIGH_LEFT_10 = new Pose2d(x_PLACE_SOUTH_HIGH_LEFT,y_PLACE_SOUTH_HIGH_LEFT,Math.toRadians(Angle_PLACE_SOUTH_HIGH_LEFT));
         Pose2d SWITCH = new Pose2d(x_SWITCH_LEFT, y_SWITCH_LEFT, Math.toRadians(Angle_SIWTCH_LEFT));
         Pose2d COLLECT_POSITION_5 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION));
         Pose2d COLLECT_POSITION_4 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION));
@@ -169,10 +171,10 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
         Pose2d COLLECT_POSITION_1 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION));
 
         Pose2d COLLECT_POSITION_6 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT));
-        Pose2d COLLECT_POSITION_7 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-0.7));
+        Pose2d COLLECT_POSITION_7 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-0.8));
         Pose2d COLLECT_POSITION_8 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-0.8));
         Pose2d COLLECT_POSITION_9 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-1));
-        Pose2d COLLECT_POSITION_10 = new Pose2d(x_COLLECT_POSITION_LEFT-1,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-1));
+        Pose2d COLLECT_POSITION_10 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-1));
         drive.setPoseEstimate(startPose);
         STROBOT status = STROBOT.START;
         TrajectorySequence PLACE_PRELOAD = drive.trajectorySequenceBuilder(startPose)
@@ -181,7 +183,7 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
                 //.setVelConstraint(CONSTRAINTO)
                 .lineTo(new Vector2d(13.5,-55))
                 //.resetConstraints()
-                .lineToLinearHeading(PLACE_SOUTH_HIGH)
+                .lineToLinearHeading(PLACE_PRELOAD_TRAJ)
                 .build();
         TrajectorySequence GO_TO_PLACE_POSITION = drive.trajectorySequenceBuilder(COLLECT_POSITION_5)
                 .lineToLinearHeading(PLACE_SOUTH_HIGH)
@@ -230,7 +232,7 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
                 .lineToLinearHeading(COLLECT_POSITION_10)
                 .build();
         TrajectorySequence SWITCH_LEFT = drive.trajectorySequenceBuilder(COLLECT_POSITION_1)
-                .setTangent(Math.toRadians(180))
+                .setTangent(Math.toRadians(175))
                 .splineToLinearHeading(SWITCH,Math.toRadians(180))
                 .build();
         TrajectorySequence PARK1 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH_LEFT_10)
@@ -240,7 +242,7 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
                 .lineTo(new Vector2d(x_PARK2,y_PARK2))
                 .build();
         TrajectorySequence PARK3 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH_LEFT_10)
-                .lineToLinearHeading(new Pose2d(x_PARK3,y_PARK3,Math.toRadians(180)))
+                .lineTo(new Vector2d(x_PARK3,y_PARK3))
                 .build();
         int cameraMonitorViewId = hardwareMap.appContext
                 .getResources().getIdentifier("cameraMonitorViewId",
