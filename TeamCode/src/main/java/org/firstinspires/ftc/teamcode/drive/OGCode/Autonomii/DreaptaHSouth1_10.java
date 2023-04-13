@@ -63,14 +63,14 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
     }
     public static double INTER_SPLINE_X = 13, INTER_SPLINE_Y = -50;
     public static double x_CYCLING_POSITION = 13.5, y_CYCLING_POSITION = -61;
-    public static double x_COLLECT_POSITION = 17, y_COLLECT_POSITION = -14, Angle_COLLECT_POSITION = 0;
+    public static double x_COLLECT_POSITION = 17, y_COLLECT_POSITION = -14, Angle_COLLECT_POSITION = -1;
     public static double x_PLACE_SOUTH_HIGH = 15.5, y_PLACE_SOUTH_HIGH = -18.5, Angle_PLACE_SOUTH_HIGH = 10;
     public static double x_COLLECT_POSITION_LEFT = -15, y_COLLECT_POSITION_LEFT = -11, Angle_COLLECT_POSITION_LEFT = 177;
     public static double x_SWITCH_LEFT = -14, y_SWITCH_LEFT = -15.5, Angle_SIWTCH_LEFT = 160;
     public static double x_PLACE_SOUTH_HIGH_LEFT = -14, y_PLACE_SOUTH_HIGH_LEFT = -16, Angle_PLACE_SOUTH_HIGH_LEFT = 160;
     public static double x_PARK1 = -11.5, y_PARK1 = -14, Angle_PARK1 = 180;
-    public static double x_PARK2 = -33, y_PARK2 = -14.5, Angle_PARK2 = 180;
-    public static double x_PARK3 = -55.5, y_PARK3 = -9, Angle_PARK3 = 180;
+    public static double x_PARK2 = -33, y_PARK2 = -22.5, Angle_PARK2 = 270;
+    public static double x_PARK3 = 11.5, y_PARK3 = -12.5, Angle_PARK3 = 90;
     public static double Angle_TURN_COLLECT = 40;
 
     ElapsedTime asteapta = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime() , timeCollect = new ElapsedTime(), timerSwitchLeft = new ElapsedTime();
@@ -137,7 +137,7 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
 
         autoControllerTurn51.Cone_Stack_Level  =5;
         autoControllerTurn51.AutoLiftStatus = LiftController.LiftStatus.HIGH;
-        autoControllerTurn51.LimitLift = 0.6;
+        autoControllerTurn51.LimitLift = 0.625;
         motorColectareController.NrConAuto = 5;
         robot.turnClaw.setPosition(TurnClawController.pozTurnClaw_COLLECT);
 
@@ -239,10 +239,11 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
                 .lineTo(new Vector2d(x_PARK1,y_PARK1))
                 .build();
         TrajectorySequence PARK2 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH_LEFT_10)
-                .lineTo(new Vector2d(x_PARK2,y_PARK2))
+                .setTangent(160)
+                .splineToLinearHeading(new Pose2d(x_PARK2, y_PARK2, Math.toRadians(Angle_PARK2)), Math.toRadians(270))
                 .build();
         TrajectorySequence PARK3 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH_LEFT_10)
-                .lineTo(new Vector2d(x_PARK3,y_PARK3))
+                .lineToLinearHeading(new Pose2d(x_PARK3,y_PARK3,Math.toRadians(90)))
                 .build();
         int cameraMonitorViewId = hardwareMap.appContext
                 .getResources().getIdentifier("cameraMonitorViewId",
@@ -336,11 +337,13 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
                         timerLift.reset();
                         if (nr!=11)
                         {
+                            turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
                             liftController.CurrentStatus = LiftController.LiftStatus.BASE;
                             status = STROBOT.GO_TO_COLLECTING_POSITION;
                         }
                         else
                         {
+                            turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
                             liftController.CurrentStatus = LiftController.LiftStatus.BASE;
                             status = STROBOT.PARK;
                         }

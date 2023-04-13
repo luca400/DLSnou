@@ -39,13 +39,13 @@ public class SampleOpModeDLS extends  LinearOpMode {
 
     public void robotCentricDrive(DcMotor leftFront,DcMotor leftBack,DcMotor rightFront,DcMotor rightBack, double  lim, boolean StrafesOn , double LeftTrigger,  double RightTrigger)
     {
-        double y =0;// gamepad1.right_stick_y; // Remember, this is reversed!
-        double x =0;// gamepad1.right_stick_x*1.1;
+        double y = gamepad1.right_stick_y; // Remember, this is reversed!
+        double x = gamepad1.right_stick_x*1.1;
         if (StrafesOn == false)
         {
             x=0;
         }
-        double rx = 0;//gamepad1.left_stick_x*1 - LeftTrigger + RightTrigger;
+        double rx =gamepad1.left_stick_x*1 - LeftTrigger + RightTrigger;
 
         rx/=PrecisionDenominator2;
         x/=PrecisionDenominator;
@@ -118,8 +118,8 @@ public class SampleOpModeDLS extends  LinearOpMode {
         AutoController5_1 autoController51 = new AutoController5_1();
         AllCycleController allCycleController = new AllCycleController();
 
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        //drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
        /* if (PoseTransfer.currentPose.getY()==0) PoseTransfer.currentPose = new Pose2d(35, -63, Math.toRadians(270));
         drive.setPoseEstimate(PoseTransfer.currentPose);*/
 
@@ -168,7 +168,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
         imu.initialize(parameters);
-      /*  DcMotor rightFront = null;
+        DcMotor rightFront = null;
         DcMotor rightBack = null;
         DcMotor leftFront = null;
         DcMotor leftBack = null;
@@ -189,7 +189,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);*/
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         Gamepad currentGamepad1 = new Gamepad();
         Gamepad currentGamepad2 = new Gamepad();
@@ -209,7 +209,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
         while (opModeIsActive()) {
             if (isStopRequested()) return;
 
-            if (StrafesOn == false)
+          /*  if (StrafesOn == false)
             {
                 drive.setWeightedDrivePower(
                         new Pose2d(
@@ -228,7 +228,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
                                 -gamepad1.left_stick_x / PrecisionDenominator2
                         )
                 );
-            }
+            }*/
             double current4BarPosition = robot.left4Bar.getPosition();
             double currentAngle4BarPosition = robot.angle4Bar.getPosition();
             int ColectarePosition = robot.motorColectareStanga.getCurrentPosition();
@@ -243,11 +243,11 @@ public class SampleOpModeDLS extends  LinearOpMode {
                 StrafesOn = !StrafesOn;
             }
             /// DRIVE
-            /*if (typeOfDrive == "RobotCentricNormal") {
+            if (typeOfDrive == "RobotCentricNormal") {
                 robotCentricDrive(leftFront, leftBack, rightFront, rightBack, lim,StrafesOn , 0,0);
             } else {
                 robotCentricDriveABSO(leftFront, leftBack, rightFront, rightBack, lim,StrafesOn , 0,0);
-            }*/
+            }
             if (!previousGamepad2.touchpad && currentGamepad2.touchpad) {
                 if (typeOfDrive == "RobotCentricNormal") {
                     typeOfDrive = "RobotCentricABSO";
