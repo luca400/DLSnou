@@ -135,7 +135,7 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
         sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
         angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
 
-
+        double pozCurLift =700;
 
         autoControllerTurn51.Cone_Stack_Level  =5;
         autoControllerTurn51.AutoLiftStatus = LiftController.LiftStatus.HIGH;
@@ -335,6 +335,7 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
                     if (timerSwitchLeft.seconds()>1.65)
                     {
                         nr++;
+                        pozCurLift = 700;
                         liftController.CurrentStatus = LiftController.LiftStatus.HIGH_SOUTH_LEFT;
                         timerLift.reset();
                         status = STROBOT.GET_LIFT_DOWN;
@@ -342,7 +343,7 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
                     break;
                 }
                 case GET_LIFT_DOWN: {
-                    if (LiftPosition > 700) {
+                    if (LiftPosition > pozCurLift) {
                         timerLift.reset();
                         if (nr!=11)
                         {
