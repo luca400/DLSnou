@@ -37,7 +37,7 @@ import java.util.List;
 
 
 @Config
-@Autonomous(group = "drive")
+@Autonomous(group = "WORLDS")
 
 public class StangaHSouth5_1 extends LinearOpMode {
     enum STROBOT

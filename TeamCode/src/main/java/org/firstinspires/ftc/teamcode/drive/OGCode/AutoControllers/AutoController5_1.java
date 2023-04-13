@@ -80,7 +80,7 @@ public class AutoController5_1 {
                 }
                 case RETRIEVE_CONE:
                 {
-                    if (ok == 0 && timerClaw.seconds()>0.05)
+                    if (ok == 0 && timerClaw.seconds()>0.2)
                     {
                         ok=1;
                         servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
@@ -114,11 +114,11 @@ public class AutoController5_1 {
                     {
                         closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN_CLAW_SMALL;
                         servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
-                        angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
                     }
                     if (timerPlace_Cone.seconds()>1.2)
                     {
                         timerLift.reset();
+                        angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
                         turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
                         liftController.CurrentStatus = AutoLiftStatus;
                         CurrentStatus = GET_LIFT_DOWN;

@@ -70,7 +70,7 @@ public class RobotController {
                     {
                         sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
                     }
-                    if (timerGO_PLACE.seconds()>timerTransfer+0.35)
+                    if (timerGO_PLACE.seconds()>timerTransfer+0.15)
                     {
                         closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
                         angle4BarController.CurrentStatus= Angle4BarController.angle4BarStatus.VERTICAL;

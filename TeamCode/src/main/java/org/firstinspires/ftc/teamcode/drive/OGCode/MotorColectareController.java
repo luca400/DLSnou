@@ -44,14 +44,14 @@ public class MotorColectareController {
     SimplePIDController MotorColectarePID = null;
     public static double vMax = 0, AccMax = 0, JerkMax =0 , EndPos = 2020 , CurrentPosition = 0;
     public static double extendedPosition = 497 , retractedPosition = -30, extendedDrive = 655, extendedDriveMax = 655;
-    public static int extended5_1Autonomy_5= 330, extended5_1Autonomy_4 = 319   ,extended5_1Autonomy_3 = 312,extended5_1Autonomy_2 = 305,extended5_1Autonomy_1 = 305;
     public static int extended10_1Autonomy_10= 325, extended10_1Autonomy_9 = 312,extended10_1Autonomy_8 = 305,
                       extended10_1Autonomy_7 = 298, extended10_1Autonomy_6 = 298, extended10_1Autonomy_5 = 312,
                       extended10_1Autonomy_4= 301 , extended10_1Autonomy_3 = 298,extended10_1Autonomy_2 = 291,
                       extended10_1Autonomy_1 = 291;
-    public static double ExtendoCyclingSouthPositions[] = {540,540,545,545,580, 595,595,595,610,665};
+    public static double ExtendoCyclingSouthPositions[] = {540,540,545,545,580, 650,650,650,650,675};
     public static double Extendo5_1SouthPositions[] = {495,495,500,510,535};
     public static double Extendo5_1SouthLeftPositions[] = {495,495,515,525,545};
+    public static double ExtendoHaz[]= {0,310,310,312,319,340};
     public static int NrConAuto = 5;
     public MotorColectareController()
     {
@@ -160,34 +160,7 @@ public class MotorColectareController {
                 case EXTENDED_5_1:
                 {
                     MotorColectarePID.maxOutput = 1;
-                    switch (NrConAuto)
-                    {
-                        case 1:
-                        {
-                            MotorColectarePID.targetValue = extended5_1Autonomy_1;
-                            break;
-                        }
-                        case 2:
-                        {
-                            MotorColectarePID.targetValue = extended5_1Autonomy_2;
-                            break;
-                        }
-                        case 3:
-                        {
-                            MotorColectarePID.targetValue = extended5_1Autonomy_3;
-                            break;
-                        }
-                        case 4:
-                        {
-                            MotorColectarePID.targetValue = extended5_1Autonomy_4;
-                            break;
-                        }
-                        case 5:
-                        {
-                            MotorColectarePID.targetValue = extended5_1Autonomy_5;
-                            break;
-                        }
-                    }
+                    MotorColectarePID.targetValue = ExtendoHaz[NrConAuto];
                     break;
                 }
                 case EXTENDED_10_1:

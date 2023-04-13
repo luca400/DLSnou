@@ -13,6 +13,7 @@ public class LiftController {
     {
         START,
         HIGH_SOUTH,
+        HIGH_SOUTH_LEFT,
         HIGH,
         HIGH_DRIVE,
         LOW,
@@ -33,9 +34,9 @@ public class LiftController {
     ElapsedTime timeSiguranta = new ElapsedTime();
     /// pe DreaptaLift am encoder
     int basePosition = 0;
-    public static int lowPosition = 200;
+    public static int lowPosition = 220;
     public static int midPosition = 420;
-    public static int highPosition = 670, highPositionSouth = 680, highPosition_DRIVE = 675 , highPositionSouth_Cycling = 705;
+    public static int highPosition = 670, highPositionSouth = 690, highPosition_DRIVE = 680 , highPositionSouth_Cycling = 705,highPositionSouth_LEFT = 700;
     public int CurrentPosition = 0;
     public LiftController()
     {
@@ -93,6 +94,12 @@ public class LiftController {
                 {
                     sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
                     LiftColectarePID.targetValue = highPositionSouth;
+                    break;
+                }
+                case HIGH_SOUTH_LEFT:
+                {
+                    sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
+                    LiftColectarePID.targetValue = highPositionSouth_LEFT;
                     break;
                 }
                 case HIGH_SOUTH_CYCLING:
