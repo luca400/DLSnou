@@ -66,7 +66,7 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
     public static double x_COLLECT_POSITION = 17, y_COLLECT_POSITION = -14, Angle_COLLECT_POSITION = -1;
     public static double x_PLACE_SOUTH_HIGH = 15.5, y_PLACE_SOUTH_HIGH = -18.5, Angle_PLACE_SOUTH_HIGH = 10;
     public static double x_COLLECT_POSITION_LEFT = -15, y_COLLECT_POSITION_LEFT = -11, Angle_COLLECT_POSITION_LEFT = 177;
-    public static double x_SWITCH_LEFT = -14, y_SWITCH_LEFT = -15.5, Angle_SIWTCH_LEFT = 160;
+    public static double x_SWITCH_LEFT = -12.5, y_SWITCH_LEFT = -16, Angle_SIWTCH_LEFT = 160;
     public static double x_PLACE_SOUTH_HIGH_LEFT = -14, y_PLACE_SOUTH_HIGH_LEFT = -16, Angle_PLACE_SOUTH_HIGH_LEFT = 160;
     public static double x_PARK1 = -11.5, y_PARK1 = -14, Angle_PARK1 = 180;
     public static double x_PARK2 = -33, y_PARK2 = -22.5, Angle_PARK2 = 270;
@@ -125,6 +125,7 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
         SigurantaLiftController sigurantaLiftController = new SigurantaLiftController();
         Angle4BarController angle4BarController = new Angle4BarController();
         servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.INITIALIZE;
+        servo4BarController.PreviousStatus = Servo4BarController.ServoStatus.INITIALIZE;
         motorColectareController.CurrentStatus = MotorColectareController.MotorColectare.RETRACTED;
         closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
         turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
@@ -171,10 +172,10 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
         Pose2d COLLECT_POSITION_1 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION));
 
         Pose2d COLLECT_POSITION_6 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT));
-        Pose2d COLLECT_POSITION_7 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-0.8));
-        Pose2d COLLECT_POSITION_8 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-0.8));
-        Pose2d COLLECT_POSITION_9 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-1));
-        Pose2d COLLECT_POSITION_10 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-1));
+        Pose2d COLLECT_POSITION_7 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT));
+        Pose2d COLLECT_POSITION_8 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT));
+        Pose2d COLLECT_POSITION_9 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT));
+        Pose2d COLLECT_POSITION_10 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT));
         drive.setPoseEstimate(startPose);
         STROBOT status = STROBOT.START;
         TrajectorySequence PLACE_PRELOAD = drive.trajectorySequenceBuilder(startPose)
@@ -233,7 +234,7 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
                 .build();
         TrajectorySequence SWITCH_LEFT = drive.trajectorySequenceBuilder(COLLECT_POSITION_1)
                 .setTangent(Math.toRadians(175))
-                .splineToLinearHeading(SWITCH,Math.toRadians(180))
+                .splineToLinearHeading(SWITCH,Math.toRadians(210))
                 .build();
         TrajectorySequence PARK1 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH_LEFT_10)
                 .lineTo(new Vector2d(x_PARK1,y_PARK1))
@@ -241,9 +242,10 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
         TrajectorySequence PARK2 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH_LEFT_10)
                 .setTangent(160)
                 .splineToLinearHeading(new Pose2d(x_PARK2, y_PARK2, Math.toRadians(Angle_PARK2)), Math.toRadians(270))
+                //.lineTo(new Vector2d(x_PARK2,y_PARK2))
                 .build();
         TrajectorySequence PARK3 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH_LEFT_10)
-                .lineToLinearHeading(new Pose2d(x_PARK3,y_PARK3,Math.toRadians(90)))
+                .lineTo(new Vector2d(x_PARK3,y_PARK3))
                 .build();
         int cameraMonitorViewId = hardwareMap.appContext
                 .getResources().getIdentifier("cameraMonitorViewId",
@@ -293,6 +295,8 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
                     if (nr==0)
                     {
                         if (!drive.isBusy()) {
+                            closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
+                            turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
                             liftController.CurrentStatus = LiftController.LiftStatus.HIGH_SOUTH;
                             timerLift.reset();
                             status = STROBOT.GET_LIFT_DOWN;
@@ -326,6 +330,8 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
                     if (timerSwitchLeft.seconds()>1.65)
                     {
                         nr++;
+                        closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
+                        turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
                         liftController.CurrentStatus = LiftController.LiftStatus.HIGH_SOUTH;
                         timerLift.reset();
                         status = STROBOT.GET_LIFT_DOWN;
@@ -337,12 +343,14 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
                         timerLift.reset();
                         if (nr!=11)
                         {
+                            closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
                             turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
                             liftController.CurrentStatus = LiftController.LiftStatus.BASE;
                             status = STROBOT.GO_TO_COLLECTING_POSITION;
                         }
                         else
                         {
+                            closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
                             turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
                             liftController.CurrentStatus = LiftController.LiftStatus.BASE;
                             status = STROBOT.PARK;
