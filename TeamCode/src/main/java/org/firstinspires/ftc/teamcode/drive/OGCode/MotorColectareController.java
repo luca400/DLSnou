@@ -49,7 +49,7 @@ public class MotorColectareController {
                       extended10_1Autonomy_7 = 298, extended10_1Autonomy_6 = 298, extended10_1Autonomy_5 = 312,
                       extended10_1Autonomy_4= 301 , extended10_1Autonomy_3 = 298,extended10_1Autonomy_2 = 291,
                       extended10_1Autonomy_1 = 291;
-    public static double ExtendoCyclingSouthPositions[] = {540,540,545,545,580, 650,650,650,650,675};
+    public static double ExtendoCyclingSouthPositions[] = {520,520,535,555,590, 520,520,535,555,590};
     public static double Extendo5_1SouthPositions[] = {500,500,515,525,535};
     public static double Extendo5_1SouthLeftPositions[] = {495,495,515,525,545};
     public static double ExtendoHaz[]= {0,310,310,312,319,340};

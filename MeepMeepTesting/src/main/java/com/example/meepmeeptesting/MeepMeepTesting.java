@@ -13,15 +13,16 @@ public class MeepMeepTesting {
         double x_CYCLING_POSITION = 17, y_CYCLING_POSITION = -18, Angle_CYCLING_POSITION = 7.2;
         double x_CYCLING_POSITION_INTER = 37.5, y_CYCLING_POSITION_INTER = -12;
         double x_CYCLE_LEFT = -14.02679549603315,y_CYCLE_LEFT = -18 , Angle_CYCLE_LEFT = 170;
-        double x_PLACE_SOUTH_HIGH_LEFT = -14, y_PLACE_SOUTH_HIGH_LEFT = -16, Angle_PLACE_SOUTH_HIGH_LEFT = 160;
+        double x_PLACE_SOUTH_HIGH_LEFT = -14.5, y_PLACE_SOUTH_HIGH_LEFT = -17.5, Angle_PLACE_SOUTH_HIGH_LEFT = 170;
         double x_PARK1 = -11.5, y_PARK1 = -14, Angle_PARK1 = 90;
-        double x_PARK2 = -33, y_PARK2 = -22.5, Angle_PARK2 = 270;
-        double x_PARK3 = 11.5, y_PARK3 = -12.5, Angle_PARK3 = 90;
+        double x_PARK2 = -33, y_PARK2 = -17, Angle_PARK2 = 270;
+        double x_PARK3 = 11.5, y_PARK3 = -20, Angle_PARK3 = 90;
+
 
         double y_LLH = -5.5, Angle_LLH = 192.5, x_LLH = -36;
         Pose2d StartPositionRight = new Pose2d(35,-63,Math.toRadians(270));
         Pose2d StartPositionLeft = new Pose2d(-35,-63,Math.toRadians(270));
-        Pose2d PLACE_SOUTH_HIGH_LEFT_10 = new Pose2d(x_PLACE_SOUTH_HIGH_LEFT,y_PLACE_SOUTH_HIGH_LEFT,Math.toRadians(Angle_PLACE_SOUTH_HIGH_LEFT));
+        Pose2d PLACE_SOUTH_HIGH_LEFT_10 = new Pose2d(x_PLACE_SOUTH_HIGH_LEFT-1,y_PLACE_SOUTH_HIGH_LEFT,Math.toRadians(Angle_PLACE_SOUTH_HIGH_LEFT));
 
         RoadRunnerBotEntity Autonomia1 = new DefaultBotBuilder(meepMeep)
                 .followTrajectorySequence(drive ->
@@ -184,11 +185,13 @@ public class MeepMeepTesting {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                // .setConstraints(60, 50, 5.69, 5.69, 7)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(COLLECT_POSITION_1)
+                        drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH_LEFT_10)
                                 //.setTangent(Math.toRadians(0))
                                 //.splineToLinearHeading(new Pose2d(9,-20, Math.toRadians(90)),Math.toRadians(270))
-                                .setTangent(Math.toRadians(175))
-                                .splineToLinearHeading(SWITCH,Math.toRadians(210))
+                                //.setTangent(Math.toRadians(175))
+                                //.splineToLinearHeading(SWITCH,Math.toRadians(210))
+                                .setTangent(165.5)
+                                .splineToLinearHeading(new Pose2d(x_PARK2,y_PARK2,Math.toRadians(Angle_PARK2)),Math.toRadians(270))
                                 .build()
                 );
         meepMeep.setBackground(MeepMeep.Background.FIELD_POWERPLAY_OFFICIAL)
