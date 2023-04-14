@@ -39,13 +39,13 @@ public class SampleOpModeDLS extends  LinearOpMode {
 
     public void robotCentricDrive(DcMotor leftFront,DcMotor leftBack,DcMotor rightFront,DcMotor rightBack, double  lim, boolean StrafesOn , double LeftTrigger,  double RightTrigger)
     {
-        double y =0;// gamepad1.right_stick_y; // Remember, this is reversed!
-        double x =0;// gamepad1.right_stick_x*1.1;
+        double y = -gamepad1.right_stick_y; // Remember, this is reversed!
+        double x = gamepad1.right_stick_x*1.1;
         if (StrafesOn == false)
         {
             x=0;
         }
-        double rx = 0;//gamepad1.left_stick_x*1 - LeftTrigger + RightTrigger;
+        double rx = gamepad1.left_stick_x*1 - LeftTrigger + RightTrigger;
 
         rx/=PrecisionDenominator2;
         x/=PrecisionDenominator;
@@ -168,14 +168,14 @@ public class SampleOpModeDLS extends  LinearOpMode {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
         imu.initialize(parameters);
-      /*  DcMotor rightFront = null;
+        DcMotor rightFront = null;
         DcMotor rightBack = null;
         DcMotor leftFront = null;
         DcMotor leftBack = null;
-        rightFront = hardwareMap.get(DcMotor.class,"leftFront");
-        leftFront = hardwareMap.get(DcMotor.class,"rightFront");
-        rightBack = hardwareMap.get(DcMotor.class,"leftBack");
-        leftBack = hardwareMap.get(DcMotor.class,"rightBack");
+        rightFront = hardwareMap.get(DcMotor.class,"rightFront");
+        leftFront = hardwareMap.get(DcMotor.class,"leftFront");
+        rightBack = hardwareMap.get(DcMotor.class,"rightBack");
+        leftBack = hardwareMap.get(DcMotor.class,"leftBack");
 
 
         leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -189,7 +189,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);*/
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         Gamepad currentGamepad1 = new Gamepad();
         Gamepad currentGamepad2 = new Gamepad();
@@ -209,26 +209,6 @@ public class SampleOpModeDLS extends  LinearOpMode {
         while (opModeIsActive()) {
             if (isStopRequested()) return;
 
-            if (StrafesOn == false)
-            {
-                drive.setWeightedDrivePower(
-                        new Pose2d(
-                                -gamepad1.right_stick_y / PrecisionDenominator,
-                                0,
-                                -gamepad1.left_stick_x / PrecisionDenominator2
-                        )
-                );
-            }
-            else
-            {
-                drive.setWeightedDrivePower(
-                        new Pose2d(
-                                -gamepad1.right_stick_y / PrecisionDenominator,
-                                -gamepad1.right_stick_x/PrecisionDenominator,
-                                -gamepad1.left_stick_x / PrecisionDenominator2
-                        )
-                );
-            }
             double current4BarPosition = robot.left4Bar.getPosition();
             double currentAngle4BarPosition = robot.angle4Bar.getPosition();
             int ColectarePosition = robot.motorColectareStanga.getCurrentPosition();
@@ -243,18 +223,9 @@ public class SampleOpModeDLS extends  LinearOpMode {
                 StrafesOn = !StrafesOn;
             }
             /// DRIVE
-            /*if (typeOfDrive == "RobotCentricNormal") {
-                robotCentricDrive(leftFront, leftBack, rightFront, rightBack, lim,StrafesOn , 0,0);
-            } else {
-                robotCentricDriveABSO(leftFront, leftBack, rightFront, rightBack, lim,StrafesOn , 0,0);
-            }*/
-            if (!previousGamepad2.touchpad && currentGamepad2.touchpad) {
-                if (typeOfDrive == "RobotCentricNormal") {
-                    typeOfDrive = "RobotCentricABSO";
-                } else {
-                    typeOfDrive = "RobotCentricNormal";
-                }
-            }
+
+            robotCentricDrive(leftFront, leftBack, rightFront, rightBack, lim,StrafesOn , 0,0);
+
             if (timeGetVoltage.seconds() > 5) {
                 timeGetVoltage.reset();
                 currentVoltage = batteryVoltageSensor.getVoltage();

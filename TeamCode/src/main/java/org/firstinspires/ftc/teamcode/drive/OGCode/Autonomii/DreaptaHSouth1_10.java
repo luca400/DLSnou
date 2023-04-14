@@ -13,7 +13,6 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
-import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -64,17 +63,17 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
     }
     public static double INTER_SPLINE_X = 13, INTER_SPLINE_Y = -50;
     public static double x_CYCLING_POSITION = 13.5, y_CYCLING_POSITION = -61;
-    public static double x_COLLECT_POSITION = 17, y_COLLECT_POSITION = -14, Angle_COLLECT_POSITION = 0;
+    public static double x_COLLECT_POSITION = 17, y_COLLECT_POSITION = -14, Angle_COLLECT_POSITION = -1;
     public static double x_PLACE_SOUTH_HIGH = 15.5, y_PLACE_SOUTH_HIGH = -18.5, Angle_PLACE_SOUTH_HIGH = 10;
-    public static double x_COLLECT_POSITION_LEFT = -15, y_COLLECT_POSITION_LEFT = -11, Angle_COLLECT_POSITION_LEFT = 177.25;
+    public static double x_COLLECT_POSITION_LEFT = -15, y_COLLECT_POSITION_LEFT = -11, Angle_COLLECT_POSITION_LEFT = 177;
     public static double x_SWITCH_LEFT = -14, y_SWITCH_LEFT = -15.5, Angle_SIWTCH_LEFT = 160;
-    public static double x_PLACE_SOUTH_HIGH_LEFT = -14, y_PLACE_SOUTH_HIGH_LEFT = -16, Angle_PLACE_SOUTH_HIGH_LEFT = 167;
+    public static double x_PLACE_SOUTH_HIGH_LEFT = -14, y_PLACE_SOUTH_HIGH_LEFT = -16, Angle_PLACE_SOUTH_HIGH_LEFT = 160;
     public static double x_PARK1 = -11.5, y_PARK1 = -14, Angle_PARK1 = 180;
-    public static double x_PARK2 = -33, y_PARK2 = -14.5, Angle_PARK2 = 180;
-    public static double x_PARK3 = 9, y_PARK3 = -13, Angle_PARK3 = 180;
+    public static double x_PARK2 = -33, y_PARK2 = -22.5, Angle_PARK2 = 270;
+    public static double x_PARK3 = 11.5, y_PARK3 = -12.5, Angle_PARK3 = 90;
     public static double Angle_TURN_COLLECT = 40;
 
-    ElapsedTime asteapta = new ElapsedTime(),timeGetVoltage = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime() , timeCollect = new ElapsedTime(), timerSwitchLeft = new ElapsedTime();
+    ElapsedTime asteapta = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime() , timeCollect = new ElapsedTime(), timerSwitchLeft = new ElapsedTime();
 
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -103,7 +102,6 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-
         timeOutBaby = 0.1;
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         RobotMap robot = new RobotMap(hardwareMap);
@@ -135,11 +133,11 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
         sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
         angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
 
-        double pozCurLift =695;
+
 
         autoControllerTurn51.Cone_Stack_Level  =5;
         autoControllerTurn51.AutoLiftStatus = LiftController.LiftStatus.HIGH;
-        autoControllerTurn51.LimitLift = 0.6;
+        autoControllerTurn51.LimitLift = 0.625;
         motorColectareController.NrConAuto = 5;
         robot.turnClaw.setPosition(TurnClawController.pozTurnClaw_COLLECT);
 
@@ -157,10 +155,11 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
         int nr=0;
         TrajectoryVelocityConstraint CONSTRAINTO = getVelocityConstraint(60, 7.6, TRACK_WIDTH);
         TrajectoryAccelerationConstraint CONSTRAINTOACCEL = getAccelerationConstraint(30);
+
         ElapsedTime timeStart = new ElapsedTime() , timeTurnPlace = new ElapsedTime(), timerGOPLACE = new ElapsedTime();
         Pose2d startPose = new Pose2d(35, -63, Math.toRadians(270));
         Pose2d PLACE_SOUTH_HIGH = new Pose2d(x_PLACE_SOUTH_HIGH,y_PLACE_SOUTH_HIGH,Math.toRadians(Angle_PLACE_SOUTH_HIGH));
-        Pose2d PLACE_PRELOAD_TRAJ = new Pose2d(x_PLACE_SOUTH_HIGH-2,y_PLACE_SOUTH_HIGH,Math.toRadians(Angle_PLACE_SOUTH_HIGH+1.5));
+        Pose2d PLACE_PRELOAD_TRAJ = new Pose2d(x_PLACE_SOUTH_HIGH-2,y_PLACE_SOUTH_HIGH,Math.toRadians(Angle_PLACE_SOUTH_HIGH));
 
         Pose2d PLACE_SOUTH_HIGH_LEFT = new Pose2d(x_PLACE_SOUTH_HIGH_LEFT,y_PLACE_SOUTH_HIGH_LEFT,Math.toRadians(Angle_PLACE_SOUTH_HIGH_LEFT));
         Pose2d PLACE_SOUTH_HIGH_LEFT_10 = new Pose2d(x_PLACE_SOUTH_HIGH_LEFT,y_PLACE_SOUTH_HIGH_LEFT,Math.toRadians(Angle_PLACE_SOUTH_HIGH_LEFT));
@@ -172,10 +171,10 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
         Pose2d COLLECT_POSITION_1 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION));
 
         Pose2d COLLECT_POSITION_6 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT));
-        Pose2d COLLECT_POSITION_7 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT));
-        Pose2d COLLECT_POSITION_8 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT));
-        Pose2d COLLECT_POSITION_9 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT));
-        Pose2d COLLECT_POSITION_10 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT));
+        Pose2d COLLECT_POSITION_7 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-0.8));
+        Pose2d COLLECT_POSITION_8 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-0.8));
+        Pose2d COLLECT_POSITION_9 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-1));
+        Pose2d COLLECT_POSITION_10 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-1));
         drive.setPoseEstimate(startPose);
         STROBOT status = STROBOT.START;
         TrajectorySequence PLACE_PRELOAD = drive.trajectorySequenceBuilder(startPose)
@@ -197,7 +196,7 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
                 .lineToLinearHeading(PLACE_SOUTH_HIGH_LEFT_10)
                 .build();
 
-        TrajectorySequence GO_TO_COLLECTING_POSITION_5 = drive.trajectorySequenceBuilder(PLACE_PRELOAD_TRAJ)
+        TrajectorySequence GO_TO_COLLECTING_POSITION_5 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH)
                 //.setVelConstraint(CONSTRAINTO)
                 .lineToLinearHeading(COLLECT_POSITION_5)
                 .build();
@@ -240,11 +239,11 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
                 .lineTo(new Vector2d(x_PARK1,y_PARK1))
                 .build();
         TrajectorySequence PARK2 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH_LEFT_10)
-                .lineTo(new Vector2d(x_PARK2,y_PARK2))
+                .setTangent(160)
+                .splineToLinearHeading(new Pose2d(x_PARK2, y_PARK2, Math.toRadians(Angle_PARK2)), Math.toRadians(270))
                 .build();
         TrajectorySequence PARK3 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH_LEFT_10)
-                .setTangent(Math.toRadians(15))
-                .splineToLinearHeading(new Pose2d(9,-20, Math.toRadians(90)),Math.toRadians(270))
+                .lineToLinearHeading(new Pose2d(x_PARK3,y_PARK3,Math.toRadians(90)))
                 .build();
         int cameraMonitorViewId = hardwareMap.appContext
                 .getResources().getIdentifier("cameraMonitorViewId",
@@ -294,7 +293,7 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
                     if (nr==0)
                     {
                         if (!drive.isBusy()) {
-                            liftController.CurrentStatus = LiftController.LiftStatus.HIGH_SOUTH_LEFT;
+                            liftController.CurrentStatus = LiftController.LiftStatus.HIGH_SOUTH;
                             timerLift.reset();
                             status = STROBOT.GET_LIFT_DOWN;
                         }
@@ -304,15 +303,7 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
                         if (nr!=5)
                         {
                             if (timerGOPLACE.seconds()>0.75) {
-                                if (nr>5)
-                                {
-                                    liftController.CurrentStatus = LiftController.LiftStatus.HIGH_SOUTH_LEFT;
-                                }
-                                else
-                                {
-                                    liftController.CurrentStatus = LiftController.LiftStatus.HIGH_SOUTH;
-                                }
-
+                                liftController.CurrentStatus = LiftController.LiftStatus.HIGH_SOUTH;
                                 timerLift.reset();
                                 status = STROBOT.GET_LIFT_DOWN;
                             }
@@ -335,23 +326,24 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
                     if (timerSwitchLeft.seconds()>1.65)
                     {
                         nr++;
-                        pozCurLift = 700;
-                        liftController.CurrentStatus = LiftController.LiftStatus.HIGH_SOUTH_LEFT;
+                        liftController.CurrentStatus = LiftController.LiftStatus.HIGH_SOUTH;
                         timerLift.reset();
                         status = STROBOT.GET_LIFT_DOWN;
                     }
                     break;
                 }
                 case GET_LIFT_DOWN: {
-                    if (LiftPosition > pozCurLift) {
+                    if (timerLift.seconds() > autoControllerTurn51.LimitLift) {
                         timerLift.reset();
                         if (nr!=11)
                         {
+                            turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
                             liftController.CurrentStatus = LiftController.LiftStatus.BASE;
                             status = STROBOT.GO_TO_COLLECTING_POSITION;
                         }
                         else
                         {
+                            turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
                             liftController.CurrentStatus = LiftController.LiftStatus.BASE;
                             status = STROBOT.PARK;
                         }
@@ -399,7 +391,7 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
                             }
                             else
                             {
-                                    drive.followTrajectorySequenceAsync(GO_TO_PLACE_POSITION_LEFT);
+                                drive.followTrajectorySequenceAsync(GO_TO_PLACE_POSITION_LEFT);
                             }
                             timerGOPLACE.reset();
                             status = STROBOT.GET_LIFT_UP;
@@ -494,10 +486,6 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
                     break;
                 }
             }
-            if (timeGetVoltage.seconds() > 5) {
-                timeGetVoltage.reset();
-                currentVoltage = batteryVoltageSensor.getVoltage();
-            }
             biggerController.update(robotController,closeClawController,motorColectareController);
             robotController.update(robot,sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
             closeClawController.update(robot);
@@ -510,12 +498,12 @@ public class DreaptaHSouth1_10 extends LinearOpMode {
             autoControllerTurn51.update(sigurantaLiftController,robot,angle4BarController, turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
 
             drive.update();
-            //telemetry.addData("Pozitie: ", drive.getPoseEstimate());
-            //telemetry.addData("nr", nr);
-            //telemetry.addData("limit4bar", autoControllerTurn51.Limit4Bar);
+            telemetry.addData("Pozitie: ", drive.getPoseEstimate());
+            telemetry.addData("nr", nr);
+            telemetry.addData("limit4bar", autoControllerTurn51.Limit4Bar);
             // telemetry.addData("caz:", Case);
-            //telemetry.addData("Status",status);
-            //telemetry.update();
+            telemetry.addData("Status",status);
+            telemetry.update();
         }
     }
 

@@ -300,10 +300,12 @@ public class DreaptaSouth5_1 extends LinearOpMode {
                         if (nr!=5)
                         {
                             liftController.CurrentStatus = LiftController.LiftStatus.BASE;
+                            turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
                             status = STROBOT.GO_TO_COLLECTING_POSITION;
                         }
                         else
                         {
+                            turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
                             liftController.CurrentStatus = LiftController.LiftStatus.BASE;
                             status = STROBOT.PARK;
                         }
