@@ -61,7 +61,7 @@ public class DreaptaSouth5_1 extends LinearOpMode {
     }
     public static double INTER_SPLINE_X = 13, INTER_SPLINE_Y = -50;
     public static double x_CYCLING_POSITION = 13.5, y_CYCLING_POSITION = -61;
-    public static double x_COLLECT_POSITION = 18, y_COLLECT_POSITION = -12, Angle_COLLECT_POSITION = 0;
+    public static double x_COLLECT_POSITION = 18.5, y_COLLECT_POSITION = -12, Angle_COLLECT_POSITION = 0;
     public static double x_PLACE_SOUTH_HIGH = 13.5, y_PLACE_SOUTH_HIGH = -18, Angle_PLACE_SOUTH_HIGH = 16;
     public static double x_COLLECT_POSITION_LEFT = -16, y_COLLECT_POSITION_LEFT = -13, Angle_COLLECT_POSITION_LEFT = 177.75;
     public static double x_SWITCH_LEFT = -12, y_SWITCH_LEFT = -17, Angle_SIWTCH_LEFT = 160;
@@ -173,8 +173,7 @@ public class DreaptaSouth5_1 extends LinearOpMode {
         TrajectorySequence PLACE_PRELOAD = drive.trajectorySequenceBuilder(startPose)
                 /*.lineTo(new Vector2d(x_CYCLING_POSITION,y_CYCLING_POSITION))
                 .lineToLinearHeading(PLACE_SOUTH_HIGH)*/
-                .setTangent(Math.toRadians(170))
-                .lineTo(new Vector2d(13.5,-60))
+                .lineTo(new Vector2d(13,-60))
                 .lineToLinearHeading(PLACE_SOUTH_HIGH)
                 .build();
         TrajectorySequence GO_TO_PLACE_POSITION = drive.trajectorySequenceBuilder(COLLECT_POSITION_5)

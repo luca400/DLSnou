@@ -28,6 +28,7 @@ public class MotorColectareController {
         EXTENDED_10_1_SOUTH,
         EXTENDED_COMMONHIGHINTERFERENCE,
         EXTENDED_SOUTH_LEFT,
+        EXTENDED_SOUTH_DREAPTA_HAZ_2,
         EXTENDED_DRIVE,
         CLOSE_TO_EXTENDED_FIRST_CONE,
         EXTENDED_FIRST_CONE,
@@ -51,6 +52,7 @@ public class MotorColectareController {
                       extended10_1Autonomy_1 = 291;
     public static double ExtendoCyclingSouthPositions[] = {520,520,535,555,590, 520,520,535,555,590};
     public static double Extendo5_1SouthPositions[] = {500,500,515,525,535};
+    public static double Extendo5_1Haz2DreaptaSouthPositions[] = {475,475,485,505,545};
     public static double Extendo5_1SouthLeftPositions[] = {495,495,515,525,545};
     public static double ExtendoHaz[]= {0,310,310,312,319,340};
     public static double ExtendoHazLeft[] = {0,310,310,312,319,340};
@@ -82,6 +84,12 @@ public class MotorColectareController {
                 {
                     MotorColectarePID.targetValue = 0;
                     MotorColectarePID.maxOutput = 1;
+                    break;
+                }
+                case EXTENDED_SOUTH_DREAPTA_HAZ_2:
+                {
+                    MotorColectarePID.maxOutput = 1;
+                    MotorColectarePID.targetValue = Extendo5_1Haz2DreaptaSouthPositions[NrConAuto];
                     break;
                 }
                 case EXTENDED_1050:

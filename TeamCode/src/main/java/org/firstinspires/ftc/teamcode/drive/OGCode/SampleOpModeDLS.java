@@ -269,31 +269,31 @@ public class SampleOpModeDLS extends  LinearOpMode {
                     servo4BarController.CurrentStatus = STACK_POSITION;
                 }
                 if (!previousGamepad2.square && currentGamepad2.square) {
-                    robot.left4Bar.setPosition(Servo4BarController.Fifth_Cone_Position);
-                    robot.right4Bar.setPosition(Servo4BarController.Fifth_Cone_Position);
+                    robot.left4Bar.setPosition(Servo4BarController.GroundPositions[2]);
+                    robot.right4Bar.setPosition(Servo4BarController.GroundPositions[2]);
                     turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
                     angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
                     Servo4BarController.CurrentStatus = STACK_POSITION;
                 }
                 if (!previousGamepad2.triangle && currentGamepad2.triangle) {
-                    robot.left4Bar.setPosition(Servo4BarController.Fourth_Cone_Position);
-                    robot.right4Bar.setPosition(Servo4BarController.Fourth_Cone_Position);
+                    robot.left4Bar.setPosition(Servo4BarController.GroundPositions[3]);
+                    robot.right4Bar.setPosition(Servo4BarController.GroundPositions[3]);
                     turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
                     angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
                     Servo4BarController.CurrentStatus = STACK_POSITION;
                 }
                 if (!previousGamepad2.circle && currentGamepad2.circle) {
-                    robot.left4Bar.setPosition(Servo4BarController.Third_Cone_Position);
-                    robot.right4Bar.setPosition(Servo4BarController.Third_Cone_Position);
+                    robot.left4Bar.setPosition(Servo4BarController.GroundPositions[4]);
+                    robot.right4Bar.setPosition(Servo4BarController.GroundPositions[4]);
                     turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
                     angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
                     Servo4BarController.CurrentStatus = STACK_POSITION;
                 }
                 if (!previousGamepad2.cross && currentGamepad2.cross) {
-                    robot.left4Bar.setPosition(Servo4BarController.Second_Cone_Position);
-                    robot.right4Bar.setPosition(Servo4BarController.Second_Cone_Position);
+                    robot.left4Bar.setPosition(Servo4BarController.GroundPositions[5]);
+                    robot.right4Bar.setPosition(Servo4BarController.GroundPositions[5]);
                     turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
-                    angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
+                    angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.PLACE_FIFTH_GROUND;
                     Servo4BarController.CurrentStatus = STACK_POSITION;
                 }
             } else {

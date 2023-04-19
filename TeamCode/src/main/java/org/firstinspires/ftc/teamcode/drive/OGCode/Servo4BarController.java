@@ -41,7 +41,7 @@ public class Servo4BarController {
 
     public static double CyclingSouthPositions[] = {0,0.925,0.885,0.845,0.8,0.755};
     public static double StackPositions[] = {0,0.94,0.9,0.86,0.82,0.775};
-
+    public static double GroundPositions[] = {0,0,0.76,0.70,0.64,0.56};
     int salut =0;
     public void update(RobotMap Robot)
     {
