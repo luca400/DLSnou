@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 
+
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorREV2mDistance;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
@@ -26,6 +27,7 @@ public class RobotMap {
     public Servo left4Bar = null;
     public Servo right4Bar = null;
     public Servo turnClaw = null;
+    public DistanceSensor dsensor = null;
     Servo closeClaw = null;
     Servo servoLift = null;
     Servo sigurantaLift = null;
@@ -45,7 +47,7 @@ public class RobotMap {
         servoLift = Init.get(Servo.class,"servoLift");
         sigurantaLift = Init.get(Servo.class,"sigurantaLift");
         angle4Bar = Init.get(Servo.class,"angle4Bar");
-
+        dsensor = Init.get(DistanceSensor.class, "dsensor");
         motorColectareStanga = Init.get(DcMotorEx.class, "motorColectareStanga");
         motorColectareDreapta = Init.get(DcMotorEx.class, "motorColectareDreapta");
         stangaLift = Init.get(DcMotorEx.class, "stangaLift");

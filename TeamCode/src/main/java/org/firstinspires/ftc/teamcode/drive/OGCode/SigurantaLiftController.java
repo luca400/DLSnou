@@ -26,6 +26,7 @@ public class SigurantaLiftController {
                     Robotel.sigurantaLift.setPosition(junction_Position);
                     break;
                 }
+
             }
     }
 }

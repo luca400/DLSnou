@@ -28,9 +28,9 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import java.util.List;
 
-@TeleOp(name="SampleOpModeDLS", group="Linear Opmode")
+@TeleOp(name="DistanceOPMODE", group="Linear Opmode")
 
-public class SampleOpModeDLS extends  LinearOpMode {
+public class DistanceOPMODE extends  LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime() , timeGetVoltage = new ElapsedTime();
     public static int salut=0;
     double pozInit4Bar = 0, pozInter4Bar= 0.4, pozPlace4Bar = 0.7;
@@ -223,7 +223,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
                 StrafesOn = !StrafesOn;
             }
             /// DRIVE
-
+        double distance = robot.dsensor.getDistance(DistanceUnit.MM);
             robotCentricDrive(leftFront, leftBack, rightFront, rightBack, lim,StrafesOn , 0,0);
 
             if (timeGetVoltage.seconds() > 5) {
@@ -245,6 +245,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
                     closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
                 }
             }
+
             if (currentGamepad2.left_trigger > 0) {
                 if (!previousGamepad2.left_bumper && currentGamepad2.left_bumper) {
                     if (motorColectareController.CurrentStatus == MotorColectareController.MotorColectare.RETRACTED) {
@@ -448,6 +449,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
             double loop = System.nanoTime();
 
             telemetry.addData("hz ", 1000000000 / (loop - loopTime));
+            telemetry.addData("distance", distance);
 
             loopTime = loop;
             //telemetry.addData("typeOfDrive",typeOfDrive);

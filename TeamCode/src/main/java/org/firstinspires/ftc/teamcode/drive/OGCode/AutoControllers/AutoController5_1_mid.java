@@ -1,15 +1,14 @@
 package org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers;
 
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction5_1.autoControllerSouthHigh.CLOSE_THE_CLAW;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction5_1.autoControllerSouthHigh.DRAW_MOTOR;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction5_1.autoControllerSouthHigh.FOURBAR_DOWN;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction5_1.autoControllerSouthHigh.NOTHING;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction5_1.autoControllerSouthHigh.PLACE_CONE;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoSouthHighJunction5_1.autoControllerSouthHigh.RETRIEVE_CONE;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.DRAW_MOTOR1;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.DRAW_MOTOR2;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.EXTENDED_SOUTH;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.EXTENDED_SOUTH_SIGUR;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController5_1_mid.autoControllerMidStatus.CLOSE_THE_CLAW;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController5_1_mid.autoControllerMidStatus.DRAW_MOTOR;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController5_1_mid.autoControllerMidStatus.FOURBAR_DOWN;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController5_1_mid.autoControllerMidStatus.GATA;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController5_1_mid.autoControllerMidStatus.NOTHING;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController5_1_mid.autoControllerMidStatus.PLACE_CONE;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController5_1_mid.autoControllerMidStatus.RETRIEVE_CONE;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.DRAW_MOTOR_MID_1;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.MID_CU_INTF_IN_PULA_MEA;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.RETRACTED;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.MotorColectareController.MotorColectare.RETRACTED_0;
 
@@ -27,10 +26,8 @@ import org.firstinspires.ftc.teamcode.drive.OGCode.Servo4BarController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.SigurantaLiftController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.TurnClawController;
 
-import java.util.concurrent.CompletionException;
-
-public class AutoSouthHighJunction5_1<PARCARE_FORTATA> {
-    public enum autoControllerSouthHigh
+public class AutoController5_1_mid {
+    public enum autoControllerMidStatus
     {
         NOTHING,
         RETRIEVE_CONE,
@@ -45,35 +42,23 @@ public class AutoSouthHighJunction5_1<PARCARE_FORTATA> {
         GET_LIFT_DOWN_INTF,
         GET_LIFT_DOWN_WAIT,
         DRAW_MOTOR,
-        PARCARE_FORTATA,
+        GATA,
     }
-    public static autoControllerSouthHigh CurrentStatus = NOTHING, PreviousStatus = NOTHING;
+    public static autoControllerMidStatus CurrentStatus = NOTHING, PreviousStatus = NOTHING;
     ElapsedTime timerFourBar = new ElapsedTime() ,timerStart = new ElapsedTime(),timerClaw = new ElapsedTime(), TimeTransfer = new ElapsedTime(), timerPlace_Cone = new ElapsedTime(), timerLift =new ElapsedTime(), timerSigurantaIntf =new ElapsedTime();
     public static int Cone_Stack_Level=5;
-    public static double LimitLift = 1.25, Limit4Bar = 0.55, LimitSiguranta=0.7, LimitOpenClaw =0.85, pozitiacurenta;
-    public static double POS[] = {0,435,455,495,520,555}, POS2[] = {0,420,405,435,455,455}, AMPS[]={0,3.5,4,3.5,3.9,4}, DIS[]={0,42,42,42,42,42};
+    public static double LimitLift = 1.5, Limit4Bar = 0.55, LimitSiguranta=0.7, LimitOpenClaw =0.85, pozitiacurenta;
+    public static double POS[] = {0,435,455,495,520,555}, POS2[] = {0,420,405,435,455,455}, AMPS[]={0,0.7,0.7,0.7,1.6,2.4};
     public static int Nrc = 5;
     public static LiftController.LiftStatus AutoLiftStatus = LiftController.LiftStatus.HIGH_SOUTH;
     boolean moreThanOneStack = false;
-    int ok=0,ok2=0;
+    int ok=0,ok2=0,oki=0;
     double timerInter = 2,timeStart=0;
     public void update(SigurantaLiftController sigurantaLiftController, RobotMap Robotel, Angle4BarController angle4BarController, TurnClawController turnClawController, LiftController liftController, Servo4BarController servo4BarController, RobotController robotController, CloseClawController closeClawController, MotorColectareController motorColectareController)
-    {double distance =  Robotel.dsensor.getDistance(DistanceUnit.MM);
+    { double distance =  Robotel.dsensor.getDistance(DistanceUnit.MM);
         switch (CurrentStatus)
         {
             case INITIALIZE:
-            {
-                servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.INITIALIZE;
-                motorColectareController.CurrentStatus = RETRACTED;
-                closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
-                turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
-                robotController.CurrentStatus = RobotController.RobotControllerStatus.START;
-                liftController.CurrentStatus = LiftController.LiftStatus.BASE;
-                angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
-                CurrentStatus = NOTHING;
-                break;
-            }
-            case PARCARE_FORTATA:
             {
                 servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.INITIALIZE;
                 motorColectareController.CurrentStatus = RETRACTED;
@@ -95,22 +80,24 @@ public class AutoSouthHighJunction5_1<PARCARE_FORTATA> {
             }
 
             case DRAW_MOTOR: {
-                motorColectareController.CurrentStatus = DRAW_MOTOR1;
-                if((distance < DIS[Cone_Stack_Level] &&  motorColectareController.CurrentPosition > 350) || timerFourBar.seconds() > 1.5) {
+                if(timerFourBar.seconds() > 0.3)
+                {
+                    motorColectareController.CurrentStatus = DRAW_MOTOR_MID_1;
+                if((distance <= 30 && motorColectareController.CurrentPosition > 110 ) || timerFourBar.seconds() > 1.5) {
                     CurrentStatus = CLOSE_THE_CLAW;
                     pozitiacurenta = motorColectareController.CurrentPosition;
-                }
+                }}
                 break;
             }
 
             case CLOSE_THE_CLAW:
             {
 
-                    closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
-                    Nrc = Nrc - 1;
-                    timerClaw.reset();
-                    timerSigurantaIntf.reset();
-                    CurrentStatus = RETRIEVE_CONE;
+                closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
+                Nrc = Nrc - 1;
+                timerClaw.reset();
+                timerSigurantaIntf.reset();
+                CurrentStatus = RETRIEVE_CONE;
 
                 break;
             }
@@ -128,13 +115,15 @@ public class AutoSouthHighJunction5_1<PARCARE_FORTATA> {
                     timerPlace_Cone.reset();
                     ok = 0;
                     ok2 =0;
+                    oki = 0;
                     CurrentStatus = PLACE_CONE;
+                    timerFourBar.reset();
                 }
                 break;
             }
             case PLACE_CONE:
             {
-                if (ok2 == 0 && MotorColectareController.CurrentPosition <=  POS[Cone_Stack_Level] - 10)
+                if (ok2 == 0 && MotorColectareController.CurrentPosition <=  pozitiacurenta - 10)
                 {
                     turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.PLACE;
                     angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.PLACE_AUTO;
@@ -144,20 +133,28 @@ public class AutoSouthHighJunction5_1<PARCARE_FORTATA> {
                 {
                     Robotel.left4Bar.setPosition(servo4BarController.Place_Cone_Position);
                     Robotel.right4Bar.setPosition(servo4BarController.Place_Cone_Position);
-                    TimeTransfer.reset();
                     ok = 1;
                 }
                 if (MotorColectareController.CurrentPosition <= 20)
                 {
                     sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
+                    TimeTransfer.reset();
+                    oki=1;
                 }
-                if (MotorColectareController.CurrentPosition <= (pozitiacurenta - pozitiacurenta + 10) && TimeTransfer.seconds() >= 0.3)
+                if (timerFourBar.seconds()>0.9 && oki==1)
                 {
                     closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN_CLAW_SMALL;
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
                     angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
-                    CurrentStatus = NOTHING;
+                    motorColectareController.CurrentStatus = RETRACTED_0;
+                    CurrentStatus = GATA;
                 }
+                break;
+            }
+
+            case GATA:
+            {
+                CurrentStatus = NOTHING;
                 break;
             }
 
@@ -174,9 +171,9 @@ public class AutoSouthHighJunction5_1<PARCARE_FORTATA> {
             case GET_LIFT_DOWN_WAIT:
             {
 
-                    liftController.CurrentStatus = LiftController.LiftStatus.BASE_CU_SIGURANTA;
-               CurrentStatus = NOTHING;
-                       break;
+                liftController.CurrentStatus = LiftController.LiftStatus.BASE_CU_SIGURANTA;
+                CurrentStatus = NOTHING;
+                break;
             }
 
             case GET_LIFT_DOWN_INTF:
@@ -191,7 +188,7 @@ public class AutoSouthHighJunction5_1<PARCARE_FORTATA> {
             case STACK_LEVEL:
             {
                 ok=0;
-                motorColectareController.CurrentStatus = EXTENDED_SOUTH_SIGUR;
+                motorColectareController.CurrentStatus = MID_CU_INTF_IN_PULA_MEA;
                 closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN_CLAW_BIG;
                 servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
                 turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;

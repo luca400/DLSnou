@@ -37,7 +37,7 @@ public class Servo4BarController {
 
     public static double Fifth_Cone_Position_BRATJOSMID = 0.75;
 
-    public static double Ground_Position_South=0.925, Second_Cone_Position_South=0.885, Third_Cone_Position_South=0.845, Fourth_Cone_Position_South = 0.8, Fifth_Cone_Position_South = 0.755;
+    public static double Ground_Position_South=0.915, Second_Cone_Position_South=0.885, Third_Cone_Position_South=0.845, Fourth_Cone_Position_South = 0.8, Fifth_Cone_Position_South = 0.755;
 
     public static double CyclingSouthPositions[] = {0,0.925,0.885,0.845,0.8,0.755};
     public static double StackPositions[] = {0,0.94,0.9,0.86,0.82,0.775};

@@ -39,6 +39,7 @@ public class AutoController5_1 {
     public static autoControllerStatus CurrentStatus = NOTHING, PreviousStatus = NOTHING;
     ElapsedTime timerFourBar = new ElapsedTime() ,timerStart = new ElapsedTime(),timerClaw = new ElapsedTime() , timerPlace_Cone = new ElapsedTime(), timerLift =new ElapsedTime();
     public static int Cone_Stack_Level=5;
+    public static int Colectare_con1=300, Colectare_con2=300, Colectare_con3=300, Colectare_con4=300, Colectare_con5;
     public static double LimitLift = 0.75 , timerAAtinsCon = 1.2;
     public static LiftController.LiftStatus AutoLiftStatus = LiftController.LiftStatus.HIGH;
     boolean moreThanOneStack = false;
@@ -63,7 +64,7 @@ public class AutoController5_1 {
                 case FOURBAR_DOWN: {
                     servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.COLLECT_DRIVE;
                     turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.COLLECT;
-                    motorColectareController.CurrentStatus = MotorColectareController.MotorColectare.EXTENDED_5_1;
+                    motorColectareController.CurrentStatus = MotorColectareController.MotorColectare.Colectare_4bar;
                     timerFourBar.reset();
                     CurrentStatus = CLOSE_THE_CLAW;
                     break;
@@ -91,7 +92,6 @@ public class AutoController5_1 {
                         turnClawController.CurrentStatus = TurnClawController.TurnClawStatus.PLACE;
                         angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.PLACE;
                         motorColectareController.CurrentStatus = RETRACTED;
-                        timerPlace_Cone.reset();
                         ok=0;
                         CurrentStatus = PLACE_CONE;
                     }
@@ -99,23 +99,23 @@ public class AutoController5_1 {
                 }
                 case PLACE_CONE:
                 {
-                    if (ok == 0 && timerPlace_Cone.seconds()>0.75)
+                    if (ok == 0 && motorColectareController.CurrentStatus == MotorColectareController.MotorColectare.Colectare_4bar)
                     {
                         Robotel.left4Bar.setPosition(servo4BarController.Place_Cone_Position);
                         Robotel.right4Bar.setPosition(servo4BarController.Place_Cone_Position);
 
                         ok = 1;
                     }
-                    if (timerPlace_Cone.seconds()>0.95)
+                    if (motorColectareController.CurrentStatus == MotorColectareController.MotorColectare.Colectare_siguranta)
                     {
                         sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
                     }
-                    if (timerPlace_Cone.seconds()>1.05)
+                    if (motorColectareController.CurrentStatus == MotorColectareController.MotorColectare.Colectare_close_claw)
                     {
                         closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN_CLAW_SMALL;
                         servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.DRIVE_POSITION;
                     }
-                    if (timerPlace_Cone.seconds()>1.2)
+                    if (motorColectareController.CurrentStatus == MotorColectareController.MotorColectare.Colectare_liftsanki)
                     {
                         timerLift.reset();
                         angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;

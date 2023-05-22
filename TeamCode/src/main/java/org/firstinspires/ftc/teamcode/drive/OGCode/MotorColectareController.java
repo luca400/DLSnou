@@ -37,6 +37,18 @@ public class MotorColectareController {
         THREE_WAY,
         EXTENDED_SOUTH,
         EXTENDED_2050,
+        Colectare_4bar,
+        Colectare_siguranta,
+        Colectare_close_claw,
+        Colectare_liftsanki,
+        SA_VA_DAU_LA_MUIE,
+        PulaMea,
+        DRAW_MOTOR1,
+        DRAW_MOTOR2,
+        MID_CU_INTF_IN_PULA_MEA,
+        DRAW_MOTOR_MID_1,
+        DRAW_MOTOR_MID_2,
+
     }
     public static double Kp = 0.00325;
     public static double Ki = 0.0022;
@@ -56,6 +68,8 @@ public class MotorColectareController {
     public static double Extendo5_1SouthLeftPositions[] = {495,495,515,525,545};
     public static double ExtendoHaz[]= {0,310,310,312,319,340};
     public static double ExtendoHazLeft[] = {0,310,310,312,319,340};
+    public static double MIDCUINTFINPULAMEA[] = {0, 110, 120, 130, 140, 150};
+    public static double VLT[] = {0.45, 0.5, 0.5, 0.5, 0.6};
     public static int NrConAuto = 5;
     public MotorColectareController()
     {
@@ -80,6 +94,36 @@ public class MotorColectareController {
                     MotorColectarePID.maxOutput = 1;
                     break;
                 }
+                case DRAW_MOTOR1:
+                {
+                    MotorColectarePID.targetValue = 650;
+                    MotorColectarePID.maxOutput = VLT[NrConAuto];
+                    break;
+                }
+                case DRAW_MOTOR2: {
+                    MotorColectarePID.targetValue = 650;
+                    MotorColectarePID.maxOutput = 0.45;
+                    break;
+                }
+
+                case DRAW_MOTOR_MID_1:
+                {
+                    MotorColectarePID.targetValue = 400;
+                    MotorColectarePID.maxOutput = 0.4;
+                    break;
+                }
+                case DRAW_MOTOR_MID_2: {
+                    MotorColectarePID.targetValue = 400;
+                    MotorColectarePID.maxOutput = 0.4;
+                    break;
+                }
+
+                case PulaMea:
+                {
+                    MotorColectarePID.targetValue = 600;
+                    MotorColectarePID.maxOutput = 0.1;
+                    break;
+                }
                 case RETRACTED_0:
                 {
                     MotorColectarePID.targetValue = 0;
@@ -90,6 +134,12 @@ public class MotorColectareController {
                 {
                     MotorColectarePID.maxOutput = 1;
                     MotorColectarePID.targetValue = Extendo5_1Haz2DreaptaSouthPositions[NrConAuto];
+                    break;
+                }
+                case MID_CU_INTF_IN_PULA_MEA:
+                {
+                    MotorColectarePID.maxOutput =0.7;
+                    MotorColectarePID.targetValue = MIDCUINTFINPULAMEA[NrConAuto];
                     break;
                 }
                 case EXTENDED_1050:
@@ -119,7 +169,7 @@ public class MotorColectareController {
                 case EXTENDED_SOUTH_SIGUR:
                 {
                     MotorColectarePID.maxOutput = 1;
-                    MotorColectarePID.targetValue = Extendo5_1SouthPositions[NrConAuto];
+                    MotorColectarePID.targetValue = Extendo5_1SouthPositions[NrConAuto] - 75;
                     break;
                 }
                 case HALF_WAY:
@@ -138,6 +188,12 @@ public class MotorColectareController {
                 {
                     MotorColectarePID.maxOutput = 1;
                     MotorColectarePID.targetValue = Extendo5_1SouthLeftPositions[NrConAuto];
+                    break;
+                }
+                case SA_VA_DAU_LA_MUIE:
+                {
+                    MotorColectarePID.maxOutput = 1;
+                    MotorColectarePID.targetValue = 300;
                     break;
                 }
                 case EXTENDED_COMMONHIGHINTERFERENCE:
@@ -282,6 +338,25 @@ public class MotorColectareController {
                     MotorColectarePID.targetValue = 497;
                     break;
                 }
+                case Colectare_4bar:{
+                    MotorColectarePID.maxOutput = 1;
+                    MotorColectarePID.targetValue = 50;
+                }
+                case Colectare_siguranta:{
+                    MotorColectarePID.maxOutput = 1;
+                    MotorColectarePID.targetValue = 150;
+                }
+
+                case Colectare_close_claw:{
+                    MotorColectarePID.maxOutput = 1;
+                    MotorColectarePID.targetValue = 250;
+                }
+
+                case Colectare_liftsanki:{
+                    MotorColectarePID.maxOutput = 1;
+                    MotorColectarePID.targetValue = 350;
+                }
+
             }
         }
         PreviousStatus = CurrentStatus;

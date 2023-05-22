@@ -17,11 +17,17 @@ public class MeepMeepTesting {
         double x_PARK1 = -11.5, y_PARK1 = -14, Angle_PARK1 = 90;
         double x_PARK2 = -33, y_PARK2 = -17, Angle_PARK2 = 270;
         double x_PARK3 = 11.5, y_PARK3 = -20, Angle_PARK3 = 90;
-
+        double x_PreloadIntf = 37, y_PrelaodIntf = 0, Angle_PreloadIntf = -1;
+        double x_GoTo = 37, y_GoTo = -12.5, Angle_GoTo =-1;
+        double x_COLLECT_POSITION = 34, y_COLLECT_POSITION = -15, Angle_COLLECT_POSITION = 45;
+        double x_Slide = 37 , y_Slide= -5;
+        Pose2d COLLECT_POSITION_5 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION));
+        double x_PLACE_SOUTH_HIGH = 12.5, y_PLACE_SOUTH_HIGH = -16, Angle_PLACE_SOUTH_HIGH = 20;
 
         double y_LLH = -5.5, Angle_LLH = 192.5, x_LLH = -36;
         Pose2d StartPositionRight = new Pose2d(35,-63,Math.toRadians(270));
         Pose2d StartPositionLeft = new Pose2d(-35,-63,Math.toRadians(270));
+        Pose2d PLACE = new Pose2d(x_PLACE_SOUTH_HIGH, y_PLACE_SOUTH_HIGH, Math.toRadians(Angle_PLACE_SOUTH_HIGH));
         Pose2d PLACE_SOUTH_HIGH_LEFT_10 = new Pose2d(x_PLACE_SOUTH_HIGH_LEFT-1,y_PLACE_SOUTH_HIGH_LEFT,Math.toRadians(Angle_PLACE_SOUTH_HIGH_LEFT));
 
         RoadRunnerBotEntity Autonomia1 = new DefaultBotBuilder(meepMeep)
@@ -172,9 +178,9 @@ public class MeepMeepTesting {
                                 //.splineToConstantHeading(new Vector2d(17,-17),Math.toRadians(0))
                                 .build()
                 );
-        double x_PLACE_SOUTH_HIGH = 13, y_PLACE_SOUTH_HIGH = -20, Angle_PLACE_SOUTH_HIGH = 16;
+
         Pose2d PLACE_SOUTH_HIGH = new Pose2d(x_PLACE_SOUTH_HIGH,y_PLACE_SOUTH_HIGH,Math.toRadians(Angle_PLACE_SOUTH_HIGH));
-        double x_COLLECT_POSITION = 17, y_COLLECT_POSITION = -14, Angle_COLLECT_POSITION = -1;
+        //double x_COLLECT_POSITION = 17, y_COLLECT_POSITION = -14, Angle_COLLECT_POSITION = -1;
         Pose2d COLLECT_POSITION_1 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION+1.2));
 
         double x_SWITCH_LEFT = -13.5, y_SWITCH_LEFT = -15.5, Angle_SIWTCH_LEFT = 160;
@@ -185,13 +191,17 @@ public class MeepMeepTesting {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                // .setConstraints(60, 50, 5.69, 5.69, 7)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH_LEFT_10)
+                        drive.trajectorySequenceBuilder(StartPositionRight)
                                 //.setTangent(Math.toRadians(0))
                                 //.splineToLinearHeading(new Pose2d(9,-20, Math.toRadians(90)),Math.toRadians(270))
                                 //.setTangent(Math.toRadians(175))
                                 //.splineToLinearHeading(SWITCH,Math.toRadians(210))
-                                .setTangent(165.5)
-                                .splineToLinearHeading(new Pose2d(x_PARK2,y_PARK2,Math.toRadians(Angle_PARK2)),Math.toRadians(270))
+                                //.setTangent(165.5)
+                                .lineTo(new Vector2d(x_Slide,y_Slide))
+                                .lineToLinearHeading(new Pose2d(x_PreloadIntf,y_PrelaodIntf,Math.toRadians(Angle_PreloadIntf)))
+                                .lineTo(new Vector2d(x_GoTo,y_GoTo))
+                               // .lineToLinearHeading(COLLECT_POSITION_5)
+                                .lineToLinearHeading(new Pose2d(x_PLACE_SOUTH_HIGH, y_PLACE_SOUTH_HIGH, Math.toRadians(Angle_PLACE_SOUTH_HIGH)))
                                 .build()
                 );
         meepMeep.setBackground(MeepMeep.Background.FIELD_POWERPLAY_OFFICIAL)

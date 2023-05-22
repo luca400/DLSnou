@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.drive.OGCode;
 
 import static org.firstinspires.ftc.teamcode.drive.OGCode.LiftController.LiftStatus.BASE;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.LiftController.LiftStatus.PLACE_SIGURANTA;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.LiftController.LiftStatus.PLACE_SIGURANTA_INTF;
 import static org.firstinspires.ftc.teamcode.drive.OGCode.LiftController.LiftStatus.START;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -21,7 +22,12 @@ public class LiftController {
         PLACE_SIGURANTA,
         BASE_BAZAVAN,
         HIGH_SOUTH_CYCLING,
+        INTF,
+        PLACE_SIGURANTA_INTF,
         BASE,
+        BASE_CU_SIGURANTA,
+        BASE_INTF,
+        MIDAUTO,
     }
     public double CurrentSpeed=0;
     public double Kp = 0.0065;
@@ -31,12 +37,12 @@ public class LiftController {
     public double maxSpeed = 1;
     public static LiftStatus CurrentStatus = START, PreviousStatus = START;
     SimplePIDController LiftColectarePID = null;
-    ElapsedTime timeSiguranta = new ElapsedTime();
+    ElapsedTime timeSiguranta = new ElapsedTime(), timeSiguranta2 = new ElapsedTime();
     /// pe DreaptaLift am encoder
     int basePosition = 0;
-    public static int lowPosition = 220;
-    public static int midPosition = 420;
-    public static int highPosition = 670, highPositionSouth = 690, highPosition_DRIVE = 680 , highPositionSouth_Cycling = 705,highPositionSouth_LEFT = 700;
+    public static int lowPosition = 207;
+    public static int midPosition = 420, midAuto = 400;
+    public static int highPosition = 670, highPositionSouth = 670, highPosition_DRIVE = 680 , highPositionSouth_Cycling = 705,highPositionSouth_LEFT = 700;
     public int CurrentPosition = 0;
     public LiftController()
     {
@@ -52,7 +58,7 @@ public class LiftController {
         CurrentSpeed=powerLift;
         Robotel.stangaLift.setPower(powerLift);
         Robotel.dreaptaLift.setPower(powerLift);
-        if (CurrentStatus != PreviousStatus || CurrentStatus == PLACE_SIGURANTA)
+        if (CurrentStatus != PreviousStatus || CurrentStatus == PLACE_SIGURANTA || CurrentStatus == PLACE_SIGURANTA_INTF)
         {
             switch (CurrentStatus)
             {
@@ -62,6 +68,14 @@ public class LiftController {
                     sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.TRANSFER;
                     break;
                 }
+                case BASE_INTF:
+                {
+                    LiftColectarePID.targetValue = basePosition;
+                    timeSiguranta2.reset();
+                    CurrentStatus = PLACE_SIGURANTA_INTF;
+                    break;
+                }
+
                 case BASE_BAZAVAN:
                 {
                     LiftColectarePID.targetValue = basePosition;
@@ -78,6 +92,22 @@ public class LiftController {
                     }
                     break;
                 }
+
+                case BASE_CU_SIGURANTA: {
+                    LiftColectarePID.targetValue = basePosition;
+                    break;
+                }
+
+                case PLACE_SIGURANTA_INTF:
+                {
+                    if(timeSiguranta2.seconds() > 0.15)
+                    {
+                        sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.TRANSFER;
+                        CurrentStatus = BASE;
+                    }
+                    break;
+                }
+
                 case HIGH:
                 {
                     sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
@@ -112,6 +142,12 @@ public class LiftController {
                 {
                     sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
                     LiftColectarePID.targetValue = midPosition;
+                    break;
+                }
+
+                case  MIDAUTO: {
+                    sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
+                    LiftColectarePID.targetValue = midAuto;
                     break;
                 }
                 case LOW:
