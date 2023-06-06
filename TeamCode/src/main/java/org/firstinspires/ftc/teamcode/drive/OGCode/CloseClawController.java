@@ -14,7 +14,7 @@ public class CloseClawController {
         OPEN_CLAW_SMALL,
     }
     public static closeClawStatus CurrentStatus = closeClawStatus.INIT,  PreviousStatus = closeClawStatus.INIT;
-    double pozOpenClaw = 0.875, pozCloseClaw = 0.72 ,pozOpenClawCollect = 0.89 , pozOpenClawBig = 0.9,pozOpenClawSmall = 0.83;
+    double pozOpenClaw = 0.875, pozCloseClaw = 0.74 ,pozOpenClawCollect = 0.89 , pozOpenClawBig = 0.9,pozOpenClawSmall = 0.83;
 
     public void update(RobotMap Robotel)
     {

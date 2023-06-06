@@ -30,7 +30,7 @@ public class LiftController {
         MIDAUTO,
     }
     public double CurrentSpeed=0;
-    public double Kp = 0.0065;
+    public double Kp = 0.008;
     public double Ki = 0.0055;
     public double Kd = 0;
     public double Kg = 0;
@@ -41,8 +41,8 @@ public class LiftController {
     /// pe DreaptaLift am encoder
     int basePosition = 0;
     public static int lowPosition = 207;
-    public static int midPosition = 420, midAuto = 400;
-    public static int highPosition = 670, highPositionSouth = 670, highPosition_DRIVE = 680 , highPositionSouth_Cycling = 705,highPositionSouth_LEFT = 700;
+    public static int midPosition = 420, midAuto = 410;
+    public static int highPosition = 670, highPositionSouth = 680, highPosition_DRIVE = 680 , highPositionSouth_Cycling = 705,highPositionSouth_LEFT = 700;
     public int CurrentPosition = 0;
     public LiftController()
     {

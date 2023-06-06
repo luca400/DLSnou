@@ -11,6 +11,7 @@ import static org.firstinspires.ftc.teamcode.drive.OGCode.TurnClawController.poz
 import android.annotation.SuppressLint;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -39,6 +40,10 @@ public class SampleOpModeDLS extends  LinearOpMode {
     boolean isDown = true, isClosed=false, isTurned = false, isExtended = false;
     public static boolean oklow=false;
     public static double  PrecisionDenominator=1, PrecisionDenominator2=1.25;
+
+
+
+
 
     public void robotCentricDrive(DcMotor leftFront,DcMotor leftBack,DcMotor rightFront,DcMotor rightBack, double  lim, boolean StrafesOn , double LeftTrigger,  double RightTrigger)
     {
@@ -107,7 +112,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
     @SuppressLint("SuspiciousIndentation")
     @Override
     public void runOpMode() {
-
+        PhotonCore.enable();
         RobotMap robot=new RobotMap(hardwareMap);
         SigurantaLiftController sigurantaLiftController = new SigurantaLiftController();
         Angle4BarController angle4BarController = new Angle4BarController();
@@ -128,10 +133,14 @@ public class SampleOpModeDLS extends  LinearOpMode {
         currentVoltage = batteryVoltageSensor.getVoltage();
         double x1=0,y1=0,x2=0;
         double loopTime = 0;
+        boolean SensorOn = false;
+        //boolean BreakBeamOn = false;
         boolean motorColectareExtension = false;
+        //boolean BreakBeamState = robot.coneguide.getState();
         BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+
 
         servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.INITIALIZE;
         angle4BarController.CurrentStatus = Angle4BarController.angle4BarStatus.VERTICAL;
@@ -205,6 +214,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
         int pozServoStack = 6;
         boolean StrafesOn = false;
         boolean senzorOn = true;
+
         String typeOfDrive = "RobotCentric";
         while (opModeIsActive()) {
             if (isStopRequested()) return;
@@ -223,7 +233,7 @@ public class SampleOpModeDLS extends  LinearOpMode {
                 StrafesOn = !StrafesOn;
             }
             /// DRIVE
-
+            double distance = robot.dsensor.getDistance(DistanceUnit.MM);
             robotCentricDrive(leftFront, leftBack, rightFront, rightBack, lim,StrafesOn , 0,0);
 
             if (timeGetVoltage.seconds() > 5) {
@@ -238,13 +248,36 @@ public class SampleOpModeDLS extends  LinearOpMode {
             if ((!previousGamepad1.dpad_left && currentGamepad1.dpad_left)) {
                 motorColectareController.CurrentStatus = THREE_WAY;
             }
-            if ((!previousGamepad2.right_bumper && currentGamepad2.right_bumper)) {
-                if (closeClawController.CurrentStatus == CloseClawController.closeClawStatus.CLOSED) {
-                    closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
-                } else {
-                    closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
-                }
+
+            //senzor
+
+            if(!previousGamepad2.touchpad && currentGamepad2.touchpad)
+            {SensorOn = !SensorOn;}
+
+
+           /* if(!previousGamepad2.start && currentGamepad2.start)
+            {
+                BreakBeamOn = !BreakBeamOn;
             }
+
+            if(BreakBeamOn == true)
+            {
+                if(LiftController.CurrentStatus != LiftController.LiftStatus.BASE )
+                {
+                    if(LiftController.CurrentStatus == LiftController.LiftStatus.LOW)
+                    {
+
+                    }
+                    else
+                    {
+                        if(!BreakBeamState)
+                        {
+                            LiftController.CurrentStatus = LiftController.LiftStatus.HIGH;
+                        }
+                    }
+                }
+            }*/
+
             if (currentGamepad2.left_trigger > 0) {
                 if (!previousGamepad2.left_bumper && currentGamepad2.left_bumper) {
                     if (motorColectareController.CurrentStatus == MotorColectareController.MotorColectare.RETRACTED) {
@@ -297,6 +330,24 @@ public class SampleOpModeDLS extends  LinearOpMode {
                     Servo4BarController.CurrentStatus = STACK_POSITION;
                 }
             } else {
+                if(SensorOn == false)
+                {if ((!previousGamepad2.right_bumper && currentGamepad2.right_bumper)) {
+                    if (closeClawController.CurrentStatus == CloseClawController.closeClawStatus.CLOSED) {
+                        closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
+                    } else {
+                        closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
+                    }
+                }}
+                if(SensorOn == true)
+                {
+                    if(distance <= 40)
+                    {
+
+                        closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
+
+                    }
+                }
+
                 if ((!previousGamepad2.dpad_down && currentGamepad2.dpad_down)) {
                     robotController.CurrentStatus = RobotController.RobotControllerStatus.GO_COLLECT;
                     servo4BarController.Collect_Position = servo4BarController.Collect_Drive;
@@ -489,6 +540,10 @@ public class SampleOpModeDLS extends  LinearOpMode {
             telemetry.addData("SigurantaLiftStatus",sigurantaLiftController.CurrentStatus);
             telemetry.addData("sigurantaLiftPosition",robot.sigurantaLift.getPosition());*/
             telemetry.addData("M0 current", robot.motorColectareDreapta.getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("poz", MotorColectareController.CurrentPosition);
+            telemetry.addData("distance", distance);
+            telemetry.addData("claw", closeClawController.CurrentStatus);
+            telemetry.addData("SensorON", SensorOn);
             telemetry.update();
         }
     }

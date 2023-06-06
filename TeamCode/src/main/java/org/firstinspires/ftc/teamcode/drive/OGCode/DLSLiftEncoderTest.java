@@ -45,6 +45,7 @@ public class DLSLiftEncoderTest extends LinearOpMode {
 
         telemetry.update();
         hello.targetValue = RetractedPosition;
+
         while (!isStopRequested() && opModeIsActive())
         {
             int DreaptaLiftPosition = robot.dreaptaLift.getCurrentPosition();
@@ -52,11 +53,12 @@ public class DLSLiftEncoderTest extends LinearOpMode {
             powerDreaptaLift = Math.max(-1,Math.min(powerDreaptaLift,1));
             robot.dreaptaLift.setPower(powerDreaptaLift);
             robot.stangaLift.setPower(powerDreaptaLift);
-            if (changePositions.seconds()>4)
+            if (changePositions.seconds()>3)
             {
                 if (hello.targetValue == RetractedPosition )
                 {
                     hello.targetValue = ExtendedPosition;
+                    SigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.JUNCTION;
                 }
                 else
                 {
@@ -68,6 +70,7 @@ public class DLSLiftEncoderTest extends LinearOpMode {
             telemetry.addData("ColectareEncoder", DreaptaLiftPosition);
             telemetry.addData("powerColectare", powerDreaptaLift);
             telemetry.addData("TargetLift",hello.targetValue);
+            telemetry.addData("siguranta", SigurantaLiftController.CurrentStatus);
             telemetry.addData("Error", hello.measuredError(DreaptaLiftPosition));
             if (Kp!=hello.p || Kd!=hello.d || Ki!=hello.i || maxSpeed !=hello.maxOutput )
             {

@@ -2,10 +2,9 @@ package org.firstinspires.ftc.teamcode.drive.OGCode.Autonomii;
 
 
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TRACK_WIDTH;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController5_1_mid.autoControllerMidStatus.GATA;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController5_1_mid.autoControllerMidStatus.GET_LIFT_DOWN_INTF;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController5_1_mid.autoControllerMidStatus.NOTHING;
-import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController5_1_mid.autoControllerMidStatus.PLACE_CONE;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController_IntfMID.autocontroller_intfMID.NO_CONE;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController_IntfMID.autocontroller_intfMID.NOTHING;
+import static org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController_IntfMID.autocontroller_intfMID.PLACE_THE_CONE;
 import static org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive.getVelocityConstraint;
 import static org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive.timeOutBaby;
 
@@ -17,15 +16,14 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
-import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.checkerframework.checker.units.qual.Current;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.OGCode.Angle4BarController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.AprilTagDetectionPipeline;
-import org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController5_1_mid;
+import org.firstinspires.ftc.teamcode.drive.OGCode.AutoControllers.AutoController_IntfMID;
 import org.firstinspires.ftc.teamcode.drive.OGCode.BiggerController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.CloseClawController;
 import org.firstinspires.ftc.teamcode.drive.OGCode.LiftController;
@@ -47,9 +45,9 @@ import java.util.List;
 
 
 @Config
-@Autonomous(group = "WORLDS")
+@Autonomous(group = "MTI")
 
-public class DreaptaPlecareCuScartMid extends LinearOpMode {
+public class StangaMidHighInterference extends LinearOpMode {
     enum STROBOT
     {
         PULA_MEA,
@@ -68,24 +66,23 @@ public class DreaptaPlecareCuScartMid extends LinearOpMode {
         GET_LIFT_DOWN_INTF,
         VOLTAGE_CHECK,
         GET_LIFT_UP_INTF_VOLTAGE,
-        PARCARE_FORTATA,
+        GET_LIFT_DOWN_FOR_PRELOAD_ON_SOUTH,
+        GO_TO_SCORING_POSITION_FOR_PRELOAD,
+        GET_LIFT_UP_PRELOAD_ON_SOUTH,
+        STUCK_CONE,
     }
-    public static double INTER_SPLINE_X = 13, INTER_SPLINE_Y = -50;
-    public static double x_CYCLING_POSITION = 13.5, y_CYCLING_POSITION = -61;
-    public static double x_COLLECT_POSITION = 37, y_COLLECT_POSITION = -12, Angle_COLLECT_POSITION = 0;
-    public static double x_PLACE_SOUTH_HIGH = 33, y_PLACE_SOUTH_HIGH = -14, Angle_PLACE_SOUTH_HIGH = 30;
-    public static double x_COLLECT_POSITION_LEFT = -16, y_COLLECT_POSITION_LEFT = -13, Angle_COLLECT_POSITION_LEFT = 177.75;
-    public static double x_SWITCH_LEFT = -12, y_SWITCH_LEFT = -17, Angle_SIWTCH_LEFT = 160;
-    public static double x_PLACE_SOUTH_HIGH_LEFT = -12, y_PLACE_SOUTH_HIGH_LEFT = -17, Angle_PLACE_SOUTH_HIGH_LEFT = 160;
-    public static double x_PARK1 = 11.5, y_PARK1 = -14, Angle_PARK1 = 0;
-    public static double x_PARK2 = 33, y_PARK2 = -14.5, Angle_PARK2 = 0;
-    public static double x_PARK3 = 60, y_PARK3 = -14, Angle_PARK3 = 0;
-    public static double x_PreloadIntf = 36, y_PrelaodIntf = 0, Angle_PreloadIntf = -1;
-    public static double x_GoTo = 36, y_GoTo = -12.5, Angle_GoTo =-1;
-    public static double Angle_TURN_COLLECT = 40;
-    public static double x_Slide = 36 , y_Slide= -15;
-    public static  double x_Slide2 = 36 , y_Slide2 = -5;
-    ElapsedTime asteapta = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime() , timeCollect = new ElapsedTime(), timerSwitchLeft = new ElapsedTime(), timeSlide = new ElapsedTime();
+    public static double x_CYCLING_POSITION = -35, y_CYCLING_POSITION = -19, Angle_CYCLING_POSITION = 168.5;
+    public static double x_PLACE_MID = -34, y_PLACE_MID = -19, Angle_PLACE_MID = 168.5;
+    public static double x_INTER_LEFT = -35.5, y_INTER_LEFT = -35 , Angle_PARK_INTER_LEFT = 90;
+    public static double x_PARK1 = -60, y_PARK1 = -35, Angle_PARK1 = 90;
+    public static double x_PARK2 = -35, y_PARK2 = -35, Angle_PARK2 = 90;
+    public static double x_PARK3 = -10, y_PARK3 = -35, Angle_PARK3 = 90;
+    public static double x_PreloadIntf = -36, y_PrelaodIntf = 3, Angle_PreloadIntf = 180;
+    public static double x_Slide = -36 , y_Slide= -15;
+    public static  double x_Slide2 = -36 , y_Slide2 = -5;
+    double nrvolt =0;
+    double okvolt =0, okprimucon;
+    ElapsedTime asteapta = new ElapsedTime(), timerRetract = new ElapsedTime(), timerLift =new ElapsedTime() , timeCollect = new ElapsedTime(), timerSwitchLeft = new ElapsedTime(), timeSlide = new ElapsedTime(), tbegin = new ElapsedTime();
     ElapsedTime timer_sa_va_dau_la_muie = new ElapsedTime();
     ElapsedTime timer_sa_va_dau_la_muie2 = new ElapsedTime();
     OpenCvCamera camera;
@@ -134,7 +131,7 @@ public class DreaptaPlecareCuScartMid extends LinearOpMode {
         RobotController robotController = new RobotController();
         BiggerController biggerController = new BiggerController();
         LiftController liftController = new LiftController();
-        AutoController5_1_mid autoControllerTurn51 = new AutoController5_1_mid();
+        AutoController_IntfMID autoController_intfMID = new AutoController_IntfMID();
         SigurantaLiftController sigurantaLiftController = new SigurantaLiftController();
         Angle4BarController angle4BarController = new Angle4BarController();
         servo4BarController.CurrentStatus = Servo4BarController.ServoStatus.INITIALIZE;
@@ -148,9 +145,9 @@ public class DreaptaPlecareCuScartMid extends LinearOpMode {
 
 
 
-        autoControllerTurn51.Cone_Stack_Level  =5;
-        autoControllerTurn51.AutoLiftStatus = LiftController.LiftStatus.HIGH;
-        autoControllerTurn51.LimitLift = 0.6;
+        autoController_intfMID.Cone_Stack_Level  =5;
+        autoController_intfMID.AutoLiftStatus = LiftController.LiftStatus.HIGH;
+        autoController_intfMID.LimitLift = 0.6;
         motorColectareController.NrConAuto = 5;
         robot.turnClaw.setPosition(TurnClawController.pozTurnClaw_COLLECT);
 
@@ -169,25 +166,11 @@ public class DreaptaPlecareCuScartMid extends LinearOpMode {
         int nr=0;
         TrajectoryVelocityConstraint PATH_1_CONSTRAINT = getVelocityConstraint(50, 45, TRACK_WIDTH);
         ElapsedTime timeStart = new ElapsedTime() , timeTurnPlace = new ElapsedTime(), timerGOPLACE = new ElapsedTime(), timerSlide = new ElapsedTime(), TimerWait = new ElapsedTime();
-        Pose2d startPose = new Pose2d(35, -63, Math.toRadians(270));
-        Pose2d PLACE_SOUTH_HIGH = new Pose2d(x_PLACE_SOUTH_HIGH,y_PLACE_SOUTH_HIGH,Math.toRadians(Angle_PLACE_SOUTH_HIGH));
-        Pose2d PLACE_SOUTH_HIGH_LEFT = new Pose2d(x_PLACE_SOUTH_HIGH_LEFT,y_PLACE_SOUTH_HIGH_LEFT,Math.toRadians(Angle_PLACE_SOUTH_HIGH_LEFT));
-        Pose2d PLACE_SOUTH_HIGH_LEFT_10 = new Pose2d(x_PLACE_SOUTH_HIGH_LEFT-1,y_PLACE_SOUTH_HIGH_LEFT,Math.toRadians(Angle_PLACE_SOUTH_HIGH_LEFT));
-        Pose2d SWITCH = new Pose2d(x_SWITCH_LEFT, y_SWITCH_LEFT, Math.toRadians(Angle_SIWTCH_LEFT));
+        Pose2d startPose = new Pose2d(-35, -63, Math.toRadians(270));
         Pose2d PRELOAD = new Pose2d(x_PreloadIntf,y_PrelaodIntf,Math.toRadians(Angle_PreloadIntf));
         Pose2d SLD1 = new Pose2d(x_Slide, y_Slide, Math.toRadians(270));
         Pose2d SLD2 = new Pose2d(x_Slide2, y_Slide2, Math.toRadians(270));
-        Pose2d COLLECT_POSITION_5 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION ));
-        Pose2d COLLECT_POSITION_4 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION + 0.2));
-        Pose2d COLLECT_POSITION_3 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION + 0.2));
-        Pose2d COLLECT_POSITION_2 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION + 0.2));
-        Pose2d COLLECT_POSITION_1 = new Pose2d(x_COLLECT_POSITION,y_COLLECT_POSITION,Math.toRadians(Angle_COLLECT_POSITION + 0.2));
-
-        Pose2d COLLECT_POSITION_6 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT));
-        Pose2d COLLECT_POSITION_7 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-0.5));
-        Pose2d COLLECT_POSITION_8 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-0.8));
-        Pose2d COLLECT_POSITION_9 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-1));
-        Pose2d COLLECT_POSITION_10 = new Pose2d(x_COLLECT_POSITION_LEFT,y_COLLECT_POSITION_LEFT,Math.toRadians(Angle_COLLECT_POSITION_LEFT-1));
+        Pose2d Place_Mid = new Pose2d(x_PLACE_MID, y_PLACE_MID, Math.toRadians(Angle_PLACE_MID));
         drive.setPoseEstimate(startPose);
         STROBOT status = STROBOT.PULA_MEA;
         TrajectorySequence SLIDE1 = drive.trajectorySequenceBuilder(startPose)
@@ -202,59 +185,26 @@ public class DreaptaPlecareCuScartMid extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(x_PreloadIntf,y_PrelaodIntf,Math.toRadians(Angle_PreloadIntf)))
                 .build();
 
-        TrajectorySequence GO_TO_PLACE_POSITION = drive.trajectorySequenceBuilder(COLLECT_POSITION_5)
-                .lineToLinearHeading(PLACE_SOUTH_HIGH)
+        TrajectorySequence PLACE_MID = drive.trajectorySequenceBuilder(PRELOAD)
+                .lineToLinearHeading(new Pose2d(x_PLACE_MID, y_PLACE_MID, Math.toRadians(Angle_PLACE_MID)))
                 .build();
 
-        TrajectorySequence GO_TO_PLACE_POSITION_LEFT = drive.trajectorySequenceBuilder(COLLECT_POSITION_6)
-                .lineToLinearHeading(PLACE_SOUTH_HIGH_LEFT)
-                .build();
-        TrajectorySequence GO_TO_PLACE_POSITION_LEFT_10 = drive.trajectorySequenceBuilder(COLLECT_POSITION_10)
-                .lineToLinearHeading(PLACE_SOUTH_HIGH_LEFT_10)
+        TrajectorySequence PlacePreloadOnMid = drive.trajectorySequenceBuilder(PRELOAD)
+                .lineToLinearHeading(Place_Mid)
                 .build();
 
-        TrajectorySequence GO_TO_COLLECTING_POSITION_5 = drive.trajectorySequenceBuilder(PRELOAD)
-                .lineToLinearHeading(COLLECT_POSITION_5)
+        TrajectorySequence PARK1 = drive.trajectorySequenceBuilder(Place_Mid)
+                .lineToLinearHeading(new Pose2d(x_INTER_LEFT,y_INTER_LEFT,Math.toRadians(Angle_PARK_INTER_LEFT)))
+                .lineToLinearHeading(new Pose2d(x_PARK1,y_PARK1,Math.toRadians(Angle_PARK1)))
                 .build();
-        TrajectorySequence GO_TO_COLLECTING_POSITION_4 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH)
-                .lineToLinearHeading(COLLECT_POSITION_4)
+        TrajectorySequence PARK2 = drive.trajectorySequenceBuilder(Place_Mid)
+                .lineToLinearHeading(new Pose2d(x_INTER_LEFT,y_INTER_LEFT,Math.toRadians(Angle_PARK_INTER_LEFT)))
+
+                .lineToLinearHeading(new Pose2d(x_PARK2,y_PARK2,Math.toRadians(Angle_PARK2)))
                 .build();
-        TrajectorySequence GO_TO_COLLECTING_POSITION_3 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH)
-                .lineToLinearHeading(COLLECT_POSITION_3)
-                .build();
-        TrajectorySequence GO_TO_COLLECTING_POSITION_2 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH)
-                .lineToLinearHeading(COLLECT_POSITION_2)
-                .build();
-        TrajectorySequence GO_TO_COLLECTING_POSITION_1 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH)
-                .lineToLinearHeading(COLLECT_POSITION_1)
-                .build();
-        TrajectorySequence GO_TO_COLLECTING_POSITION_6 = drive.trajectorySequenceBuilder(SWITCH)
-                .lineToLinearHeading(COLLECT_POSITION_6)
-                .build();
-        TrajectorySequence GO_TO_COLLECTING_POSITION_7 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH_LEFT)
-                .lineToLinearHeading(COLLECT_POSITION_7)
-                .build();
-        TrajectorySequence GO_TO_COLLECTING_POSITION_8 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH_LEFT)
-                .lineToLinearHeading(COLLECT_POSITION_8)
-                .build();
-        TrajectorySequence GO_TO_COLLECTING_POSITION_9 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH_LEFT)
-                .lineToLinearHeading(COLLECT_POSITION_9)
-                .build();
-        TrajectorySequence GO_TO_COLLECTING_POSITION_10 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH_LEFT)
-                .lineToLinearHeading(COLLECT_POSITION_10)
-                .build();
-        TrajectorySequence SWITCH_LEFT = drive.trajectorySequenceBuilder(COLLECT_POSITION_1)
-                .setTangent(Math.toRadians(170))
-                .splineToLinearHeading(SWITCH,Math.toRadians(270))
-                .build();
-        TrajectorySequence PARK1 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH)
-                .lineTo(new Vector2d(x_PARK1,y_PARK1))
-                .build();
-        TrajectorySequence PARK2 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH)
-                .lineTo(new Vector2d(x_PARK2,y_PARK2))
-                .build();
-        TrajectorySequence PARK3 = drive.trajectorySequenceBuilder(PLACE_SOUTH_HIGH)
-                .lineTo(new Vector2d(x_PARK3,y_PARK3))
+        TrajectorySequence PARK3 = drive.trajectorySequenceBuilder(Place_Mid)
+                .lineToLinearHeading(new Pose2d(x_INTER_LEFT,y_INTER_LEFT,Math.toRadians(Angle_PARK_INTER_LEFT)))
+                .lineToLinearHeading(new Pose2d(x_PARK3,y_PARK3,Math.toRadians(Angle_PARK3)))
                 .build();
         int cameraMonitorViewId = hardwareMap.appContext
                 .getResources().getIdentifier("cameraMonitorViewId",
@@ -286,6 +236,9 @@ public class DreaptaPlecareCuScartMid extends LinearOpMode {
             sleep(50);
         }
         waitForStart();
+        tbegin.reset();
+        nrvolt =0;
+
         camera.closeCameraDevice();
         if (isStopRequested()) return;
         int OKEIUT = 0;
@@ -326,46 +279,71 @@ public class DreaptaPlecareCuScartMid extends LinearOpMode {
                     break;
                 }
                 case GET_LIFT_UP: {
-                    OKEIUT=0;
-                    if (nr==0)
-                    {
-                        if (!drive.isBusy()) {
-                            liftController.CurrentStatus = LiftController.LiftStatus.HIGH_SOUTH;
-                            timerLift.reset();
-                            status = STROBOT.VOLTAGE_CHECK;
+                    if(tbegin.seconds() <28)
+                    {OKEIUT=0;
+                        if (nr==0)
+                        {
+                            if (!drive.isBusy()) {
+                                liftController.CurrentStatus = LiftController.LiftStatus.HIGH;
+                                timerLift.reset();
+                                status = STROBOT.VOLTAGE_CHECK;
+                            }
+                        }
+                        else {
+                            if (autoController_intfMID.CurrentStatus == NOTHING &&autoController_intfMID.timerLIFT.seconds() > 0.1) {
+                                liftController.CurrentStatus = LiftController.LiftStatus.MIDAUTO;
+                                timerLift.reset();
+                                status = STROBOT.GET_LIFT_DOWN;
+                            }
+
+                            else if(autoController_intfMID.CurrentStatus == NO_CONE)
+                            {
+                                motorColectareController.NrConAuto = motorColectareController.NrConAuto +1;
+                                if(nr>1){nr--;autoController_intfMID.Cone_Stack_Level = autoController_intfMID.Cone_Stack_Level +1;}
+                                else { nr =1;autoController_intfMID.Cone_Stack_Level = autoController_intfMID.Cone_Stack_Level +1;}
+                                status = STROBOT.GO_TO_COLLECTING_POSITION;
+
+                            }
                         }
                     }
-                    else
-                    {
-                        if (timerGOPLACE.seconds()>0.8) {
-                            liftController.CurrentStatus = LiftController.LiftStatus.MID;
-                            timerLift.reset();
-                            status = STROBOT.GET_LIFT_DOWN;
-
-                        }
+                    else {
+                        status = STROBOT.PARK;
+                        autoController_intfMID.CurrentStatus = AutoController_IntfMID.autocontroller_intfMID.FORCED_PARK;
                     }
                     break;
                 }
+
+                case GET_LIFT_DOWN_FOR_PRELOAD_ON_SOUTH: {
+                    if(timerGOPLACE.seconds()> 0.75)
+                    {liftController.CurrentStatus = LiftController.LiftStatus.BASE;
+                        status = STROBOT.GO_TO_COLLECTING_POSITION;}
+                    break;
+                }
+
                 case VOLTAGE_CHECK: {
 
                     if(robot.dreaptaLift.getCurrent(CurrentUnit.AMPS) > 5 && liftController.CurrentPosition > 430)
                     {
-                        autoControllerTurn51.CurrentStatus = AutoController5_1_mid.autoControllerMidStatus.GET_LIFT_DOWN_WAIT;
+                        autoController_intfMID.CurrentStatus = AutoController_IntfMID.autocontroller_intfMID.GET_LIFT_DOWN_WAIT;
                         TimerWait.reset();
                         status = STROBOT.GET_LIFT_UP_INTF_VOLTAGE;
+                        nrvolt=nrvolt+1;
                     } else if(liftController.CurrentPosition > 600)
-                        status = STROBOT.GET_LIFT_DOWN_INTF;
+                    {status = STROBOT.GET_LIFT_DOWN_INTF;
+                        okvolt=1;}
                     break;
                 }
                 case GET_LIFT_UP_INTF_VOLTAGE :{
-                    if(TimerWait.seconds() > 1.5)
+                    if(TimerWait.seconds() > 0.1)
                     {
-                        status = STROBOT.GET_LIFT_UP;
+                        status = STROBOT.GO_TO_SCORING_POSITION_FOR_PRELOAD;
+                        timerGOPLACE.reset();
                     }
                     break;
                 }
+
                 case GET_LIFT_DOWN: {
-                    if (timerLift.seconds() > AutoController5_1_mid.LimitLift) {
+                    if (timerLift.seconds() >autoController_intfMID.LimitLift) {
                         timerLift.reset();
                         if (nr!=5)
                         {
@@ -384,7 +362,7 @@ public class DreaptaPlecareCuScartMid extends LinearOpMode {
                 }
 
                 case GET_LIFT_DOWN_INTF: {
-                    if (timerLift.seconds() > AutoController5_1_mid.LimitLift) {
+                    if (timerLift.seconds() >autoController_intfMID.LimitLift) {
                         timerLift.reset();
 
                         liftController.CurrentStatus = LiftController.LiftStatus.BASE_INTF;
@@ -394,121 +372,107 @@ public class DreaptaPlecareCuScartMid extends LinearOpMode {
                 }
 
                 case COLLECT:
+                { if( tbegin.seconds() < 28) {
+                    if (nr == 0 && timeCollect.seconds() > 2 && okvolt == 1) {
+                        nr++;
+                        autoController_intfMID.Limit4Bar = 0.55;
+                        autoController_intfMID.LimitSiguranta = 0.7;
+                        autoController_intfMID.LimitOpenClaw = 0.85;
+                        autoController_intfMID.CurrentStatus = AutoController_IntfMID.autocontroller_intfMID.STACK_LEVEL;
+                        status = STROBOT.GO_TO_SCORING_POSITION;
+                    } else if (nr > 0 && timeCollect.seconds() > 0.4) {
+                        nr++;
+                        autoController_intfMID.Limit4Bar = 0.55;
+                        autoController_intfMID.LimitSiguranta = 0.7;
+                        autoController_intfMID.LimitOpenClaw = 0.85;
+                        autoController_intfMID.CurrentStatus = AutoController_IntfMID.autocontroller_intfMID.STACK_LEVEL;
+                        status = STROBOT.GO_TO_SCORING_POSITION;
+                    } else if(nr == 0 && timeCollect.seconds() > 0.6 && okvolt == 0)
+                    {
+                        nr++;
+                        autoController_intfMID.Limit4Bar = 0.55;
+                        autoController_intfMID.LimitSiguranta = 0.7;
+                        autoController_intfMID.LimitOpenClaw = 0.85;
+                        autoController_intfMID.CurrentStatus = AutoController_IntfMID.autocontroller_intfMID.STACK_LEVEL;
+                        status = STROBOT.GO_TO_SCORING_POSITION;
+                    }
+                } else
                 {
-                    if (nr == 0 && timeCollect.seconds()>0.6)
+                    status = STROBOT.PARK;
+                    autoController_intfMID.CurrentStatus = AutoController_IntfMID.autocontroller_intfMID.FORCED_PARK;
+                }  break;
+                }
+
+                case GO_TO_SCORING_POSITION_FOR_PRELOAD:
+                {
+                    drive.followTrajectorySequenceAsync(PlacePreloadOnMid);
+                    if(timerGOPLACE.seconds()> 0.1) {
+                        status = STROBOT.GET_LIFT_UP_PRELOAD_ON_SOUTH;
+                        timerGOPLACE.reset();
+                    }
+                    break;
+                }
+
+                case GET_LIFT_UP_PRELOAD_ON_SOUTH:
+                {
+                    if(timerGOPLACE.seconds() > 2.5)
                     {
-                        nr++;
-                        autoControllerTurn51.Limit4Bar = 0.55;
-                        autoControllerTurn51.LimitSiguranta = 0.7;
-                        autoControllerTurn51.LimitOpenClaw = 0.85;
-                        autoControllerTurn51.CurrentStatus = AutoController5_1_mid.autoControllerMidStatus.STACK_LEVEL;
-                        status = STROBOT.GO_TO_SCORING_POSITION;
-                    } else if (nr > 0 && timeCollect.seconds()>0.4)
-                    {
-                        nr++;
-                        autoControllerTurn51.Limit4Bar = 0.55;
-                        autoControllerTurn51.LimitSiguranta = 0.7;
-                        autoControllerTurn51.LimitOpenClaw = 0.85;
-                        autoControllerTurn51.CurrentStatus = AutoController5_1_mid.autoControllerMidStatus.STACK_LEVEL;
-                        status = STROBOT.GO_TO_SCORING_POSITION;
+                        liftController.CurrentStatus = LiftController.LiftStatus.HIGH;
+                        status = STROBOT.GET_LIFT_DOWN_FOR_PRELOAD_ON_SOUTH;
+                        timerGOPLACE.reset();
                     }
 
                     break;
                 }
 
-
                 case GO_TO_SCORING_POSITION:
+                { if(tbegin.seconds() < 28)
+                {if (autoController_intfMID.CurrentStatus == PLACE_THE_CONE ||autoController_intfMID.CurrentStatus == NOTHING)
                 {
-                    if (AutoController5_1_mid.CurrentStatus == GATA)
+                    if (nr<=5)
                     {
-                        if (nr<=5)
+
+                        timerGOPLACE.reset();
+                        status = STROBOT.GET_LIFT_UP;
+
+                    }
+                    else
+                    {
+                        if (nr == 11)
                         {
-                            drive.followTrajectorySequenceAsync(GO_TO_PLACE_POSITION);
-                            timerGOPLACE.reset();
-                            status = STROBOT.GET_LIFT_UP;
+                            drive.followTrajectorySequenceAsync(PlacePreloadOnMid);
                         }
                         else
                         {
-                            if (nr == 11)
-                            {
-                                drive.followTrajectorySequenceAsync(GO_TO_PLACE_POSITION_LEFT_10);
-                            }
-                            else
-                            {
-                                drive.followTrajectorySequenceAsync(GO_TO_PLACE_POSITION_LEFT);
-                            }
-                            timerGOPLACE.reset();
-                            status = STROBOT.GET_LIFT_UP;
+                            drive.followTrajectorySequenceAsync(PlacePreloadOnMid);
                         }
+                        timerGOPLACE.reset();
+                        status = STROBOT.GET_LIFT_UP;
                     }
+                }
+                } else {
+                    status = STROBOT.PARK;
+                    autoController_intfMID.CurrentStatus = AutoController_IntfMID.autocontroller_intfMID.FORCED_PARK;
+                }
                     break;
                 }
+
+
+
+
                 case GO_TO_COLLECTING_POSITION:
-                {
-                    motorColectareController.NrConAuto = motorColectareController.NrConAuto-1;
+                { if(tbegin.seconds() < 28)
+                {motorColectareController.NrConAuto = motorColectareController.NrConAuto-1;
                     if (motorColectareController.NrConAuto == -1) {
                         motorColectareController.NrConAuto = 9;
                     }
-                    switch (nr)
-                    {
-                        case 0:
-                        {
-                            drive.followTrajectorySequenceAsync(GO_TO_COLLECTING_POSITION_5);
-                            break;
-                        }
-                        case 1:
-                        {
-                            drive.followTrajectorySequenceAsync(GO_TO_COLLECTING_POSITION_4);
-                            break;
-                        }
-                        case 2:
-                        {
-                            drive.followTrajectorySequenceAsync(GO_TO_COLLECTING_POSITION_3);
-                            break;
-                        }
-                        case 3:
-                        {
-                            drive.followTrajectorySequenceAsync(GO_TO_COLLECTING_POSITION_2);
-                            break;
-                        }
-                        case 4:
-                        {
-                            drive.followTrajectorySequenceAsync(GO_TO_COLLECTING_POSITION_1);
-                            break;
-                        }
-                        case 5:
-                        {
-                            drive.followTrajectorySequenceAsync(GO_TO_COLLECTING_POSITION_6);
-                            break;
-                        }
-                        case 6:
-                        {
-                            drive.followTrajectorySequenceAsync(GO_TO_COLLECTING_POSITION_6);
-                            break;
-                        }
-                        case 7:
-                        {
-                            drive.followTrajectorySequenceAsync(GO_TO_COLLECTING_POSITION_7);
-                            break;
-                        }
-                        case 8:
-                        {
-                            drive.followTrajectorySequenceAsync(GO_TO_COLLECTING_POSITION_8);
-                            break;
-                        }
-                        case 9:
-                        {
-                            drive.followTrajectorySequenceAsync(GO_TO_COLLECTING_POSITION_9);
-                            break;
-                        }
-                        case 10:
-                        {
-                            drive.followTrajectorySequenceAsync(GO_TO_COLLECTING_POSITION_10);
-                            break;
-                        }
-                    }
+                    if(nr==0)
+                        drive.followTrajectorySequenceAsync(PLACE_MID);
                     timeCollect.reset();
-                    status = STROBOT.COLLECT;
+                    status = STROBOT.COLLECT;} else {
+                    status = STROBOT.PARK;
+                    autoController_intfMID.CurrentStatus = AutoController_IntfMID.autocontroller_intfMID.FORCED_PARK;
+                }
                     break;
                 }
                 case PARK:
@@ -539,19 +503,20 @@ public class DreaptaPlecareCuScartMid extends LinearOpMode {
             sigurantaLiftController.update(robot);
             motorColectareController.update(robot,ColectarePosition, 1, currentVoltage);
             liftController.update(robot,LiftPosition,sigurantaLiftController,currentVoltage);
-            autoControllerTurn51.update(sigurantaLiftController,robot,angle4BarController, turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
-            int ColectarePosition2 = robot.motorColectareStanga.getCurrentPosition();
+            autoController_intfMID.update(sigurantaLiftController,robot,angle4BarController, turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
+
             drive.update();
             telemetry.addData("Pozitie: ", drive.getPoseEstimate());
             telemetry.addData("nr", nr);
-            telemetry.addData("limit4bar", autoControllerTurn51.Limit4Bar);
+            telemetry.addData("limit4bar",autoController_intfMID.Limit4Bar);
             // telemetry.addData("caz:", Case);
             telemetry.addData("Status",status);
             telemetry.addData("curent", robot.motorColectareDreapta.getCurrent(CurrentUnit.AMPS));
             telemetry.addData("ColectareEncoder", motorColectareController.CurrentStatus);
-            //telemetry.addData("TICKURI", robot.motorColectareDreapta.getCurrentPosition());
-            telemetry.addData("Tickuri", ColectarePosition2);
-            telemetry.update();
+            telemetry.addData("distanta", robot.dsensor.getDistance(DistanceUnit.MM));
+            telemetry.addData("status", status);
+            telemetry.addData("con",autoController_intfMID.Cone_Stack_Level);
+            telemetry.update();;
         }
     }
 

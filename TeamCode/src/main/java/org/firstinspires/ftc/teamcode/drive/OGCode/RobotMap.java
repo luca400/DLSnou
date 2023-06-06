@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -28,6 +29,7 @@ public class RobotMap {
     public Servo right4Bar = null;
     public Servo turnClaw = null;
     public DistanceSensor dsensor = null;
+    //public DigitalChannel coneguide = null;
     Servo closeClaw = null;
     Servo servoLift = null;
     Servo sigurantaLift = null;
@@ -48,6 +50,8 @@ public class RobotMap {
         sigurantaLift = Init.get(Servo.class,"sigurantaLift");
         angle4Bar = Init.get(Servo.class,"angle4Bar");
         dsensor = Init.get(DistanceSensor.class, "dsensor");
+       // coneguide = Init.get(DigitalChannel.class, "coneguide");
+
         motorColectareStanga = Init.get(DcMotorEx.class, "motorColectareStanga");
         motorColectareDreapta = Init.get(DcMotorEx.class, "motorColectareDreapta");
         stangaLift = Init.get(DcMotorEx.class, "stangaLift");

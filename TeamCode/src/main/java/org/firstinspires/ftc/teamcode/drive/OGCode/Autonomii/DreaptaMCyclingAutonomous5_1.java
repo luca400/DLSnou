@@ -54,7 +54,7 @@ public class DreaptaMCyclingAutonomous5_1 extends LinearOpMode {
         PRELOAD,
         GET_DOWN
     }
-    public static double x_CYCLING_POSITION = 36, y_CYCLING_POSITION = -20, Angle_CYCLING_POSITION = 10;
+    public static double x_CYCLING_POSITION = 36, y_CYCLING_POSITION = -20, Angle_CYCLING_POSITION = 7;
     public static double x_INTER = 35.5, y_INTER = -35 , Angle_PARK_INTER = 270;
     public static double x_PARK1 = 15, y_PARK1 = -35, Angle_PARK1 = 270;
     public static double x_PARK2 = 36.5, y_PARK2 = -35, Angle_PARK2 = 270;

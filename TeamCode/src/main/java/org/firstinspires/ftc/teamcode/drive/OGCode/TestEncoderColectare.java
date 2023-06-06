@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+
 import java.util.List;
 
 @TeleOp(name="TestEncoderColectare", group="Testers")
@@ -63,6 +65,7 @@ public class TestEncoderColectare extends  LinearOpMode {
             robot.motorColectareDreapta.setPower(gamepad1.right_stick_y);
             telemetry.addData("motorColectarePositionStanga",robot.motorColectareStanga.getCurrentPosition());
             telemetry.addData("motorColectarePower",robot.motorColectareStanga.getPower());
+            telemetry.addData("curent", robot.motorColectareDreapta.getCurrent(CurrentUnit.AMPS));
             telemetry.update();
         }
     }

@@ -48,7 +48,7 @@ public class MotorColectareController {
         MID_CU_INTF_IN_PULA_MEA,
         DRAW_MOTOR_MID_1,
         DRAW_MOTOR_MID_2,
-
+        BREAK_BEAM_INTERMEDIATE,
     }
     public static double Kp = 0.00325;
     public static double Ki = 0.0022;
@@ -69,7 +69,8 @@ public class MotorColectareController {
     public static double ExtendoHaz[]= {0,310,310,312,319,340};
     public static double ExtendoHazLeft[] = {0,310,310,312,319,340};
     public static double MIDCUINTFINPULAMEA[] = {0, 110, 120, 130, 140, 150};
-    public static double VLT[] = {0.45, 0.5, 0.5, 0.5, 0.6};
+    public static double VLT[] = {0.55, 0.55, 0.55, 0.55, 0.55};
+    public static double VLT2[] = {0.35, 0.35, 0.35, 0.35, 0.35};
     public static int NrConAuto = 5;
     public MotorColectareController()
     {
@@ -96,7 +97,7 @@ public class MotorColectareController {
                 }
                 case DRAW_MOTOR1:
                 {
-                    MotorColectarePID.targetValue = 650;
+                    MotorColectarePID.targetValue = 700;
                     MotorColectarePID.maxOutput = VLT[NrConAuto];
                     break;
                 }
@@ -106,10 +107,16 @@ public class MotorColectareController {
                     break;
                 }
 
+                case BREAK_BEAM_INTERMEDIATE: {
+                    MotorColectarePID.targetValue -= 100;
+                    MotorColectarePID.maxOutput =1;
+                    break;
+                }
+
                 case DRAW_MOTOR_MID_1:
                 {
-                    MotorColectarePID.targetValue = 400;
-                    MotorColectarePID.maxOutput = 0.4;
+                    MotorColectarePID.targetValue = 380;
+                    MotorColectarePID.maxOutput = VLT2[NrConAuto];
                     break;
                 }
                 case DRAW_MOTOR_MID_2: {
@@ -126,7 +133,7 @@ public class MotorColectareController {
                 }
                 case RETRACTED_0:
                 {
-                    MotorColectarePID.targetValue = 0;
+                    MotorColectarePID.targetValue = -10;
                     MotorColectarePID.maxOutput = 1;
                     break;
                 }
@@ -138,8 +145,8 @@ public class MotorColectareController {
                 }
                 case MID_CU_INTF_IN_PULA_MEA:
                 {
-                    MotorColectarePID.maxOutput =0.7;
-                    MotorColectarePID.targetValue = MIDCUINTFINPULAMEA[NrConAuto];
+                    MotorColectarePID.maxOutput =1;
+                    MotorColectarePID.targetValue = ExtendoHaz[NrConAuto] - 150;
                     break;
                 }
                 case EXTENDED_1050:
@@ -169,7 +176,7 @@ public class MotorColectareController {
                 case EXTENDED_SOUTH_SIGUR:
                 {
                     MotorColectarePID.maxOutput = 1;
-                    MotorColectarePID.targetValue = Extendo5_1SouthPositions[NrConAuto] - 75;
+                    MotorColectarePID.targetValue = Extendo5_1SouthPositions[NrConAuto] - 100;
                     break;
                 }
                 case HALF_WAY:
@@ -201,23 +208,23 @@ public class MotorColectareController {
                     MotorColectarePID.maxOutput = 0.5;
                     switch (NrConAuto) {
                         case 1: {
-                            MotorColectarePID.targetValue = 170;
+                            MotorColectarePID.targetValue = 170 - 50;
                             break;
                         }
                         case 2: {
-                            MotorColectarePID.targetValue = 184;
+                            MotorColectarePID.targetValue = 184- 50;
                             break;
                         }
                         case 3: {
-                            MotorColectarePID.targetValue = 184;
+                            MotorColectarePID.targetValue = 184- 50;
                             break;
                         }
                         case 4: {
-                            MotorColectarePID.targetValue = 184;
+                            MotorColectarePID.targetValue = 184-50;
                             break;
                         }
                         case 5: {
-                            MotorColectarePID.targetValue = 337;
+                            MotorColectarePID.targetValue = 337-50;
                             break;
                         }
                     }
