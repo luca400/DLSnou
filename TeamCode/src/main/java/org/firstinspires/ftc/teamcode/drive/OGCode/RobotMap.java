@@ -4,8 +4,11 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.har
 
 import android.hardware.Sensor;
 
+import androidx.annotation.GuardedBy;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -38,9 +41,29 @@ public class RobotMap {
     public DcMotorEx motorColectareDreapta = null;
     public DcMotorEx dreaptaLift = null;
     DcMotorEx stangaLift = null;
+    public static boolean USING_IMU = true;
     public static int xAI = 300,yAI = 150,xBI = 320,yBI = 180;
+
+    private final Object imuLock = new Object();
+    @GuardedBy("imuLock")
+    public BNO055IMU imu;
+    private Thread imuThread;
+    private double imuAngle = 0;
+    private double imuOffset = 0;
+
+
     public RobotMap(HardwareMap Init)
     {
+
+        if (USING_IMU) {
+            synchronized (imuLock) {
+                imu = hardwareMap.get(BNO055IMU.class, "imu");
+                BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+                parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+                imu.initialize(parameters);
+            }
+        }
+
         left4Bar = Init.get(Servo.class, "left4Bar");
         right4Bar = Init.get(Servo.class,"right4Bar");
 
@@ -79,5 +102,21 @@ public class RobotMap {
         motorColectareDreapta.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorColectareDreapta.setDirection(DcMotorSimple.Direction.REVERSE);
 
+
+
     }
+
+    public void startIMUThread(LinearOpMode opMode) {
+        if (USING_IMU) {
+            imuThread = new Thread(() -> {
+                while (!opMode.isStopRequested() && opMode.opModeIsActive()) {
+                    synchronized (imuLock) {
+                        imuAngle = imu.getAngularOrientation().firstAngle;
+                    }
+                }
+            });
+            imuThread.start();
+        }
+    }
+
 }
