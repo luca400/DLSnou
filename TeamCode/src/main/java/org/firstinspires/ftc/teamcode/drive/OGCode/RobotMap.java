@@ -32,7 +32,7 @@ public class RobotMap {
     public Servo right4Bar = null;
     public Servo turnClaw = null;
     public DistanceSensor dsensor = null;
-    //public DigitalChannel coneguide = null;
+    public DigitalChannel coneguide = null;
     Servo closeClaw = null;
     Servo servoLift = null;
     Servo sigurantaLift = null;
@@ -44,25 +44,25 @@ public class RobotMap {
     public static boolean USING_IMU = true;
     public static int xAI = 300,yAI = 150,xBI = 320,yBI = 180;
 
-    private final Object imuLock = new Object();
+    /*private final Object imuLock = new Object();
     @GuardedBy("imuLock")
     public BNO055IMU imu;
     private Thread imuThread;
-    private double imuAngle = 0;
-    private double imuOffset = 0;
+    private static double imuAngle = 0;
+    private static double imuOffset = 0;*/
 
 
     public RobotMap(HardwareMap Init)
     {
 
-        if (USING_IMU) {
+        /*if (USING_IMU) {
             synchronized (imuLock) {
                 imu = hardwareMap.get(BNO055IMU.class, "imu");
                 BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
                 parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
                 imu.initialize(parameters);
             }
-        }
+        }*/
 
         left4Bar = Init.get(Servo.class, "left4Bar");
         right4Bar = Init.get(Servo.class,"right4Bar");
@@ -73,7 +73,8 @@ public class RobotMap {
         sigurantaLift = Init.get(Servo.class,"sigurantaLift");
         angle4Bar = Init.get(Servo.class,"angle4Bar");
         dsensor = Init.get(DistanceSensor.class, "dsensor");
-       // coneguide = Init.get(DigitalChannel.class, "coneguide");
+       coneguide = Init.get(DigitalChannel.class, "coneguide");
+        coneguide.setMode(DigitalChannel.Mode.INPUT);
 
         motorColectareStanga = Init.get(DcMotorEx.class, "motorColectareStanga");
         motorColectareDreapta = Init.get(DcMotorEx.class, "motorColectareDreapta");
@@ -106,6 +107,15 @@ public class RobotMap {
 
     }
 
+   /* public void reset() {
+        try {
+        } catch (Exception e) {}
+        imuOffset = imu.getAngularOrientation().firstAngle;
+    }
+    public static double getAngle() {
+        return imuAngle - imuOffset;
+    }
+
     public void startIMUThread(LinearOpMode opMode) {
         if (USING_IMU) {
             imuThread = new Thread(() -> {
@@ -117,6 +127,6 @@ public class RobotMap {
             });
             imuThread.start();
         }
-    }
+    }*/
 
 }

@@ -12,6 +12,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
+import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -74,7 +75,7 @@ public class StangaSouthHighInterference extends LinearOpMode {
     public static double INTER_SPLINE_X = 13, INTER_SPLINE_Y = -50;
     public static double x_CYCLING_POSITION = -13.5, y_CYCLING_POSITION = -61;
     public static double x_COLLECT_POSITION = -18.5, y_COLLECT_POSITION = -12, Angle_COLLECT_POSITION = 180;
-    public static double x_PLACE_SOUTH_HIGH = -13.5, y_PLACE_SOUTH_HIGH = -16, Angle_PLACE_SOUTH_HIGH = 160;
+    public static double x_PLACE_SOUTH_HIGH = -13.5, y_PLACE_SOUTH_HIGH = -16, Angle_PLACE_SOUTH_HIGH = 165;
     public static double x_COLLECT_POSITION_LEFT = -16, y_COLLECT_POSITION_LEFT = -13, Angle_COLLECT_POSITION_LEFT = 177.75;
     public static double x_SWITCH_LEFT = -12, y_SWITCH_LEFT = -17, Angle_SIWTCH_LEFT = 160;
     public static double x_PLACE_SOUTH_HIGH_LEFT = -12, y_PLACE_SOUTH_HIGH_LEFT = -17, Angle_PLACE_SOUTH_HIGH_LEFT = 160;
@@ -119,6 +120,11 @@ public class StangaSouthHighInterference extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+
+        PhotonCore.CONTROL_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        PhotonCore.experimental.setMaximumParallelCommands(8);
+        PhotonCore.enable();
+
         timeOutBaby = 0.1;
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         RobotMap robot = new RobotMap(hardwareMap);
@@ -663,6 +669,10 @@ public class StangaSouthHighInterference extends LinearOpMode {
                     break;
                 }
             }
+
+            double loopTime = 0;
+            double loop = System.nanoTime();
+
             biggerController.update(robotController,closeClawController,motorColectareController);
             robotController.update(robot,sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
             closeClawController.update(robot);
@@ -675,6 +685,7 @@ public class StangaSouthHighInterference extends LinearOpMode {
             autoControllerTurn51.update(sigurantaLiftController,robot,angle4BarController, turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
 
             drive.update();
+            telemetry.addData("hz ", 1000000000 / (loop - loopTime));
             telemetry.addData("Pozitie: ", drive.getPoseEstimate());
             telemetry.addData("nr", nr);
             telemetry.addData("limit4bar", autoControllerTurn51.Limit4Bar);

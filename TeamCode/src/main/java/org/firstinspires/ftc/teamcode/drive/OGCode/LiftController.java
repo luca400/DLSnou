@@ -28,6 +28,7 @@ public class LiftController {
         BASE_CU_SIGURANTA,
         BASE_INTF,
         MIDAUTO,
+        PLM,
     }
     public double CurrentSpeed=0;
     public double Kp = 0.008;
@@ -66,6 +67,11 @@ public class LiftController {
                 {
                     LiftColectarePID.targetValue = basePosition;
                     sigurantaLiftController.CurrentStatus = SigurantaLiftController.SigurantaLift.TRANSFER;
+                    break;
+                }
+                case PLM:
+                {
+                    LiftColectarePID.targetValue = 500;
                     break;
                 }
                 case BASE_INTF:

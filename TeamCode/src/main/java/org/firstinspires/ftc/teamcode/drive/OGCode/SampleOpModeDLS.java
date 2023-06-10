@@ -41,10 +41,6 @@ public class SampleOpModeDLS extends  LinearOpMode {
     public static boolean oklow=false;
     public static double  PrecisionDenominator=1, PrecisionDenominator2=1.25;
 
-
-
-
-
     public void robotCentricDrive(DcMotor leftFront,DcMotor leftBack,DcMotor rightFront,DcMotor rightBack, double  lim, boolean StrafesOn , double LeftTrigger,  double RightTrigger)
     {
         double y = -gamepad1.right_stick_y; // Remember, this is reversed!
@@ -112,7 +108,10 @@ public class SampleOpModeDLS extends  LinearOpMode {
     @SuppressLint("SuspiciousIndentation")
     @Override
     public void runOpMode() {
-        PhotonCore.enable();
+       // PhotonCore.CONTROL_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        //PhotonCore.experimental.setMaximumParallelCommands(8);
+        //PhotonCore.enable();
+
         RobotMap robot=new RobotMap(hardwareMap);
         SigurantaLiftController sigurantaLiftController = new SigurantaLiftController();
         Angle4BarController angle4BarController = new Angle4BarController();
@@ -134,9 +133,8 @@ public class SampleOpModeDLS extends  LinearOpMode {
         double x1=0,y1=0,x2=0;
         double loopTime = 0;
         boolean SensorOn = false;
-        //boolean BreakBeamOn = false;
+        boolean BreakBeamOn = false;
         boolean motorColectareExtension = false;
-        //boolean BreakBeamState = robot.coneguide.getState();
         BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
@@ -253,9 +251,9 @@ public class SampleOpModeDLS extends  LinearOpMode {
 
             if(!previousGamepad2.touchpad && currentGamepad2.touchpad)
             {SensorOn = !SensorOn;}
+            boolean BreakBeamState = robot.coneguide.getState();
 
-
-           /* if(!previousGamepad2.start && currentGamepad2.start)
+           if(!previousGamepad2.start && currentGamepad2.start)
             {
                 BreakBeamOn = !BreakBeamOn;
             }
@@ -264,19 +262,15 @@ public class SampleOpModeDLS extends  LinearOpMode {
             {
                 if(LiftController.CurrentStatus != LiftController.LiftStatus.BASE )
                 {
-                    if(LiftController.CurrentStatus == LiftController.LiftStatus.LOW)
-                    {
-
-                    }
-                    else
+                     if(LiftController.CurrentStatus != LiftController.LiftStatus.BASE)
                     {
                         if(!BreakBeamState)
                         {
-                            LiftController.CurrentStatus = LiftController.LiftStatus.HIGH;
+                            LiftController.CurrentStatus = LiftController.LiftStatus.BASE;
                         }
                     }
                 }
-            }*/
+            }
 
             if (currentGamepad2.left_trigger > 0) {
                 if (!previousGamepad2.left_bumper && currentGamepad2.left_bumper) {
@@ -544,6 +538,8 @@ public class SampleOpModeDLS extends  LinearOpMode {
             telemetry.addData("distance", distance);
             telemetry.addData("claw", closeClawController.CurrentStatus);
             telemetry.addData("SensorON", SensorOn);
+            telemetry.addData("GuideState", BreakBeamState);
+            telemetry.addData("guideonoff",BreakBeamOn);
             telemetry.update();
         }
     }

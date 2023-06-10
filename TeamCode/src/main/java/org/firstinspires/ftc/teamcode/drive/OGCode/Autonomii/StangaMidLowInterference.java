@@ -420,7 +420,12 @@ public class StangaMidLowInterference extends LinearOpMode {
             liftController.update(robot,LiftPosition,sigurantaLiftController,currentVoltage);
             autoController_intfMID.update(sigurantaLiftController,robot,angle4BarController, turnClawController, liftController, servo4BarController, robotController, closeClawController, motorColectareController);
 
+
+            double loopTime = 0;
+            double loop = System.nanoTime();
+
             drive.update();
+            telemetry.addData("hz ", 1000000000 / (loop - loopTime));
             telemetry.addData("Pozitie: ", drive.getPoseEstimate());
             telemetry.addData("nr", nr);
             telemetry.addData("limit4bar",autoController_intfMID.Limit4Bar);

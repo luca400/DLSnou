@@ -12,6 +12,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
+import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -61,7 +62,7 @@ public class StangaSouthLowInterference extends LinearOpMode {
     }
     public static double INTER_SPLINE_X = 13, INTER_SPLINE_Y = -50;
     public static double x_CYCLING_POSITION = -13.5, y_CYCLING_POSITION = -61;
-    public static double x_COLLECT_POSITION = -18.5, y_COLLECT_POSITION = -12, Angle_COLLECT_POSITION = 180;
+    public static double x_COLLECT_POSITION = -18.5, y_COLLECT_POSITION = -12, Angle_COLLECT_POSITION = 177.5;
     public static double x_PLACE_SOUTH_HIGH = -13.5, y_PLACE_SOUTH_HIGH = -16, Angle_PLACE_SOUTH_HIGH = 160;
     public static double x_PLACE_SOUTH_HIGH_PRELOAD = -12.5, y_PLACE_SOUTH_HIGH_PRELAOD = -18, Angle_PLACE_SOUTH_HIGH_PRELOAD = 160;
     public static double x_COLLECT_POSITION_LEFT = -16, y_COLLECT_POSITION_LEFT = -13, Angle_COLLECT_POSITION_LEFT = 177.75;
@@ -100,11 +101,16 @@ public class StangaSouthLowInterference extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        PhotonCore.CONTROL_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        PhotonCore.experimental.setMaximumParallelCommands(8);
+        PhotonCore.enable();
         timeOutBaby = 0.1;
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         RobotMap robot = new RobotMap(hardwareMap);
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
 
+       // RobotMap.USING_IMU = true;
+        //robot.startIMUThread(this);
         double currentVoltage;
         VoltageSensor batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
         currentVoltage = batteryVoltageSensor.getVoltage();
@@ -175,7 +181,7 @@ public class StangaSouthLowInterference extends LinearOpMode {
         TrajectorySequence PLACE_PRELOAD = drive.trajectorySequenceBuilder(startPose)
                 /*.lineTo(new Vector2d(x_CYCLING_POSITION,y_CYCLING_POSITION))
                 .lineToLinearHeading(PLACE_SOUTH_HIGH)*/
-                .lineTo(new Vector2d(-13,-60))
+                .lineTo(new Vector2d(-12,-51))
                 .lineToLinearHeading(PLACE_SOUTH_HIGH_PRE)
                 .build();
         TrajectorySequence GO_TO_PLACE_POSITION = drive.trajectorySequenceBuilder(COLLECT_POSITION_5)
@@ -463,6 +469,7 @@ public class StangaSouthLowInterference extends LinearOpMode {
                     break;
                 }
             }
+
             biggerController.update(robotController,closeClawController,motorColectareController);
             robotController.update(robot,sigurantaLiftController,angle4BarController,servo4BarController,motorColectareController,closeClawController,turnClawController);
             closeClawController.update(robot);

@@ -112,10 +112,10 @@ public class AutoSouthHighJunction5_1<PARCARE_FORTATA> {
             }
 
             case VERIFICARE_ANTI_MUISTI: {
-                if(timerStart.seconds() > 0.5 && MotorColectareController.CurrentPosition < 250)
+                if(timerStart.seconds() > 0.47 && MotorColectareController.CurrentPosition < 240)
                 { timer_stuck.reset();
                     CurrentStatus = RETRACT_IN_PULA_MEA;}
-                else if (MotorColectareController.CurrentPosition > 250)
+                else if (MotorColectareController.CurrentPosition > 240)
                     CurrentStatus = FOURBAR_DOWN;
                 break;
             }
