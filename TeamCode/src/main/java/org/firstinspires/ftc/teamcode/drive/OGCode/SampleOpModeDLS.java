@@ -253,6 +253,17 @@ public class SampleOpModeDLS extends  LinearOpMode {
             {SensorOn = !SensorOn;}
             boolean BreakBeamState = robot.coneguide.getState();
 
+
+            if(SensorOn == true)
+            {
+                if(distance <= 40)
+                {
+
+                    closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
+
+                }
+            }
+
            if(!previousGamepad2.start && currentGamepad2.start)
             {
                 BreakBeamOn = !BreakBeamOn;
@@ -260,8 +271,6 @@ public class SampleOpModeDLS extends  LinearOpMode {
 
             if(BreakBeamOn == true)
             {
-                if(LiftController.CurrentStatus != LiftController.LiftStatus.BASE )
-                {
                      if(LiftController.CurrentStatus != LiftController.LiftStatus.BASE)
                     {
                         if(!BreakBeamState)
@@ -269,7 +278,6 @@ public class SampleOpModeDLS extends  LinearOpMode {
                             LiftController.CurrentStatus = LiftController.LiftStatus.BASE;
                         }
                     }
-                }
             }
 
             if (currentGamepad2.left_trigger > 0) {
@@ -324,21 +332,12 @@ public class SampleOpModeDLS extends  LinearOpMode {
                     Servo4BarController.CurrentStatus = STACK_POSITION;
                 }
             } else {
-                if(SensorOn == false)
-                {if ((!previousGamepad2.right_bumper && currentGamepad2.right_bumper)) {
+
+                if ((!previousGamepad2.right_bumper && currentGamepad2.right_bumper)) {
                     if (closeClawController.CurrentStatus == CloseClawController.closeClawStatus.CLOSED) {
                         closeClawController.CurrentStatus = CloseClawController.closeClawStatus.OPEN;
                     } else {
                         closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
-                    }
-                }}
-                if(SensorOn == true)
-                {
-                    if(distance <= 40)
-                    {
-
-                        closeClawController.CurrentStatus = CloseClawController.closeClawStatus.CLOSED;
-
                     }
                 }
 

@@ -121,6 +121,8 @@ public class DreaptaSouthHighInterference extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
+        PhotonCore.CONTROL_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        PhotonCore.experimental.setMaximumParallelCommands(8);
         PhotonCore.enable();
 
         timeOutBaby = 0.1;
